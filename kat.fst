@@ -33,14 +33,14 @@ define Short0 p -> 0 || Event0 _ Event0;
 define Short(X) [X .o. Short0].l;
 
 # Kleene Plus
-define Pl(X) [[[X+] & Wf0] .o. Squash].l;
+define Kpl(X) [[[X+] & Wf0] .o. Squash].l;
 #              --- Kleene plus in the string algebra
 #                  ----- eliminate strings that contain non-matching tests
 #                             ---------- map to a guarded string
 
 # Kleene Star
 # The identity is St, not the empty string.
-define St(X) St |  Pl(X);
+define Kst(X) St |  Kpl(X);
 
 # KAT concatenation operation on relations
 define Cnr(R,S) Squash.i .o. Wf0 .o. [R S] .o. Wf0 .o. Squash;
@@ -50,24 +50,29 @@ define Cnr(R,S) Squash.i .o. Wf0 .o. [R S] .o. Wf0 .o. Squash;
 #               ------------                       ---------- map to guarded strings
 #                                                             on both sides.
 
-# Kleene Plus on relations
-define Plr(X) Squash.i .o. Wf0 .o. [X+] .o. Wf0 .o. Squash;
+# Kleene plus on relations
+define RelKpl(X) Squash.i .o. Wf0 .o. [X+] .o. Wf0 .o. Squash;
 #                                  ----   Kleene plus in the string algebra
 #                          ------       -------    constrain domain and codomain
 #                                                  to contain non non-matching tests
 #             ------------                         ---------- map to guarded strings
 #                                                             on both sides.
 
+# Kleene star on relations
+# This is used in defining world alternative relations.
+# The total relation on St is included.
+define RelKst(X) [St .x. St] | RelKpl(X); 
+
 ###########################################
 #
 #  Worlds
 #
-###########################################
+##########################################
 
 # Worlds (or histories) are the Kleene closure of the events.
-# Since the operation Pl is used, pre-conditions are enforced.
+# Since the operation Kpl is used, pre-conditions are enforced.
 # Include states without a following event.
-define W St | Pl(Event);
+define W St | Kpl(Event);
 
 ########################################################
 #
@@ -89,6 +94,14 @@ define Not(X) W - X;
 # It's not always a function. 
 
 define World(X) [X .o. [0 -> St] .o. W].l;
+
+########################################################
+#
+#  Dress a bare event
+#
+########################################################
+
+# define Event(Y) [St Y St] & W;
 
 ########################################################
 #

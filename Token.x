@@ -15,6 +15,7 @@ tokens :-
   test                          { \s -> TokenTest }
   agent                         { \s -> TokenAgent }
   action                        { \s -> TokenAction }
+  query                         { \s -> TokenQuery }
   id                            { \s -> TokenId }
   world                         { \s -> TokenWorld }
   \-\>                          { \s -> TokenArrow }
@@ -36,6 +37,7 @@ tokens :-
 data Token = TokenAssert
            | TokenAgent
            | TokenAction
+           | TokenQuery
            | TokenId
            | TokenWorld
            | TokenTest

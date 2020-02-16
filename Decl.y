@@ -24,6 +24,7 @@ import Data.List.Utils (replace)
     agent  { TokenAgent }
     action  { TokenAction }
     assert  { TokenAssert }
+    query  { TokenQuery }
     id  { TokenId }
     int { TokenInt $$ }
     symbol { TokenSym $$ }
@@ -52,7 +53,7 @@ import Data.List.Utils (replace)
 -- The root symbol is the LHS of the first production
 
 
-Root : World Assert Actions Agents Prop               { ($1,$2,$3,$4,$5)::([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) }
+Root : World Assert Actions Agents Query               { ($1,$2,$3,$4,$5)::([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) }
 
 Assert : assert Prop      { $2 }
 
@@ -75,6 +76,9 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | int                      { Int $1 }
     | test symbol              { Test $2 }
     | symbol                   { Ident $1 }
+
+-- Query
+Query : query Prop             { $2 }
 
 -- Agents and alternatives
 
@@ -135,8 +139,9 @@ moo (a,b,c,d,e) = statedef0 b
 hoo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) -> [String]
 hoo (a,b,c,d,e) = (fludefs a) ++ (statedefs b) ++
                   (map flu_redef a) ++ [(badpairdef a)] ++
-		  (eventdefs c) ++ (agentspecs2fst d)
-
+		  (eventdefs c) ++ ["source kat.fst"] ++
+                  (agentspecs2fst d) ++
+                  ["regex " ++ prop2fst(e) ++ ";", "print random-words"]
 
 escapescore:: String -> String
 escapescore y = replace "_" "%_" y
@@ -246,14 +251,28 @@ eventspecs2fst :: [EventSpec] -> String
 eventspecs2fst [e] = (eventspec2fst e)
 eventspecs2fst (e : es) = "[" ++ (eventspec2fst e) ++ " | " ++ (eventspecs2fst es) ++ "]" 
 
--- As in epik, use an agent name such as "bob" as a name for the corresponding event alternative relation.
+-- Use an agent name such as "bob" as a name for the corresponding world alternative relation.
+-- This includes the relational closure, and so skips defining an event alternative relation.
+
 agentspec2fst :: AgentSpec -> String
-agentspec2fst (AgentSpec a es) = "define " ++ a ++ " " ++ (eventspecs2fst es) ++ ";"
+agentspec2fst (AgentSpec a es) = "define " ++ a ++ " RelKst(" ++ (eventspecs2fst es) ++ ");"
 
 -- Map a list of AgentSpec to a list of fst definitions (list of strings)
 agentspecs2fst :: [AgentSpec] -> [String]
 agentspecs2fst [x] = [agentspec2fst x]
 agentspecs2fst (x:xs) = (agentspec2fst x) : (agentspecs2fst xs)
 
+-- Use this to map full propositions, the test items.
+prop2fst :: Prop -> String
+prop2fst (Union p q) = bracket((prop2fst p) ++ " | " ++ (prop2fst q))
+prop2fst (Intersection p q) = bracket((prop2fst p) ++ " & " ++ (prop2fst q))
+prop2fst (Minus p q) = bracket((prop2fst p) ++ " - " ++ (prop2fst q))
+prop2fst (Star p) =  "Kst(" ++ (prop2fst p) ++ ")"
+prop2fst (Product p q) = bracket((prop2fst p) ++ " " ++ (prop2fst q))
+prop2fst (Complement p) =  "Not(" ++ (prop2fst p) ++ ")"
+prop2fst (Dia x p) = "Dia(" ++ x ++ "," ++ (prop2fst p) ++ ")"
+prop2fst (Test x) = (escapescore x)
+prop2fst (Ident x) = (escapescore x)
+								   
 }
 

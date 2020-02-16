@@ -42,7 +42,8 @@ agent bob =
  (peek_bob_H2 -> peek_bob_H2)
  (peek_bob_T2 -> peek_bob_T2)
 
-~amy(~announce_T1)
+query bob(peek_bob_T2 ; peek_amy_T2)
+
 
 
 
