@@ -33,6 +33,7 @@ import Data.List.Utils (replace)
     '+' { TokenPlus }
     '&' { TokenIntersection }
     '-' { TokenMinus }
+    '_' { TokenUnderscore }    
     '~' { TokenComplement }
     '*' { TokenStar }
     ';' { TokenProduct }
@@ -68,6 +69,7 @@ World : world '=' Generator    { $3 }
 
 -- Propositions
 Prop : Prop '+' Prop           { Union $1 $3 }
+    | '_'                      { Event }
     | Prop ';' id ';' Prop     { Product (Product $1 (Ident "Ev")) $5 }
     | Prop '&' Prop            { Intersection $1 $3 }
     | Prop '-' Prop            { Minus $1 $3 }
@@ -78,7 +80,6 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | '[' symbol ']' Prop      { Box $2 $4 }
     | '<' symbol '>' Prop      { Dia $2 $4 }    
     | '~' Prop %prec NEG       { Complement $2 }
-    | int                      { Int $1 }
     | test symbol              { Test $2 }
     | symbol                   { Ident $1 }
 
@@ -120,6 +121,7 @@ data Prop = Union Prop Prop
          | Test String
          | Dia String Prop
          | Box String Prop
+         | Event
          deriving Show
 
 data EventSpec = EventSpec String Prop
@@ -282,6 +284,6 @@ prop2fst (Dia x p) = "Dia(" ++ x ++ "," ++ (prop2fst p) ++ ")"
 prop2fst (Box x p) = "Box(" ++ x ++ "," ++ (prop2fst p) ++ ")"
 prop2fst (Test x) = (escapescore x)
 prop2fst (Ident x) = (escapescore x)
-                                                                   
+prop2fst Event = "Event"                                        
 }
 

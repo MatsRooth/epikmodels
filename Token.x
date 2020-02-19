@@ -15,6 +15,7 @@ tokens :-
   test                          { \s -> TokenTest }
   agent                         { \s -> TokenAgent }
   action                        { \s -> TokenAction }
+  queryall                      { \s -> TokenQueryAll }
   query                         { \s -> TokenQuery }
   id                            { \s -> TokenId }
   world                         { \s -> TokenWorld }
@@ -24,6 +25,7 @@ tokens :-
   \+                            { \s -> TokenPlus }
   \&                            { \s -> TokenIntersection }
   \-                            { \s -> TokenMinus }
+  \_                            { \s -> TokenUnderscore }
   \~                            { \s -> TokenComplement }
   \*                            { \s -> TokenStar }
   \;                            { \s -> TokenProduct } 
@@ -41,6 +43,7 @@ tokens :-
 data Token = TokenAssert
            | TokenAgent
            | TokenAction
+           | TokenQueryAll
            | TokenQuery
            | TokenId
            | TokenWorld
@@ -52,6 +55,7 @@ data Token = TokenAssert
            | TokenPlus
            | TokenIntersection
            | TokenMinus
+           | TokenUnderscore	   
            | TokenComplement
            | TokenStar
            | TokenProduct
