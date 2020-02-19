@@ -24,6 +24,7 @@ import Data.List.Utils (replace)
     agent  { TokenAgent }
     action  { TokenAction }
     assert  { TokenAssert }
+    queryall  { TokenQueryAll }
     query  { TokenQuery }
     id  { TokenId }
     int { TokenInt $$ }
@@ -57,7 +58,7 @@ import Data.List.Utils (replace)
 -- The root symbol is the LHS of the first production
 
 
-Root : World Assert Actions Agents Query               { ($1,$2,$3,$4,$5)::([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) }
+Root : World Assert Actions Agents Query               { ($1,$2,$3,$4,$5)::([[Char]],Prop,[ActionSpec],[AgentSpec],Query) }
 
 Assert : assert Prop      { $2 }
 
@@ -84,7 +85,8 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | symbol                   { Ident $1 }
 
 -- Query
-Query : query Prop             { $2 }
+Query : query Prop             { Query False $2 }
+Query : queryall Prop          { Query True $2 }
 
 -- Agents and alternatives
 
@@ -124,6 +126,8 @@ data Prop = Union Prop Prop
          | Event
          deriving Show
 
+data Query = Query Bool Prop
+
 data EventSpec = EventSpec String Prop
      deriving Show
 
@@ -134,23 +138,29 @@ data ActionSpec = ActionSpec String Prop
 data AgentSpec = AgentSpec String [EventSpec]
      deriving Show
 
-parse :: String -> ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop)
+parse :: String -> ([[Char]],Prop,[ActionSpec],[AgentSpec],Query)
 parse = parseEpik . scanTokens
 
 
-goo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) -> [String]
+goo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Query) -> [String]
 goo (a,b,c,d,e) = fludefs a
 
-moo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) -> String
+moo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Query) -> String
 moo (a,b,c,d,e) = statedef0 b
 
-hoo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) -> [String]
-hoo (a,b,c,d,e) = (fludefs a) ++ (statedefs b) ++
+hoo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Query) -> [String]
+hoo (a,b,c,d,(Query False e)) = (fludefs a) ++ (statedefs b) ++
                   (map flu_redef a) ++ [(badpairdef a)] ++
                   (eventdefs c) ++ ["source kat.fst"] ++
                   (agentspecs2fst d) ++
                   ["echo " ++ prop2fst(e)] ++
                   ["regex " ++ prop2fst(e) ++ ";", "set print-space ON", "print random-words"]
+hoo (a,b,c,d,(Query True e)) = (fludefs a) ++ (statedefs b) ++
+                  (map flu_redef a) ++ [(badpairdef a)] ++
+                  (eventdefs c) ++ ["source kat.fst"] ++
+                  (agentspecs2fst d) ++
+                  ["echo " ++ prop2fst(e)] ++
+                  ["regex " ++ prop2fst(e) ++ ";", "set print-space ON", "print words"]                  
                   
 
 escapescore:: String -> String

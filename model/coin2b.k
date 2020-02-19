@@ -42,4 +42,4 @@ agent bob =
  (peek_bob_H2 -> peek_bob_H2)
  (peek_bob_T2 -> peek_bob_T2)
 
-query [bob](_; _; peek_amy_T1; peek_amy_T2)
+queryall [bob](_; _; peek_amy_T1; peek_amy_T2)
