@@ -42,22 +42,4 @@ agent bob =
  (peek_bob_H2 -> peek_bob_H2)
  (peek_bob_T2 -> peek_bob_T2)
 
-query bob(peek_bob_T2 ; peek_amy_T2)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+query <amy>([bob](peek_bob_T2 ; peek_amy_T2))

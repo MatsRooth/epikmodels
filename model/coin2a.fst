@@ -27,6 +27,8 @@ define Event [announce%_H1 | announce%_T1 | announce%_H2 | announce%_T2 | peek%_
 source kat.fst
 define amy RelKst([[announce%_H1 .o. [Event .x. Event] .o. announce%_H1] | [[announce%_T1 .o. [Event .x. Event] .o. announce%_T1] | [[announce%_H2 .o. [Event .x. Event] .o. announce%_H2] | [[announce%_T2 .o. [Event .x. Event] .o. announce%_T2] | [[peek%_amy%_H1 .o. [Event .x. Event] .o. peek%_amy%_H1] | [[peek%_amy%_T1 .o. [Event .x. Event] .o. peek%_amy%_T1] | [[peek%_amy%_H2 .o. [Event .x. Event] .o. peek%_amy%_H2] | [[peek%_amy%_T2 .o. [Event .x. Event] .o. peek%_amy%_T2] | [[peek%_bob%_H1 .o. [Event .x. Event] .o. [peek%_bob%_H1 | peek%_bob%_T1]] | [[peek%_bob%_T1 .o. [Event .x. Event] .o. [peek%_bob%_H1 | peek%_bob%_T1]] | [[peek%_bob%_H2 .o. [Event .x. Event] .o. [peek%_bob%_H2 | peek%_bob%_T2]] | [peek%_bob%_T2 .o. [Event .x. Event] .o. [peek%_bob%_H2 | peek%_bob%_T2]]]]]]]]]]]]]);
 define bob RelKst([[announce%_H1 .o. [Event .x. Event] .o. announce%_H1] | [[announce%_T1 .o. [Event .x. Event] .o. announce%_T1] | [[announce%_H2 .o. [Event .x. Event] .o. announce%_H2] | [[announce%_T2 .o. [Event .x. Event] .o. announce%_T2] | [[peek%_amy%_H1 .o. [Event .x. Event] .o. [peek%_amy%_H1 | peek%_amy%_T1]] | [[peek%_amy%_T1 .o. [Event .x. Event] .o. [peek%_amy%_H1 | peek%_amy%_T1]] | [[peek%_amy%_H2 .o. [Event .x. Event] .o. [peek%_amy%_H2 | peek%_amy%_T2]] | [[peek%_amy%_T2 .o. [Event .x. Event] .o. [peek%_amy%_H2 | peek%_amy%_T2]] | [[peek%_bob%_H1 .o. [Event .x. Event] .o. peek%_bob%_H1] | [[peek%_bob%_T1 .o. [Event .x. Event] .o. peek%_bob%_T1] | [[peek%_bob%_H2 .o. [Event .x. Event] .o. peek%_bob%_H2] | [peek%_bob%_T2 .o. [Event .x. Event] .o. peek%_bob%_T2]]]]]]]]]]]]);
-regex Dia(bob,Cn(peek%_bob%_T2,peek%_amy%_T2));
+echo Dia(amy,Box(bob,Cn(peek%_bob%_T2,peek%_amy%_T2)))
+regex Dia(amy,Box(bob,Cn(peek%_bob%_T2,peek%_amy%_T2)));
+set print-space ON
 print random-words
 

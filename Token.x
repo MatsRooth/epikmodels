@@ -26,7 +26,11 @@ tokens :-
   \-                            { \s -> TokenMinus }
   \~                            { \s -> TokenComplement }
   \*                            { \s -> TokenStar }
-  \;                            { \s -> TokenProduct }
+  \;                            { \s -> TokenProduct } 
+  \[                            { \s -> TokenLSquareBracket }
+  \]                            { \s -> TokenRSquareBracket }
+  \<                            { \s -> TokenLAngleBracket }
+  \>                            { \s -> TokenRAngleBracket }  
   \(                            { \s -> TokenLParen }
   \)                            { \s -> TokenRParen }
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s }
@@ -53,7 +57,11 @@ data Token = TokenAssert
            | TokenProduct
            | TokenLParen
            | TokenRParen
-           deriving (Eq,Show)
+           | TokenLSquareBracket
+           | TokenRSquareBracket
+           | TokenLAngleBracket
+           | TokenRAngleBracket
+         deriving (Eq,Show)
 
 scanTokens = alexScanTokens
 

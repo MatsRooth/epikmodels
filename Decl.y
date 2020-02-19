@@ -38,7 +38,10 @@ import Data.List.Utils (replace)
     ';' { TokenProduct }
     '(' { TokenLParen }
     ')' { TokenRParen }
-
+    '[' { TokenLSquareBracket }
+    ']' { TokenRSquareBracket }
+    '<' { TokenLAngleBracket }
+    '>' { TokenRAngleBracket }
 -- Above, symbol covers events, tests, and agent names.
       
 -- Operator precedences.
@@ -72,6 +75,8 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | Prop ';' Prop            { Product $1 $3 }
     | '(' Prop ')'             { $2 }
     | symbol '(' Prop ')'      { Dia $1 $3 }
+    | '[' symbol ']' Prop      { Box $2 $4 }
+    | '<' symbol '>' Prop      { Dia $2 $4 }    
     | '~' Prop %prec NEG       { Complement $2 }
     | int                      { Int $1 }
     | test symbol              { Test $2 }
@@ -114,6 +119,7 @@ data Prop = Union Prop Prop
          | Ident String
          | Test String
          | Dia String Prop
+         | Box String Prop
          deriving Show
 
 data EventSpec = EventSpec String Prop
@@ -139,18 +145,20 @@ moo (a,b,c,d,e) = statedef0 b
 hoo :: ([[Char]],Prop,[ActionSpec],[AgentSpec],Prop) -> [String]
 hoo (a,b,c,d,e) = (fludefs a) ++ (statedefs b) ++
                   (map flu_redef a) ++ [(badpairdef a)] ++
-		  (eventdefs c) ++ ["source kat.fst"] ++
+                  (eventdefs c) ++ ["source kat.fst"] ++
                   (agentspecs2fst d) ++
-                  ["regex " ++ prop2fst(e) ++ ";", "print random-words"]
+                  ["echo " ++ prop2fst(e)] ++
+                  ["regex " ++ prop2fst(e) ++ ";", "set print-space ON", "print random-words"]
+                  
 
 escapescore:: String -> String
 escapescore y = replace "_" "%_" y
 
 main = do args <- getArgs
-       	  let kfile = (head args)
-	  s <- readFile kfile
-	  let s' = unlines(hoo(parse s))
-	  putStrLn s'
+          let kfile = (head args)
+          s <- readFile kfile
+          let s' = unlines(hoo(parse s))
+          putStrLn s'
 
 flu0 :: Int -> Int -> [String]
 flu0 n m
@@ -205,7 +213,7 @@ eventdef (ActionSpec n p) = unwords ["define",(escapescore n),(eventprop p)] ++ 
 
 eventdefs :: [ActionSpec] -> [String]
 eventdefs xs = (map (eventdef . substitute_ev) xs) ++
-	       ["define Event [" ++ (replace " " " | " (unwords (map event_name xs))) ++ "];"]
+               ["define Event [" ++ (replace " " " | " (unwords (map event_name xs))) ++ "];"]
 -- The above using string substitution is crude.
 
 substitute_ev0 :: String -> Prop -> Prop
@@ -271,8 +279,9 @@ prop2fst (Star p) =  "Kst(" ++ (prop2fst p) ++ ")"
 prop2fst (Product p q) = "Cn(" ++ (prop2fst p) ++ "," ++ (prop2fst q) ++ ")"
 prop2fst (Complement p) =  "Not(" ++ (prop2fst p) ++ ")"
 prop2fst (Dia x p) = "Dia(" ++ x ++ "," ++ (prop2fst p) ++ ")"
+prop2fst (Box x p) = "Box(" ++ x ++ "," ++ (prop2fst p) ++ ")"
 prop2fst (Test x) = (escapescore x)
 prop2fst (Ident x) = (escapescore x)
-								   
+                                                                   
 }
 
