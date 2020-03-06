@@ -92,6 +92,18 @@ define Know(R,F,X) Kw(WH(Cn(X,F),X),R,X);
 # Now Amy talks. She says yes if she knows whether she is muddy, and otherwise no.
 # This is an epistemic precondition for how he answers, and her answer is deterministic.
 define W3 Cn(Know(amy2,M1,W2),c1%_yes) | Cn([W2 - Know(amy2,M1,W2)],c1%_no);
+# 0 1 0 1 c1_look_m 0 1 1 0 c2_look_f 0 1 0 1 c1_no 0 1 1 0
+# 1 1 0 1 c1_look_m 1 1 1 0 c2_look_m 1 1 0 1 c1_no 1 1 1 0
+# 1 0 0 1 c1_look_f 1 0 1 0 c2_look_m 1 0 0 1 c1_yes 1 0 1 0
+
+# For comparison, here are the worlds where amy talks in an unconstrained way.
+define V3 Cn(W2,[c1%_yes | c1%_no]);
+# 1 1 0 1 c1_look_m 1 1 1 0 c2_look_m 1 1 0 1 c1_no 1 1 1 0
+# 1 1 0 1 c1_look_m 1 1 1 0 c2_look_m 1 1 0 1 c1_yes 1 1 1 0
+# 1 0 0 1 c1_look_f 1 0 1 0 c2_look_m 1 0 0 1 c1_no 1 0 1 0
+# 1 0 0 1 c1_look_f 1 0 1 0 c2_look_m 1 0 0 1 c1_yes 1 0 1 0
+# 0 1 0 1 c1_look_m 0 1 1 0 c2_look_f 0 1 0 1 c1_no 0 1 1 0
+# 0 1 0 1 c1_look_m 0 1 1 0 c2_look_f 0 1 0 1 c1_yes 0 1 1 0
 
 # Define amy3 and bob3.  It looks like we don't need this, it proceeds by restriction.
 define amy3 W3 .o. c1 .o. W3;
@@ -125,3 +137,15 @@ define W6 Cn(Know(bob5,M2,W5),c2%_yes) | Cn([W5 - Know(bob5,M2,W5)],c2%_no);
 # 1 1 0 1 c1_look_m 1 1 1 0 c2_look_m 1 1 0 1 c1_no 1 1 1 0 c2_yes 1 1 0 1 c1_no 1 1 1 0 c2_yes 1 1 0 1
 # 1 0 0 1 c1_look_f 1 0 1 0 c2_look_m 1 0 0 1 c1_yes 1 0 1 0 c2_yes 1 0 0 1 c1_yes 1 0 1 0 c2_yes 1 0 0 1
 # 0 1 0 1 c1_look_m 0 1 1 0 c2_look_f 0 1 0 1 c1_no 0 1 1 0 c2_yes 0 1 0 1 c1_no 0 1 1 0 c2_yes 0 1 0 1
+
+# Complement in St, e.g. Complement(M1).
+define Complement(F) St - F;
+
+# World relation which at the end has fluent F on one side and Complement(F) on the other side,
+# i.e. the base and alternative disagree on F. 
+# e.g. MismatchedWorld(M1) has the base and the alternative disagreeing on Amy's muddiness.
+define MismatchedWorld(F) Cnr(RelKst(Event .x. Event),[[F .x. Complement(F)] | [Complement(F) .x. F]]);
+
+# Relation that holds between states that are mismatched for F.
+# There is F on one side and Complement(F) on the other.
+define MismatchedFluent(F) [F .x. Complement(F)] | [Complement(F) .x. F];

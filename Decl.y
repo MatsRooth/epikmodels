@@ -47,11 +47,12 @@ import Data.List.Utils (replace)
 -- Above, symbol covers events, tests, and agent names.
       
 -- Operator precedences.
-%right in
-%nonassoc '>' '<'
-%left '+' '-' '&'
-%left '*' '/'
-%left NEG
+%left '+' '-'
+%left '&'
+%left '*'
+%nonassoc '~'
+%nonassoc test
+%nonassoc '>' '<' '[' ']'
 
 %%
 -- Productions, with constructors for abstract syntax in curly brackets.
@@ -80,7 +81,7 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | symbol '(' Prop ')'      { Dia $1 $3 }
     | '[' symbol ']' Prop      { Box $2 $4 }
     | '<' symbol '>' Prop      { Dia $2 $4 }    
-    | '~' Prop %prec NEG       { Complement $2 }
+    | '~' Prop                 { Complement $2 }
     | test symbol              { Test $2 }
     | symbol                   { Ident $1 }
 
@@ -232,6 +233,7 @@ substitute_ev0 :: String -> Prop -> Prop
 substitute_ev0 x (Product p q) = (Product (substitute_ev0 x p) (substitute_ev0 x q))
 substitute_ev0 x (Union p q) = (Union (substitute_ev0 x p) (substitute_ev0 x q))
 substitute_ev0 x (Intersection p q) = (Intersection (substitute_ev0 x p) (substitute_ev0 x q))
+substitute_ev0 x (Complement p) = (Complement (substitute_ev0 x p))
 substitute_ev0 x (Ident "Ev") = (Ident x)
 substitute_ev0 y (Ident z) = (Ident z)
 substitute_ev0 y (Test z) = (Test z)
@@ -262,6 +264,8 @@ eventprop (Test x) = x
 eventprop (Product x y) = "[" ++ (eventprop x) ++ " " ++ (eventprop y) ++ "]"
 eventprop (Union x y) = "[" ++ (eventprop x) ++ " | " ++ (eventprop y) ++ "]"
 eventprop (Intersection x y) = "[" ++ (eventprop x) ++ " & " ++ (eventprop y) ++ "]"
+-- This assumes that what is being complemented is a test
+eventprop (Complement x) = "[St - " ++ (eventprop x) ++ "]"
 
 -- Consider whether the Event .x. Event part could be elided from the relation composition.
 eventspec2fst :: EventSpec -> String
