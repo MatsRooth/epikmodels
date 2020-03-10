@@ -1,4 +1,4 @@
-source muddy2d.fst
+source muddy2dB.fst
 source whether.fst
 
 define amylook [amy%_look%_m | amy%_look%_f];
@@ -71,9 +71,6 @@ define W6 Cn(W5,bobsay);
 define amy6 W6 .o. amy .o. W6;
 define bob6 W6 .o. bob .o. W6;
 
-regex W6;
-print words
-
 # Amy reflects. This is expressed with a test update isomorphic to the one that
 # produced W3.
 # Reflecting lets her draw conclusions from what Bob said.
@@ -97,3 +94,10 @@ define bob8 W8 .o. bob .o. W8;
 # In the worlds of W8, amy and bob have identified their worlds. The relations amy8 and bob8 are identity relations.
 # This is shown by [amy8 - W8] and [bob8 - W8] being empty.
 
+# regex bob8 - W8;
+# 2.2 Kb. 1 state, 0 arcs, 0 paths.
+# regex amy8 - W8;
+# 2.2 Kb. 1 state, 0 arcs, 0 paths.
+
+regex W8;
+print words

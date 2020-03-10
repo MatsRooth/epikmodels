@@ -43,6 +43,7 @@ define S3 MA & MB;       # 11
 # bob_loo_1 or bob_loo_0, so it should not change the P vector on the base side.
 # This is indicating that the P-vectors are not going do not the Kripke relations,
 # even though they encode some of the same information.
+# Or maybe it indicates we should have a separate vector (a Q-vector) for Bob.
 
 ########################
 # This is the old definition of amy_loo_1, focusing on amy.
