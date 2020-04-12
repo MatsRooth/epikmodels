@@ -12,6 +12,9 @@ tokens :-
   $white+                       ;
   "--".*                        ;
   assert                        { \s -> TokenAssert }
+  true                          { \s -> TokenTrue }
+  constant                      { \s -> TokenConstant }
+  zero                          { \s -> TokenZero }
   test                          { \s -> TokenTest }
   agent                         { \s -> TokenAgent }
   action                        { \s -> TokenAction }
@@ -48,6 +51,9 @@ data Token = TokenAssert
            | TokenId
            | TokenWorld
            | TokenTest
+           | TokenTrue
+           | TokenConstant
+           | TokenZero
            | TokenArrow
            | TokenInt Int
            | TokenSym String

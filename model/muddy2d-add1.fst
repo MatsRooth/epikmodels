@@ -1,12 +1,12 @@
-source muddy2dB.fst
+source muddy2d.fst
 source whether.fst
 
-define amylook [amy%_look%_m | amy%_look%_f];
-define boblook [bob%_look%_m | bob%_look%_f];
-define amyreflect [amy%_rfl%_O | amy%_rfl%_1];
-define bobreflect [bob%_rfl%_O | bob%_rfl%_1];
-define amysay [amy%_say%_O | amy%_say%_1];
-define bobsay [bob%_say%_O | bob%_say%_1];
+define amylook [al1 | al0];
+define boblook [bl1 | bl0];
+define amyreflect [ar0 | ar1];
+define bobreflect [br0 | br1];
+define amysay [as0 | as1];
+define bobsay [bs0 | bs1];
 
 define W0 Nst(WA) & Nst(WB);
 # 0 1 0 0
@@ -35,23 +35,15 @@ define bob2 W2 .o. bob .o. W2;
 # Whether Amy and Bob look at mud or flesh is determined by the state.
 # There is no change yet in the whether bits.
 
-define dontknow(W,R,F) W & [Cnr(R,[St .x. F]).u] & [Cnr(R,[St .x. Nst(F)]).u];
-
-define doknow(W,R,F) W - dontknow(W,R,F);
-
-define testdo(W,R,F,A1,A2) Cn(doknow(W,R,F),A1) | Cn(dontknow(W,R,F),A2); 
-
-# regex testdo(W2,amy2,MA,amy%_rfl%_1,amy%_rfl%_O);
-
 # Amy reflects. This should set her whether bit.
 
-define W3 testdo(W2,amy2,MA,amy%_rfl%_1,amy%_rfl%_O);
+define W3 testdo(W2,amy2,MA,ar1,ar0);
 define amy3 W3 .o. amy .o. W3;
 define bob3 W3 .o. bob .o. W3;
 
 # Bob reflects. In W4, Amy whether bit (the third bit WA), and Bob's (the fourth
 # bit WB) are set as desired.
-define W4 testdo(W3,bob3,MB,bob%_rfl%_1,bob%_rfl%_O);
+define W4 testdo(W3,bob3,MB,br1,br0);
 # 1 1 0 0 amy_look_m 1 1 0 0 bob_look_m 1 1 0 0 amy_rfl_O 1 1 0 0 bob_rfl_O 1 1 0 0
 # 1 0 0 0 amy_look_f 1 0 0 0 bob_look_m 1 0 0 0 amy_rfl_1 1 0 1 0 bob_rfl_O 1 0 1 0
 # 0 1 0 0 amy_look_m 0 1 0 0 bob_look_f 0 1 0 0 amy_rfl_O 0 1 0 0 bob_rfl_1 0 1 0 1
@@ -74,7 +66,7 @@ define bob6 W6 .o. bob .o. W6;
 # Amy reflects. This is expressed with a test update isomorphic to the one that
 # produced W3.
 # Reflecting lets her draw conclusions from what Bob said.
-define W7 testdo(W6,amy7,MA,amy%_rfl%_1,amy%_rfl%_O);
+define W7 testdo(W6,amy7,MA,ar1,ar0);
 
 
 # Amy has identified here world in each world of W7. This is verified by subtracting off the identity relation.
@@ -84,7 +76,7 @@ define amy7 W7 .o. amy .o. W7;
 define bob7 W7 .o. bob .o. W7;
 
 # Bob reflects.
-define W8 testdo(W7,bob7,MB,bob%_rfl%_1,bob%_rfl%_O);
+define W8 testdo(W7,bob7,MB,br1,br0);
 # 1 1 0 0 amy_look_m 1 1 0 0 bob_look_m 1 1 0 0 amy_rfl_O 1 1 0 0 bob_rfl_O 1 1 0 0 amy_say_O 1 1 0 0 bob_say_O 1 1 0 0 amy_rfl_1 1 1 1 0 bob_rfl_1 1 1 1 1
 # 1 0 0 0 amy_look_f 1 0 0 0 bob_look_m 1 0 0 0 amy_rfl_1 1 0 1 0 bob_rfl_O 1 0 1 0 amy_say_1 1 0 1 0 bob_say_O 1 0 1 0 amy_rfl_1 1 0 1 0 bob_rfl_1 1 0 1 1
 # 0 1 0 0 amy_look_m 0 1 0 0 bob_look_f 0 1 0 0 amy_rfl_O 0 1 0 0 bob_rfl_1 0 1 0 1 amy_say_O 0 1 0 1 bob_say_1 0 1 0 1 amy_rfl_1 0 1 1 1 bob_rfl_1 0 1 1 1
@@ -101,3 +93,4 @@ define bob8 W8 .o. bob .o. W8;
 
 regex W8;
 print words
+

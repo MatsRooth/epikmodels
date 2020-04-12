@@ -12,3 +12,8 @@ define Kw(Q,R,X) X - [[R.i .o. Q .o. R] & X];
 # Agent R knows fluent F in space of worlds X.
 define Know(R,F,X) Kw(WH(Cn(X,F),X),R,X);
 
+define dontknow(W,R,F) W & [Cnr(R,[St .x. F]).u] & [Cnr(R,[St .x. Nst(F)]).u];
+
+define doknow(W,R,F) W - dontknow(W,R,F);
+
+define testdo(W,R,F,A1,A2) Cn(doknow(W,R,F),A1) | Cn(dontknow(W,R,F),A2);

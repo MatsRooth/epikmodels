@@ -20,6 +20,9 @@ import Data.List.Utils (replace)
 -- The guys in the curly brackets correspond to the kinds of tokens.
 %token
     test  { TokenTest }
+    constant  { TokenConstant }
+    zero  { TokenZero }
+    tru   { TokenTrue }
     world  { TokenWorld }
     agent  { TokenAgent }
     action  { TokenAction }
@@ -50,8 +53,8 @@ import Data.List.Utils (replace)
 %left '+' '-'
 %left '&'
 %left '*'
-%nonassoc '~'
 %nonassoc test
+%nonassoc '~'
 %nonassoc '>' '<' '[' ']'
 
 %%
@@ -83,8 +86,11 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | '<' symbol '>' Prop      { Dia $2 $4 }    
     | '~' Prop                 { Complement $2 }
     | test symbol              { Test $2 }
+    | constant symbol          { Constant $2 }
+    | zero symbol              { Zero $2 }
     | symbol                   { Ident $1 }
-
+    | '~' test symbol          { StateComplement (Test $3) }
+    
 -- Query
 Query : query Prop             { Query False $2 }
 Query : queryall Prop          { Query True $2 }
@@ -118,10 +124,14 @@ data Prop = Union Prop Prop
          | Star Prop
          | Product Prop Prop
          | Complement Prop
+         | StateComplement Prop
          | Brack Prop
          | Int Int
          | Ident String
+         | NegatedTest String
          | Test String
+         | Constant String
+         | Zero String
          | Dia String Prop
          | Box String Prop
          | Event
@@ -234,9 +244,13 @@ substitute_ev0 x (Product p q) = (Product (substitute_ev0 x p) (substitute_ev0 x
 substitute_ev0 x (Union p q) = (Union (substitute_ev0 x p) (substitute_ev0 x q))
 substitute_ev0 x (Intersection p q) = (Intersection (substitute_ev0 x p) (substitute_ev0 x q))
 substitute_ev0 x (Complement p) = (Complement (substitute_ev0 x p))
+substitute_ev0 x (StateComplement p) = (StateComplement (substitute_ev0 x p))
 substitute_ev0 x (Ident "Ev") = (Ident x)
 substitute_ev0 y (Ident z) = (Ident z)
 substitute_ev0 y (Test z) = (Test z)
+substitute_ev0 y (NegatedTest z) = (NegatedTest z)	    
+substitute_ev0 x (Constant y) = (Constant y)
+substitute_ev0 x (Zero y) = (Zero y)
 
 substitute_ev :: ActionSpec -> ActionSpec
 substitute_ev (ActionSpec x p) = (ActionSpec x (substitute_ev0 x p))
@@ -256,8 +270,7 @@ badpairdef :: [String] -> String
 badpairdef xs = "define UnequalStPair " ++ (badpair1 xs) ++ ";"
 
 
--- "[[" ++ (escapescore x) ++ " " ++ (escapescore x) ++ "] | [Nst(" ++ x ++ ") Nst(" ++ x ++ ")]]"
-
+-- This maps a Prop to an fst string, in the context of defining an event.
 eventprop :: Prop -> String
 eventprop (Ident x) = (escapescore x)
 eventprop (Test x) = x
@@ -265,7 +278,11 @@ eventprop (Product x y) = "[" ++ (eventprop x) ++ " " ++ (eventprop y) ++ "]"
 eventprop (Union x y) = "[" ++ (eventprop x) ++ " | " ++ (eventprop y) ++ "]"
 eventprop (Intersection x y) = "[" ++ (eventprop x) ++ " & " ++ (eventprop y) ++ "]"
 -- This assumes that what is being complemented is a test
-eventprop (Complement x) = "[St - " ++ (eventprop x) ++ "]"
+eventprop (Complement x) = "Nst(" ++ (eventprop x) ++ ")"
+eventprop (StateComplement x) = "Nst(" ++ (eventprop x) ++ ")"
+eventprop (NegatedTest x) = "Nst(" ++ x ++ ")"	    
+eventprop (Constant x) =  "[[" ++ x ++ " ? " ++ x ++ "] | [Nst(" ++ x ++ ") ? Nst(" ++ x ++ ")]]"
+eventprop (Zero x) =  "[[" ++ x ++ " ? Nst(" ++ x ++ ")] | [Nst(" ++ x ++ ") ? Nst(" ++ x ++ ")]]"
 
 -- Consider whether the Event .x. Event part could be elided from the relation composition.
 eventspec2fst :: EventSpec -> String
@@ -294,6 +311,8 @@ prop2fst (Minus p q) = bracket((prop2fst p) ++ " - " ++ (prop2fst q))
 prop2fst (Star p) =  "Kst(" ++ (prop2fst p) ++ ")"
 prop2fst (Product p q) = "Cn(" ++ (prop2fst p) ++ "," ++ (prop2fst q) ++ ")"
 prop2fst (Complement p) =  "Not(" ++ (prop2fst p) ++ ")"
+prop2fst (StateComplement p) =  "Nst(" ++ (prop2fst p) ++ ")"
+prop2fst (NegatedTest x) =  "Nst(" ++ (escapescore x) ++ ")"
 prop2fst (Dia x p) = "Dia(" ++ x ++ "," ++ (prop2fst p) ++ ")"
 prop2fst (Box x p) = "Box(" ++ x ++ "," ++ (prop2fst p) ++ ")"
 prop2fst (Test x) = (escapescore x)

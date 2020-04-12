@@ -7,19 +7,19 @@ define Nst(X) [St - X];
 define MB St & MB;
 define MA St & MA;
 define UnequalStPair [MB Nst(MB)] | [Nst(MB) MB] | [MA Nst(MA)] | [Nst(MA) MA];
-define amy%_say%_1 [[[[MA amy%_say%_1] MA] | [[[St - MA] amy%_say%_1] [St - MA]]] & [[[MB amy%_say%_1] MB] | [[[St - MB] amy%_say%_1] [St - MB]]]];
-define amy%_say%_O [[[[MA amy%_say%_O] MA] | [[[St - MA] amy%_say%_O] [St - MA]]] & [[[MB amy%_say%_O] MB] | [[[St - MB] amy%_say%_O] [St - MB]]]];
-define bob%_say%_1 [[[[MA bob%_say%_1] MA] | [[[St - MA] bob%_say%_1] [St - MA]]] & [[[MB bob%_say%_1] MB] | [[[St - MB] bob%_say%_1] [St - MB]]]];
-define bob%_say%_O [[[[MA bob%_say%_O] MA] | [[[St - MA] bob%_say%_O] [St - MA]]] & [[[MB bob%_say%_O] MB] | [[[St - MB] bob%_say%_O] [St - MB]]]];
-define amy%_loo%_1 [[[[MA amy%_loo%_1] MA] | [[[St - MA] amy%_loo%_1] [St - MA]]] & [[MB amy%_loo%_1] MB]];
-define amy%_loo%_O [[[[MA amy%_loo%_O] MA] | [[[St - MA] amy%_loo%_O] [St - MA]]] & [[[St - MB] amy%_loo%_O] [St - MB]]];
-define bob%_loo%_1 [[[MA bob%_loo%_1] MA] & [[[MB bob%_loo%_1] MB] | [[[St - MB] bob%_loo%_1] [St - MB]]]];
-define bob%_loo%_O [[[[St - MA] bob%_loo%_O] [St - MA]] & [[[MB bob%_loo%_O] MB] | [[[St - MB] bob%_loo%_O] [St - MB]]]];
-define Event [amy%_say%_1 | amy%_say%_O | bob%_say%_1 | bob%_say%_O | amy%_loo%_1 | amy%_loo%_O | bob%_loo%_1 | bob%_loo%_O];
+define as1 [[[[MA as1] MA] | [[Nst(MA) as1] Nst(MA)]] & [[[MB as1] MB] | [[Nst(MB) as1] Nst(MB)]]];
+define as0 [[[[MA as0] MA] | [[Nst(MA) as0] Nst(MA)]] & [[[MB as0] MB] | [[Nst(MB) as0] Nst(MB)]]];
+define bs1 [[[[MA bs1] MA] | [[Nst(MA) bs1] Nst(MA)]] & [[[MB bs1] MB] | [[Nst(MB) bs1] Nst(MB)]]];
+define bs0 [[[[MA bs0] MA] | [[Nst(MA) bs0] Nst(MA)]] & [[[MB bs0] MB] | [[Nst(MB) bs0] Nst(MB)]]];
+define al1 [[[[MA al1] MA] | [[Nst(MA) al1] Nst(MA)]] & [[MB al1] MB]];
+define al0 [[[[MA al0] MA] | [[Nst(MA) al0] Nst(MA)]] & [[Nst(MB) al0] Nst(MB)]];
+define bl1 [[[MA bl1] MA] & [[[MB bl1] MB] | [[Nst(MB) bl1] Nst(MB)]]];
+define bl0 [[[Nst(MA) bl0] Nst(MA)] & [[[MB bl0] MB] | [[Nst(MB) bl0] Nst(MB)]]];
+define Event [as1 | as0 | bs1 | bs0 | al1 | al0 | bl1 | bl0];
 source kat.fst
-define amy RelKst([[amy%_say%_1 .o. [Event .x. Event] .o. amy%_say%_1] | [[amy%_say%_O .o. [Event .x. Event] .o. amy%_say%_O] | [[amy%_loo%_1 .o. [Event .x. Event] .o. amy%_loo%_1] | [[amy%_loo%_O .o. [Event .x. Event] .o. amy%_loo%_O] | [[bob%_say%_1 .o. [Event .x. Event] .o. bob%_say%_1] | [[bob%_say%_O .o. [Event .x. Event] .o. bob%_say%_O] | [[bob%_loo%_1 .o. [Event .x. Event] .o. [bob%_loo%_1 | bob%_loo%_O]] | [bob%_loo%_O .o. [Event .x. Event] .o. [bob%_loo%_1 | bob%_loo%_O]]]]]]]]]);
-define bob RelKst([[amy%_say%_1 .o. [Event .x. Event] .o. amy%_say%_1] | [[amy%_say%_O .o. [Event .x. Event] .o. amy%_say%_O] | [[amy%_loo%_1 .o. [Event .x. Event] .o. [amy%_loo%_1 | amy%_loo%_O]] | [[amy%_loo%_O .o. [Event .x. Event] .o. [amy%_loo%_1 | amy%_loo%_O]] | [[bob%_say%_1 .o. [Event .x. Event] .o. bob%_say%_1] | [[bob%_say%_O .o. [Event .x. Event] .o. bob%_say%_O] | [[bob%_loo%_1 .o. [Event .x. Event] .o. bob%_loo%_1] | [bob%_loo%_O .o. [Event .x. Event] .o. bob%_loo%_O]]]]]]]]);
-regex Cn([amy%_loo%_1 | amy%_loo%_O],[bob%_loo%_1 | bob%_loo%_O]);
+define amy RelKst([[as1 .o. [Event .x. Event] .o. as1] | [[as0 .o. [Event .x. Event] .o. as0] | [[al1 .o. [Event .x. Event] .o. al1] | [[al0 .o. [Event .x. Event] .o. al0] | [[bs1 .o. [Event .x. Event] .o. bs1] | [[bs0 .o. [Event .x. Event] .o. bs0] | [[bl1 .o. [Event .x. Event] .o. [bl1 | bl0]] | [bl0 .o. [Event .x. Event] .o. [bl1 | bl0]]]]]]]]]);
+define bob RelKst([[as1 .o. [Event .x. Event] .o. as1] | [[as0 .o. [Event .x. Event] .o. as0] | [[al1 .o. [Event .x. Event] .o. [al1 | al0]] | [[al0 .o. [Event .x. Event] .o. [al1 | al0]] | [[bs1 .o. [Event .x. Event] .o. bs1] | [[bs0 .o. [Event .x. Event] .o. bs0] | [[bl1 .o. [Event .x. Event] .o. bl1] | [bl0 .o. [Event .x. Event] .o. bl0]]]]]]]]);
+regex Cn([al1 | al0],[bl1 | bl0]);
 set print-space ON
 print words
 

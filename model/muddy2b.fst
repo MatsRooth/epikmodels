@@ -23,7 +23,6 @@ define Event [c1%_yes | c1%_no | c2%_yes | c2%_no | c1%_look%_m | c1%_look%_f | 
 source kat.fst
 define c1 RelKst([[c1%_yes .o. [Event .x. Event] .o. c1%_yes] | [[c1%_no .o. [Event .x. Event] .o. c1%_no] | [[c1%_look%_m .o. [Event .x. Event] .o. c1%_look%_m] | [[c1%_look%_f .o. [Event .x. Event] .o. c1%_look%_f] | [[c2%_yes .o. [Event .x. Event] .o. c2%_yes] | [[c2%_no .o. [Event .x. Event] .o. c2%_no] | [[c2%_look%_m .o. [Event .x. Event] .o. [c2%_look%_m | c2%_look%_f]] | [c2%_look%_f .o. [Event .x. Event] .o. [c2%_look%_m | c2%_look%_f]]]]]]]]]);
 define c2 RelKst([[c1%_yes .o. [Event .x. Event] .o. c1%_yes] | [[c1%_no .o. [Event .x. Event] .o. c1%_no] | [[c1%_look%_m .o. [Event .x. Event] .o. [c1%_look%_m | c1%_look%_f]] | [[c1%_look%_f .o. [Event .x. Event] .o. [c1%_look%_m | c1%_look%_f]] | [[c2%_yes .o. [Event .x. Event] .o. c2%_yes] | [[c2%_no .o. [Event .x. Event] .o. c2%_no] | [[c2%_look%_m .o. [Event .x. Event] .o. c2%_look%_m] | [c2%_look%_f .o. [Event .x. Event] .o. c2%_look%_f]]]]]]]]);
-echo Cn(L2,Cn([c1%_look%_m | c1%_look%_f],[c2%_look%_m | c2%_look%_f]))
 regex Cn(L2,Cn([c1%_look%_m | c1%_look%_f],[c2%_look%_m | c2%_look%_f]));
 set print-space ON
 print words
