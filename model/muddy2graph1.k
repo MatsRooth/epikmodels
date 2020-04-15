@@ -128,6 +128,22 @@ action br0 = (constant MB) & (constant MA) &
    ((postzero MA) & (postone MB) & (postzero Rb2)) +
    ((postone MA) & (postone MB) & (postzero Rb3)))
 
+-- Saying actions
+-- Assume Amy edges are constant when Amy speaks.
+-- Bob edges should be cut if Amy says different things at the vertices. This requires
+-- looking at the Ra fluents.
+action as1 = (constant MB) & (constant MA) & 
+   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
+   (constant Ea12) & (constant Ea23) & (constant Ea31) &
+   (((preone MA) & (prezero MB) & (preone Ra1)) +
+   ((prezero MA) & (preone MB) & (preone Ra2)) +
+   ((preone MA) & (preone MB) & (preone Ra3))) &
+  (((postone Eb12) & (preone Eb12) & (presame Ra1 Ra2)) + ((postzero Eb12) & (prezero Eb12)) + ((postzero Eb12) & (predifferent Ra1 Ra2))) &
+  (((postone Eb23) & (preone Eb23) & (presame Ra2 Ra3)) + ((postzero Eb23) & (prezero Eb23)) + ((postzero Eb23) & (predifferent Ra2 Ra3))) &
+  (((postone Eb31) & (preone Eb31) & (presame Ra3 Ra1)) + ((postzero Eb32) & (prezero Eb31)) + ((postzero Eb31) & (predifferent Ra3 Ra1))) 
+
+
+
 agent amy =
   (al1 -> al1)
   (al0 -> al0)
@@ -137,7 +153,9 @@ agent amy =
   (ar0 -> ar0)
   (br1 -> br1 + br0)
   (br0 -> br1 + br0)
-
+  (as1 -> as1)
+  (as0 -> as0)
+  
 agent bob =
   (al1 -> al1 + al0)
   (al0 -> al1 + al0)
@@ -147,6 +165,8 @@ agent bob =
   (ar0 -> ar1 + ar0)
   (br1 -> br1)
   (br0 -> br0)
+  (as1 -> as1)
+  (as0 -> as0)
 
 queryall al1
 

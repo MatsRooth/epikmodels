@@ -18,7 +18,9 @@ tokens :-
   postzero                      { \s -> TokenPostzero }
   postone                       { \s -> TokenPostone }
   prezero                       { \s -> TokenPrezero }
-  preone                        { \s -> TokenPreone }  
+  preone                        { \s -> TokenPreone }
+  presame                       { \s -> TokenPresame }
+  predifferent                  { \s -> TokenPredifferent }    
   zero                          { \s -> TokenZero }
   test                          { \s -> TokenTest }
   agent                         { \s -> TokenAgent }
@@ -62,7 +64,9 @@ data Token = TokenAssert
            | TokenPostzero
            | TokenPostone
            | TokenPrezero
-           | TokenPreone	   	   
+           | TokenPreone
+           | TokenPresame
+           | TokenPredifferent	   	   	   
            | TokenZero
            | TokenArrow
            | TokenInt Int

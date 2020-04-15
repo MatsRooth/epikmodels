@@ -25,7 +25,9 @@ import Data.List.Utils (replace)
     postzero  { TokenPostzero }
     postone   { TokenPostone }
     prezero   { TokenPrezero }
-    preone    { TokenPreone }    
+    preone    { TokenPreone }
+    presame    { TokenPresame }
+    predifferent  { TokenPredifferent }        
     zero  { TokenZero }
     world  { TokenWorld }
     agent  { TokenAgent }
@@ -89,6 +91,10 @@ Prop : Prop '+' Prop           { Union $1 $3 }
 			               (Product (Product (StateComplement (Test $2)) (Ident "Ev")) (StateComplement (Test $2))))) }
     | constant symbol             { Union (Product (Product (Test $2) (Ident "Ev")) (Test $2))
 			               (Product (Product (StateComplement (Test $2)) (Ident "Ev")) (StateComplement (Test $2))) }
+    | presame symbol symbol   { Union (Intersection (Product (Product (Test $2) (Ident "Ev")) One) (Product (Product (Test $3) (Ident "Ev")) One))
+                                (Intersection (Product (Product (StateComplement (Test $2)) (Ident "Ev")) One) (Product (Product (StateComplement (Test $3)) (Ident "Ev")) One)) }
+    | predifferent symbol symbol   { Union (Intersection (Product (Product (Test $2) (Ident "Ev")) One) (Product (Product (StateComplement (Test $3)) (Ident "Ev")) One))
+                                (Intersection (Product (Product (StateComplement (Test $2)) (Ident "Ev")) One) (Product (Product (Test $3) (Ident "Ev")) One)) }
     | Prop '&' Prop            { Intersection $1 $3 }
     | Prop '-' Prop            { Minus $1 $3 }
     | Prop '*'                 { Star $1 }
