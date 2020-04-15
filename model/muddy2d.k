@@ -54,7 +54,6 @@ action bl1 = ((test MA);id;(test MA)) & (((test MA);id;(test MA))+((~(test MA));
 -- Bob sensing Nst(MA).
 action bl0 = ((~test MA);id;(~test MA)) & (((test MA);id;(test MA))+((~(test MA));id;(~(test MA)))) & (((test MB);id;(test MB))+((~(test MB));id;(~(test MB)))) & (((test WA);id;(test WA))+((~(test WA));id;(~(test WA)))) & (((test WB);id;(test WB))+((~(test WB));id;(~(test WB))))
 
-
 agent amy =
   (as1 -> as1)
   (as0 -> as0)

@@ -12,8 +12,13 @@ tokens :-
   $white+                       ;
   "--".*                        ;
   assert                        { \s -> TokenAssert }
-  true                          { \s -> TokenTrue }
+  one                           { \s -> TokenOne }
   constant                      { \s -> TokenConstant }
+  notup                         { \s -> TokenNotup }
+  postzero                      { \s -> TokenPostzero }
+  postone                       { \s -> TokenPostone }
+  prezero                       { \s -> TokenPrezero }
+  preone                        { \s -> TokenPreone }  
   zero                          { \s -> TokenZero }
   test                          { \s -> TokenTest }
   agent                         { \s -> TokenAgent }
@@ -51,8 +56,13 @@ data Token = TokenAssert
            | TokenId
            | TokenWorld
            | TokenTest
-           | TokenTrue
+           | TokenOne
            | TokenConstant
+           | TokenNotup
+           | TokenPostzero
+           | TokenPostone
+           | TokenPrezero
+           | TokenPreone	   	   
            | TokenZero
            | TokenArrow
            | TokenInt Int

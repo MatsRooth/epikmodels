@@ -13,10 +13,19 @@
 #  Event --Decorated events such as H1 peek%_amy%_H1.
 
 # Reduce a sequence of two tests to a single test, by deleting the second one.
-define Squash St -> 0 || St _;
+# define Squash St -> 0 || St _;
 
 # String that doesn't contain a non-matching test pair.
-define Wf0 ~[$ UnequalStPair];
+# define Wf0 ~[$ UnequalStPair];
+
+# With 14 fluents, this is not huge, but it takes 20 min to compile
+# 19.7 Mb. 192525 states, 565285 arcs, Circular.
+# Save time like this. It defines Wf0 and Squash.
+# The replacement gave odd results, try it again.
+echo Start load defined unequal14.net
+load defined model/unequal14.net
+
+echo finished load defined
 
 # KAT concatenation operation on sets of histories.
 # Concatenate in the string algebra, eliminate strings with
@@ -135,8 +144,8 @@ define Box(R,X) Not(Dia(R,Not(X)));
 #
 ########################################################
 
-define One Event;
-define Two Cn(One,Event);
-define Three Cn(Two,Event);
-define Four Cn(Three,Event);
-define Five Cn(Four,Event);
+# define One Event;
+# define Two Cn(One,Event);
+# define Three Cn(Two,Event);
+# define Four Cn(Three,Event);
+# define Five Cn(Four,Event);

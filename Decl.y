@@ -21,8 +21,12 @@ import Data.List.Utils (replace)
 %token
     test  { TokenTest }
     constant  { TokenConstant }
+    notup     { TokenNotup }
+    postzero  { TokenPostzero }
+    postone   { TokenPostone }
+    prezero   { TokenPrezero }
+    preone    { TokenPreone }    
     zero  { TokenZero }
-    tru   { TokenTrue }
     world  { TokenWorld }
     agent  { TokenAgent }
     action  { TokenAction }
@@ -76,6 +80,15 @@ World : world '=' Generator    { $3 }
 Prop : Prop '+' Prop           { Union $1 $3 }
     | '_'                      { Event }
     | Prop ';' id ';' Prop     { Product (Product $1 (Ident "Ev")) $5 }
+    | postzero symbol          { Product (Product One (Ident "Ev")) (StateComplement (Test $2)) }
+    | postone symbol           { Product (Product One (Ident "Ev")) (Test $2) }
+    | preone symbol            { Product (Product (Test $2) (Ident "Ev")) One }
+    | prezero symbol           { Product (Product (StateComplement (Test $2)) (Ident "Ev")) One }
+    | notup symbol             { (Union (Product (Product (Test $2) (Ident "Ev")) (Test $2))
+                                  (Union (Product (Product (Test $2) (Ident "Ev")) (StateComplement (Test $2)))
+			               (Product (Product (StateComplement (Test $2)) (Ident "Ev")) (StateComplement (Test $2))))) }
+    | constant symbol             { Union (Product (Product (Test $2) (Ident "Ev")) (Test $2))
+			               (Product (Product (StateComplement (Test $2)) (Ident "Ev")) (StateComplement (Test $2))) }
     | Prop '&' Prop            { Intersection $1 $3 }
     | Prop '-' Prop            { Minus $1 $3 }
     | Prop '*'                 { Star $1 }
@@ -86,7 +99,6 @@ Prop : Prop '+' Prop           { Union $1 $3 }
     | '<' symbol '>' Prop      { Dia $2 $4 }    
     | '~' Prop                 { Complement $2 }
     | test symbol              { Test $2 }
-    | constant symbol          { Constant $2 }
     | zero symbol              { Zero $2 }
     | symbol                   { Ident $1 }
     | '~' test symbol          { StateComplement (Test $3) }
@@ -114,7 +126,6 @@ Actions : Action             { [$1] }
 Action: action symbol '=' Prop { ActionSpec $2 $4}
 
 {
-
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
@@ -135,6 +146,7 @@ data Prop = Union Prop Prop
          | Dia String Prop
          | Box String Prop
          | Event
+         | One
          deriving Show
 
 data Query = Query Bool Prop
@@ -251,6 +263,7 @@ substitute_ev0 y (Test z) = (Test z)
 substitute_ev0 y (NegatedTest z) = (NegatedTest z)	    
 substitute_ev0 x (Constant y) = (Constant y)
 substitute_ev0 x (Zero y) = (Zero y)
+substitute_ev0 x One = One
 
 substitute_ev :: ActionSpec -> ActionSpec
 substitute_ev (ActionSpec x p) = (ActionSpec x (substitute_ev0 x p))
@@ -283,6 +296,7 @@ eventprop (StateComplement x) = "Nst(" ++ (eventprop x) ++ ")"
 eventprop (NegatedTest x) = "Nst(" ++ x ++ ")"	    
 eventprop (Constant x) =  "[[" ++ x ++ " ? " ++ x ++ "] | [Nst(" ++ x ++ ") ? Nst(" ++ x ++ ")]]"
 eventprop (Zero x) =  "[[" ++ x ++ " ? Nst(" ++ x ++ ")] | [Nst(" ++ x ++ ") ? Nst(" ++ x ++ ")]]"
+eventprop One = "St"
 
 -- Consider whether the Event .x. Event part could be elided from the relation composition.
 eventspec2fst :: EventSpec -> String
