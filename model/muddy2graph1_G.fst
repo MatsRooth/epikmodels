@@ -29,6 +29,14 @@ print words
 # Why? In world 01 at this stage, ar0 can not happen, because in that world, Amy has uniform alternatives on the question
 # whether she is muddy.
 
+define G4 Cn(G3,br0);
+regex G4;
+print words
+#     0 1 1 1 1 1 1 1 0 0 0 0 0 0
+# al0 0 1 0 1 0 1 1 1 0 0 0 0 0 0
+# bl1 0 1 0 1 0 0 0 1 0 0 0 0 0 0
+# ar1 0 1 0 1 0 0 0 1 1 0 0 0 0 0
+# br0 0 1 0 1 0 0 0 1 1 0 0 0 1 0
 
 
 

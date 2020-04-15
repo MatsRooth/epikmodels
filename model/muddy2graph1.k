@@ -65,10 +65,7 @@ action bl1 = (constant MB) & (constant MA) &
    (preone MA)
 
 -- Bob looks at 0 (Amy not muddy).
-action bl0 = (constant MB) & (constant MA) & 
-   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
-   (constant Ea12) & (constant Ea23) & (constant Ea31) & (postzero Eb12) & (postzero Eb23) & (constant Eb31) &
-   (prezero MA)
+
 
 -- Amy reflects 1. This sets the Ra fluents to 1 for worlds where the alternatives (as encoded in the graph) have
 -- a consistent answer to the question whether MA.
@@ -83,9 +80,8 @@ action ar1 = (constant MB) & (constant MA) &
    ((postzero MA) & (postone MB) & (postone Ra2)) +
    ((postone MA) & (postone MB) & (postone Ra3)))
 
-
--- Ea1 and Ea2 vary the values of MA
--- Ea3 has a constant value for MA
+-- Ea12 and Ea31 vary the values of MA
+-- Ea23 has a constant value for MA
 -- Ra1 should go to 1 if no varying Amy edge is incident on vertex 1, i.e. if Ea12 is not present.
 -- If Ea12 is present, it should go to 0. It amounts to this event description.
 -- (((prezero Ea12) & (postone Ra1)) + ((preone Ea12) & (postzero Ra1)))
@@ -108,6 +104,30 @@ action ar0 = (constant MB) & (constant MA) &
    ((postzero MA) & (postone MB) & (postzero Ra2)) +
    ((postone MA) & (postone MB) & (postzero Ra3)))
 
+-- Similarly for Bob.
+-- Eb12 and Eb31 vary the values of MB.
+-- Eb23 has a constant value for MB
+action br1 = (constant MB) & (constant MA) & 
+   (constant Eb12) & (constant Eb23) & (constant Eb31) & (constant Ea12) & (constant Ea23) & (constant Ea31) &
+   (constant Ra1) & (constant Ra2) & (constant Ra3) &
+   (((prezero Eb12) & (prezero Eb31) & (postone Rb1)) + (((preone Eb12) + (preone Eb31)) & (postzero Rb1))) &
+   (((prezero Eb12) & (postone Rb2)) + ((preone Eb12) & (postzero Rb2))) &
+   (((prezero Eb31) & (postone Ra3)) + ((preone Eb31) & (postzero Ra3))) &
+   (((postone MA) & (postzero MB) & (postone Rb1)) +
+   ((postzero MA) & (postone MB) & (postone Rb2)) +
+   ((postone MA) & (postone MB) & (postone Rb3)))
+
+
+action br0 = (constant MB) & (constant MA) & 
+   (constant Eb12) & (constant Eb23) & (constant Eb31) & (constant Ea12) & (constant Ea23) & (constant Ea31) &
+   (constant Ra1) & (constant Ra2) & (constant Ra3) &
+   (((prezero Eb12) & (prezero Eb31) & (postone Rb1)) + (((preone Eb12) + (preone Eb31)) & (postzero Rb1))) &
+   (((prezero Eb12) & (postone Rb2)) + ((preone Eb12) & (postzero Rb2))) &
+   (((prezero Eb31) & (postone Ra3)) + ((preone Eb31) & (postzero Rb3))) &
+   (((postone MA) & (postzero MB) & (postzero Rb1)) +
+   ((postzero MA) & (postone MB) & (postzero Rb2)) +
+   ((postone MA) & (postone MB) & (postzero Rb3)))
+
 agent amy =
   (al1 -> al1)
   (al0 -> al0)
@@ -128,6 +148,8 @@ agent bob =
   (br1 -> br1)
   (br0 -> br0)
 
-queryall  MA & Nst(MB) & Ea12 & Ea23 & Ea31 & Eb12 & Eb23 & Eb31 & Nst(Ra1) & Nst(Ra2) & Nst(Ra3) & Nst(Rb1) & Nst(Rb2) & Nst(Rb3);
+queryall al1
+
+
 
 
