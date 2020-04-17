@@ -1,3 +1,4 @@
+
 -- Encode a graph structure for two muddy children in fluents, by indicating the presence or absence of edges.
 -- Vertices (corresponding to combinations of MB and MA in earlier analysis)
 --  01 1 Amy is muddy, Bob is not muddy.
@@ -112,7 +113,7 @@ action br1 = (constant MB) & (constant MA) &
    (constant Ra1) & (constant Ra2) & (constant Ra3) &
    (((prezero Eb12) & (prezero Eb31) & (postone Rb1)) + (((preone Eb12) + (preone Eb31)) & (postzero Rb1))) &
    (((prezero Eb12) & (postone Rb2)) + ((preone Eb12) & (postzero Rb2))) &
-   (((prezero Eb31) & (postone Ra3)) + ((preone Eb31) & (postzero Ra3))) &
+   (((prezero Eb31) & (postone Rb3)) + ((preone Eb31) & (postzero Rb3))) &
    (((postone MA) & (postzero MB) & (postone Rb1)) +
    ((postzero MA) & (postone MB) & (postone Rb2)) +
    ((postone MA) & (postone MB) & (postone Rb3)))
@@ -123,7 +124,7 @@ action br0 = (constant MB) & (constant MA) &
    (constant Ra1) & (constant Ra2) & (constant Ra3) &
    (((prezero Eb12) & (prezero Eb31) & (postone Rb1)) + (((preone Eb12) + (preone Eb31)) & (postzero Rb1))) &
    (((prezero Eb12) & (postone Rb2)) + ((preone Eb12) & (postzero Rb2))) &
-   (((prezero Eb31) & (postone Ra3)) + ((preone Eb31) & (postzero Rb3))) &
+   (((prezero Eb31) & (postone Rb3)) + ((preone Eb31) & (postzero Rb3))) &
    (((postone MA) & (postzero MB) & (postzero Rb1)) +
    ((postzero MA) & (postone MB) & (postzero Rb2)) +
    ((postone MA) & (postone MB) & (postzero Rb3)))
@@ -135,14 +136,57 @@ action br0 = (constant MB) & (constant MA) &
 action as1 = (constant MB) & (constant MA) & 
    (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
    (constant Ea12) & (constant Ea23) & (constant Ea31) &
-   (((preone MA) & (prezero MB) & (preone Ra1)) +
-   ((prezero MA) & (preone MB) & (preone Ra2)) +
-   ((preone MA) & (preone MB) & (preone Ra3))) &
   (((postone Eb12) & (preone Eb12) & (presame Ra1 Ra2)) + ((postzero Eb12) & (prezero Eb12)) + ((postzero Eb12) & (predifferent Ra1 Ra2))) &
   (((postone Eb23) & (preone Eb23) & (presame Ra2 Ra3)) + ((postzero Eb23) & (prezero Eb23)) + ((postzero Eb23) & (predifferent Ra2 Ra3))) &
-  (((postone Eb31) & (preone Eb31) & (presame Ra3 Ra1)) + ((postzero Eb32) & (prezero Eb31)) + ((postzero Eb31) & (predifferent Ra3 Ra1))) 
+  (((postone Eb31) & (preone Eb31) & (presame Ra3 Ra1)) + ((postzero Eb32) & (prezero Eb31)) + ((postzero Eb31) & (predifferent Ra3 Ra1))) &
+   (((preone MA) & (prezero MB) & (preone Ra1)) +
+    ((prezero MA) & (preone MB) & (preone Ra2)) +
+    ((preone MA) & (preone MB) & (preone Ra3)))
+-- The last part identifes the base worlds in which as1 can happen.  
 
+-- Amy say no.
+action as0 = (constant MB) & (constant MA) & 
+   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
+   (constant Ea12) & (constant Ea23) & (constant Ea31) &
+  (((postone Eb12) & (preone Eb12) & (presame Ra1 Ra2)) + ((postzero Eb12) & (prezero Eb12)) + ((postzero Eb12) & (predifferent Ra1 Ra2))) &
+  (((postone Eb23) & (preone Eb23) & (presame Ra2 Ra3)) + ((postzero Eb23) & (prezero Eb23)) + ((postzero Eb23) & (predifferent Ra2 Ra3))) &
+  (((postone Eb31) & (preone Eb31) & (presame Ra3 Ra1)) + ((postzero Eb32) & (prezero Eb31)) + ((postzero Eb31) & (predifferent Ra3 Ra1))) &
+   (((preone MA) & (prezero MB) & (prezero Ra1)) +
+    ((prezero MA) & (preone MB) & (prezero Ra2)) +
+    ((preone MA) & (preone MB) & (prezero Ra3)))
+-- This differs from as1 only in the last three lines, which identify the base worlds wher as0 can happen.
 
+-- Bob saying actions.
+-- Assume Bob edges are constant.
+-- Amy edges should be cut if Bob says different things at the vertices. This requires
+-- looking at the Rb fluents.
+
+action bs1 = (constant MB) & (constant MA) & 
+   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
+   (constant Eb12) & (constant Eb23) & (constant Eb31) &
+  (((postone Ea12) & (preone Ea12) & (presame Rb1 Rb2)) + ((postzero Ea12) & (prezero Ea12)) + ((postzero Ea12) & (predifferent Rb1 Rb2))) &
+  (((postone Ea23) & (preone Ea23) & (presame Rb2 Rb3)) + ((postzero Ea23) & (prezero Ea23)) + ((postzero Ea23) & (predifferent Rb2 Rb3))) &
+  (((postone Ea31) & (preone Ea31) & (presame Rb3 Rb1)) + ((postzero Ea31) & (prezero Ea31)) + ((postzero Ea31) & (predifferent Rb3 Rb1))) &
+   (((preone MA) & (prezero MB) & (preone Rb1)) +
+    ((prezero MA) & (preone MB) & (preone Rb2)) +
+    ((preone MA) & (preone MB) & (preone Rb3)))
+
+-- This glosses the principle for updating Ea1.
+--   (((postone Ea12) & (preone Ea12) & (presame Rb1 Rb2)) Ea12 is in the out state if it was in the in state, 
+--                                                         and Bob is going to say the same thing in 1 and 2.
+--   ((postzero Ea12) & (prezero Ea12))                    Ea12 is not in the out state if it was not in the in state.
+--   ((postzero Ea12) & (predifferent Rb1 Rb2))) &         Ea12 is not in the out state if Bob is going to say different things
+--                                                         in 1 and 2.
+
+action bs0 = (constant MB) & (constant MA) & 
+   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
+   (constant Eb12) & (constant Eb23) & (constant Eb31) &
+  (((postone Ea12) & (preone Ea12) & (presame Rb1 Rb2)) + ((postzero Ea12) & (prezero Ea12)) + ((postzero Ea12) & (predifferent Rb1 Rb2))) &
+  (((postone Ea23) & (preone Ea23) & (presame Rb2 Rb3)) + ((postzero Ea23) & (prezero Ea23)) + ((postzero Ea23) & (predifferent Rb2 Rb3))) &
+  (((postone Ea31) & (preone Ea31) & (presame Rb3 Rb1)) + ((postzero Ea31) & (prezero Ea31)) + ((postzero Ea31) & (predifferent Rb3 Rb1))) &
+   (((preone MA) & (prezero MB) & (prezero Rb1)) +
+    ((prezero MA) & (preone MB) & (prezero Rb2)) +
+    ((preone MA) & (preone MB) & (prezero Rb3)))
 
 agent amy =
   (al1 -> al1)
@@ -155,6 +199,8 @@ agent amy =
   (br0 -> br1 + br0)
   (as1 -> as1)
   (as0 -> as0)
+  (bs1 -> bs1)
+  (bs0 -> bs0)
   
 agent bob =
   (al1 -> al1 + al0)
@@ -167,7 +213,9 @@ agent bob =
   (br0 -> br0)
   (as1 -> as1)
   (as0 -> as0)
-
+  (bs1 -> bs1)
+  (bs0 -> bs0)
+  
 queryall al1
 
 
