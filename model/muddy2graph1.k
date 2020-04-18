@@ -36,7 +36,7 @@ assert MB + MA
 -- postzero F
 -- prezero F
 
--- Foe all actions
+-- For all actions
 -- (constant MB) & (constant MA) & 
 -- (notup Ea12) & (notup Ea23) & (constant Ea31) & (constant Eb12) & (constant Eb23) & (constant Eb31) &
 -- (notdown Ra1) & (notdown Ra2) & (notdown Ra3) & (notdown Rb1) & (notdown Rb2) & (notdown Rb3)
@@ -66,7 +66,11 @@ action bl1 = (constant MB) & (constant MA) &
    (preone MA)
 
 -- Bob looks at 0 (Amy not muddy).
-
+action bl0 = (constant MB) & (constant MA) & 
+   (constant Ra1) & (constant Ra2) & (constant Ra3) & (constant Rb1) & (constant Rb2) & (constant Rb3) &
+   (constant Ea12) & (constant Ea23) & (constant Ea31) & (postzero Eb12) & (postzero Eb23) & (constant Eb31) &
+   (prezero MA)
+-- This differs just in MA. The action on the graph is the same.
 
 -- Amy reflects 1. This sets the Ra fluents to 1 for worlds where the alternatives (as encoded in the graph) have
 -- a consistent answer to the question whether MA.
