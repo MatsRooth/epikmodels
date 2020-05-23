@@ -4,7 +4,7 @@ import System.Environment
 
 main = do args <- getArgs
           let v = splitBitString (head args)
-          let tex = unlines (preamble ++ (n1 v) ++ (n2 v) ++ (n3 v) ++
+          let tex = unlines (preamble ++ (n1 v) ++ (n2 v) ++ (n3 v) ++ (n4 v) ++
                              (ea12 v) ++ (ea23 v) ++ (ea31 v) ++
                              (eb12 v) ++ (eb23 v) ++ (eb31 v) ++ postamble)
           putStrLn tex
@@ -56,7 +56,28 @@ n3 v = let nd = "\\node (3) at (270:3cm) "
            fi = (fill True True v)
            en = "{};"
        in [nd ++ sh ++ fi ++ en]
-          
+
+-- Node 4 is the bit vector label.
+n4 :: [Bool] -> [String]
+n4 v = let nd = "\\node (4) at (270:4cm) "
+           sh = "[rectangle, draw=white]"
+           en = "{" ++ (bitlabel v) ++ "};"
+       in [nd ++ sh ++ en]
+
+bitlabel0 :: [Bool] -> String
+bitlabel0 [] = []
+bitlabel0 (True : ts) = "1" ++ (bitlabel0 ts)
+bitlabel0 (False : ts) = "0" ++ (bitlabel0 ts)
+
+bitlabel :: [Bool] -> String
+bitlabel v = let
+               bl = (bitlabel0 v)
+             in [bl!!0,bl!!1] ++ "\\hspace{2pt}" ++
+                [bl!!2,bl!!3,bl!!4] ++ "\\hspace{2pt}" ++
+                [bl!!5,bl!!6,bl!!7] ++ "\\hspace{2pt}" ++
+                [bl!!8,bl!!9,bl!!10] ++ "\\hspace{2pt}" ++
+                [bl!!11,bl!!12,bl!!13]
+
 -- This is the fluent layout in muddy2graph1.k.
 -- world = MB + MA + Ea12 + Ea23 + Ea31 + Eb12 + Eb23 + Eb31 + Ra1 + Ra2 + Ra3 + Rb1 + Rb2 + Rb3
 

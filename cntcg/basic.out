@@ -1,0 +1,30 @@
+#unspecified
+#unspecified
+#unspecified
+(Processing:  (Amy doesnt know whether its heads))
+
+-------------------
+edge      : 134 Amy doesnt know whether its heads	(0 6)	t 
+semantics : (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))
+proofnet  : ((1 . t) (Amy (2 . e)) (doesnt (((2 . e) \ (1 . t)) / ((3 . e) \V (4 . t)))) (know (((5 . e) \V (6 . t)) /M (7 . t))) (whether (((((5 . e) \V (6 . t)) /M (7 . t)) \ ((3 . e) \V (4 . t))) / (8 . t))) (its ((8 . t) / (d \D (9 . t)))) (heads (d \D (9 . t))))
+derivation: ((L Amy) (doesnt ((L know) (whether (its heads)))))
+
+-------------------
+edge      : 166 Amy doesnt know whether its heads	(0 6)	t 
+semantics : (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))
+proofnet  : ((1 . t) (Amy (2 . e)) (doesnt (((2 . e) \ (1 . t)) / ((3 . e) \V (4 . t)))) (know (((5 . e) \V (6 . t)) /M (7 . t))) (whether (((((5 . e) \V (6 . t)) /M (7 . t)) \ ((3 . e) \V (4 . t))) / (8 . t))) (its ((9 . t) / (d \D (10 . t)))) (heads (d \D (10 . t))))
+derivation: ((L Amy) (doesnt ((L know) (whether (D (U (its heads)))))))
+
+-------------------
+edge      : 170 Amy doesnt know whether its heads	(0 6)	t 
+semantics : (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))
+proofnet  : ((1 . t) (Amy (2 . e)) (doesnt (((2 . e) \ (3 . t)) / ((4 . e) \V (5 . t)))) (know (((6 . e) \V (7 . t)) /M (8 . t))) (whether (((((6 . e) \V (7 . t)) /M (8 . t)) \ ((4 . e) \V (5 . t))) / (9 . t))) (its ((9 . t) / (d \D (10 . t)))) (heads (d \D (10 . t))))
+derivation: (D ((S (U (L Amy))) ((S (U doesnt)) (U ((L know) (whether (its heads)))))))
+
+-------------------
+edge      : 195 Amy doesnt know whether its heads	(0 6)	t 
+semantics : (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))
+proofnet  : ((1 . t) (Amy (2 . e)) (doesnt (((2 . e) \ (3 . t)) / ((4 . e) \V (5 . t)))) (know (((6 . e) \V (7 . t)) /M (8 . t))) (whether (((((6 . e) \V (7 . t)) /M (8 . t)) \ ((4 . e) \V (5 . t))) / (9 . t))) (its ((10 . t) / (d \D (11 . t)))) (heads (d \D (11 . t))))
+derivation: (D ((S (U (L Amy))) ((S (U doesnt)) ((S (U (L know))) ((S (U whether)) (U (D (U (its heads)))))))))
+255 edges -- Done parsing.
+#<output_port:stdout>
