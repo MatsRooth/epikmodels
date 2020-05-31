@@ -1,0 +1,172 @@
+\newcommand{\subheading}[1]{\noindent {\bf \large #1}}
+%%\raisebox{-.6ex}{\rm \tiny \scriptsize ordinary}}
+%labeled syntax brackets
+\newcommand{\npi}[2]{[\raisebox{-0.6ex}{\rm \tiny NP }#1]\raisebox{-0.6ex}{\tiny #2}}
+\newcommand{\dpi}[2]{[\raisebox{-0.6ex}{\rm \tiny DP }#1]\raisebox{-0.6ex}{\tiny #2}}
+\newcommand{\xpi}[2]{[\raisebox{-0.6ex}{\rm \tiny XP }#1]\raisebox{-0.6ex}{\tiny #2}}
+\newcommand{\xp}[1]{[\raisebox{-0.6ex}{\rm \tiny XP }#1]}
+\newcommand{\si}[2]{[\raisebox{-0.6ex}{\rm \tiny S
+}#1]\raisebox{-0.6ex}{\tiny #2}}
+\newcommand{\vpi}[2]{[\raisebox{-0.6ex}{\rm \tiny VP }#1]\raisebox{-0.6ex}{\tiny #2}}
+\newcommand{\np}[1]{[\raisebox{-0.6ex}{\rm \tiny NP}#1]}
+\newcommand{\detp}[1]{[\raisebox{-0.6ex}{\rm \tiny DP}#1]}
+\newcommand{\phr}[1]{[\raisebox{-0.6ex}{\rm \tiny ph}#1]}
+\newcommand{\s}[1]{[\raisebox{-0.6ex}{\rm \tiny S }#1]}
+\newcommand{\lb}[2]{[\raisebox{-0.6ex}{\rm \tiny #1 }#2]}
+\newcommand{\ip}[1]{[\raisebox{-0.6ex}{\rm \tiny IP }#1]}
+\newcommand{\discourse}[1]{[\raisebox{-0.6ex}{\rm \tiny D }#1]}
+\newcommand{\n}[1]{[\raisebox{-0.6ex}{\rm \tiny N }#1]}
+\newcommand{\vv}[1]{[\raisebox{-0.6ex}{\rm \tiny V }#1]}
+\newcommand{\p}[1]{[\raisebox{-0.6ex}{\rm \tiny P }#1]}
+\newcommand{\adj}[1]{[\raisebox{-0.6ex}{\rm \tiny A }#1]}
+\newcommand{\nbar}[1]{[\raisebox{-0.6ex}{\rm \tiny \nbarsymbol }#1]}
+\newcommand{\vbar}[1]{[\raisebox{-0.6ex}{\rm \tiny \vbarsymbol }#1]}
+\newcommand{\ibar}[1]{[\raisebox{-0.6ex}{\rm \tiny \ibarsymbol }#1]}
+\newcommand{\sbar}[1]{[\raisebox{-0.6ex}{{\rm \tiny{S'}}}#1]}
+\newcommand{\vp}[1]{[\raisebox{-0.6ex}{\rm \tiny VP}#1]}
+\newcommand{\pp}[1]{[\raisebox{-0.6ex}{\rm \tiny PP }#1]}
+\newcommand{\ei}[1]{e\raisebox{-0.6ex}{\tiny #1}}
+\newcommand{\tv}[1]{[\raisebox{-0.6ex}{\rm \tiny TV}#1]}
+\newcommand{\scriptP}[0]{{\cal P}}
+\newcommand{\pr}[0]{\bf \rm}
+\newcommand{\subF}[0]{\raisebox{-0.6ex}{\tiny F}}
+\newcommand{\sub}[1]{\raisebox{-0.6ex}{{\tiny{#1}}}}
+\newcommand{\up}[1]{\raisebox{1.2ex}{{\tiny{#1}}}}
+%temporal indices for Enc stuff  FIX THESE !!!!!!!!!!!! -- get rid of $
+\newcommand{\COMPi}[1]{COMP_{#1}}
+\newcommand{\PSTi}[1]{PST$_{#1}}
+\newcommand{\PRSi}[1]{PRS$_{#1}  }
+%right margin remarks for drafts
+\newcommand{\remark}[1]{\marginpar{\tiny \raggedright #1}}
+%lambda
+\newcommand{\lamb}[2]{$\lambda$#1#2}
+\newcommand{\Lamb}[2]{$\Lambda$#1#2}
+%examples
+\newcounter{exampleno}
+\newenvironment{example}%
+{\refstepcounter{exampleno} 
+ \begin{list}{}{\setlength{\leftmargin}{0.45in}
+                \setlength{\topsep}{0.1in}
+                \setlength{\partopsep}{0.0in}
+                \setlength{\itemsep}{0.0in}
+                \setlength{\labelwidth}{0.3in}
+                \setlength{\parsep}{0.0in}
+                \setlength{\labelsep}{0.1in}}
+ \item[(\theexampleno)\hfill]}%
+{\end{list}}
+\newenvironment{exampletree}%
+{\refstepcounter{exampleno} 
+ \begin{list}{}{\setlength{\leftmargin}{0.0in}
+                \setlength{\topsep}{0.1in}
+                \setlength{\partopsep}{0.0in}
+                \setlength{\itemsep}{0.0in}
+                \setlength{\labelwidth}{0.0in}
+                \setlength{\parsep}{0.0in}
+                \setlength{\labelsep}{0.1in}}
+ \item[(\theexampleno)\hfill]}%
+{\end{list}}
+\newenvironment{examples}%
+{\refstepcounter{exampleno} 
+ \begin{list}{}{\setlength{\leftmargin}{0.55in}
+                \setlength{\topsep}{0.1in}
+                \setlength{\partopsep}{0.0in}
+                \setlength{\itemsep}{0.0in}
+                \setlength{\labelwidth}{0.4in}
+                \setlength{\parsep}{0.0in}
+                \setlength{\labelsep}{0.1in}}}%
+{\end{list}}
+\newcommand{\itema}{ \item[(\theexampleno){\hfill}a.]}
+\newcommand{\itemb}{ \item[b.]}
+\newcommand{\itemc}{ \item[c.]}
+\newcommand{\itemd}{ \item[d.]}
+\newcommand{\iteme}{ \item[e.]}
+\newcommand{\itemf}{ \item[f.]}
+\newcommand{\itemg}{ \item[g.]}
+\newcommand{\itemh}{ \item[h.]}
+\newcommand{\ignore}[1]{}
+\newenvironment{sexp}{\ignore\{}{\}}
+% stuff for association with focus paper
+\newcommand{\focus}[1]{#1\raisebox{-.6ex}{\rm \scriptsize F}}
+\newcommand{\F}{\mbox{\raisebox{-.6ex}{{\rm\scriptsize{F}}}}}
+\newcommand{\T}{\mbox{\raisebox{-.6ex}{{\rm\scriptsize{T}}}}}
+\newcommand{\SOF}{\mbox{\raisebox{-.6ex}{{\rm\scriptsize{SOF}}}} }
+\newcommand{\down}{\mbox{\raisebox{.6ex}{$\scriptsize{\vee}$}}}
+%\newcommand{\semval}[1]{[\![#1]\!]\raisebox{0.8ex}{\rm \scriptsize ordinary}}
+\newcommand{\semval}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm \scriptsize o}}
+\newcommand{\semvaluf}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\scriptsize U,F}}
+\newcommand{\sem}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}}
+\newcommand{\focussem}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm \scriptsize f}}
+\newcommand{\semfocus}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm\scriptsize f}}
+\newcommand{\semtopic}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm\scriptsize t}}
+\newcommand{\semalt}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm\scriptsize a}}
+\newcommand{\semord}[1]{\mbox{[\hspace{-0.4ex}[}#1\mbox{]\hspace{-0.4ex}]}\raisebox{.8ex}{\rm\scriptsize o}}
+\newcommand{\nat}[0]{I\hspace{-0.7ex}N}
+\newcommand{\real}[0]{I\hspace{-0.7ex}R}
+\newcommand{\setabs}[2]{\left\{#1|#2\right\}}
+\newcommand{\pair}[2]{\left\langle#1,#2\right\rangle}
+\newcommand{\triple}[3]{\left\langle#1,#2,#3\right\rangle}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\tuple}[1]{\langle#1\rangle}
+\newcommand{\powerset}[1]{{\cal P}(#1)}
+\newcommand{\thereis}[2]{{\exists}#1\left[#2\right]}
+\newcommand{\some}[2]{{\exists}#1\left[#2\right]}
+\newcommand{\all}[2]{{\forall}#1\left[#2\right]}
+\newcommand{\element}[2]{#1 \epsilon #2 }
+\newcommand{\ifthen}[2]{\left[#1 \rightarrow #2\right]}
+\newcommand{\Prime}[1]{{\rm\bf{#1}}}
+\newcommand{\const}[1]{{\rm\bf#1}}
+\newcommand{\eqdef}[0]{{\stackrel{\rm def}{=}}}
+\newcommand{\StarPrime}[1]{\raisebox{-.6ex}{*}{\rm\bf#1}}
+\newcommand{\lam}[2]{\lambda#1\left[#2\right]}
+\newcommand{\lami}[2]{\lambda^{I}#1\left[#2\right]}
+%\mbox{$[\![$}
+%\mbox{$]\!]$}
+%%\newcommand{\tag}[1]{\label{#1} \marginpar{\raggedright \em #1}}
+%%\newcommand{\tag}[1]{\label{#1}}
+\newcommand{\exi}[2]{(\ref{#1}#2)} 
+\newcommand{\ex}[1]{(\ref{#1})} 
+\newcommand{\nbarsymbol}[0]{{{{\rm{N'}}}}}
+\newcommand{\vbarsymbol}[0]{{{{\rm{V'}}}}}
+\newcommand{\ibarsymbol}[0]{{I'}}
+\newcommand{\sbarsymbol}[0]{\mbox{\({\rm S}'\)}}
+
+\newcommand{\adjp}[1]{[\raisebox{-0.6ex}{\rm\tiny{ADJP}}#1]}
+\newcommand{\adv}[1]{[\raisebox{-0.6ex}{\rm\tiny{ADV}}#1]}
+\newcommand{\aux}[1]{[\raisebox{-0.6ex}{\rm\tiny{AUX}}#1]}
+\newcommand{\conjp}[1]{[\raisebox{-0.6ex}{\rm\tiny{CONJP}}#1]}
+\newcommand{\conj}[1]{[\raisebox{-0.6ex}{\rm\tiny{CONJ}}#1]}
+\newcommand{\dart}[1]{[\raisebox{-0.6ex}{\rm\tiny{DART}}#1]}
+\newcommand{\fin}[1]{[\raisebox{-0.6ex}{\rm\tiny{FIN}}#1]}
+\newcommand{\unattached}[1]{[\raisebox{-0.6ex}{\rm\tiny{?}}#1]}
+\newcommand{\iart}[1]{[\raisebox{-0.6ex}{\rm\tiny{IART}}#1]}
+\newcommand{\npl}[1]{[\raisebox{-0.6ex}{\rm\tiny{NPL}}#1]}
+\newcommand{\pnp}[1]{[\raisebox{-0.6ex}{\rm\tiny{PNP}}#1]}
+\newcommand{\prep}[1]{[\raisebox{-0.6ex}{\rm\tiny{P }}#1]}
+\newcommand{\pro}[1]{[\raisebox{-0.6ex}{\rm\tiny{PRO }}#1]}
+\newcommand{\tns}[1]{[\raisebox{-0.6ex}{\rm\tiny{TNS }}#1]}
+\newcommand{\ving}[1]{[\raisebox{-0.6ex}{\rm\tiny{VING }}#1]}
+\newcommand{\vpprt}[1]{[\raisebox{-0.6ex}{\rm\tiny{VPPRT }}#1]}
+\newcommand{\vpres}[1]{[\raisebox{-0.6ex}{\rm\tiny{VPRES }}#1]}
+\newcommand{\vpast}[1]{[\raisebox{-0.6ex}{\rm\tiny{VPAST }}#1]}
+
+\newcommand{\pw}[2]{{\sc#1}{---#2}}
+
+\newcommand{\ldq}[0]{\mbox{``}}
+\newcommand{\rdq}[0]{\mbox{''}}
+\newcommand{\notelement}[2]{\mbox{$#1\,\hspace{-1ex}\not
+    \makebox[-1pt]{}\epsilon\,#2$}}
+
+\newcommand{\wordtone}[2]{
+\begin{tabular}[t]{c}#1\\#2\end{tabular}
+}
+
+\newcommand{\boundary}{{\noindent...\hrulefill.....\hrulefill...}}
+\newcounter{Exampleno}
+\newenvironment{Example}[1]%
+{\vspace{18pt}\par\refstepcounter{Exampleno}\par\noindent%
+{\bf Example \theExampleno\hspace{0.5cm}#1\par}}{\qed\par\vspace{18pt}}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
