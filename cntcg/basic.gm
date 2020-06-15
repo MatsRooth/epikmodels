@@ -81,7 +81,7 @@
 ;; (parse '(Amy knows whether its heads))
 
 ;; (parse '(Amy doesnt know that its heads))
-(parse '(Amy doesnt know whether its heads))
+(parse '(Amy doesnt know whether Bob knows whether its heads))
 
 
 

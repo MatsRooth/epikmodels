@@ -40,7 +40,9 @@
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
 
-\title{Contstructive Epistemic Semantics in Guarded String Models}
+% This used to say Constructive ..., which is a better title.
+% Reserve that for a journal paper if we get to that.
+\title{Epistemic Semantics in Guarded String Models}
   
 \author{First Author \\
   Affiliation / Address line 1 \\
@@ -602,16 +604,18 @@ set difference in the string algebra.
 %Hi Sis!
 %\pagebreak
 
+
+\pagebreak
 \section{Syntax-semantics interface}
 An architecture of interpretation by transtlation is employed, where English
-sentences are mapped to terms in a logical language via an interpreted grammar, and
-these terms are intreted in a guarded string model as propositions. For the latter,
-there are options of translation into the finite state calculus, and representation
-in Haskell via lazy lists of guarded strings.
-
-The grammar is a semantically interpreted multi-modal categorial grammar, consisting
-of a lexicon of words, their categorial types, and interpretations in a logical
-lambda language.  \ex{phenomena1} lists and exemplifies phenomena that are covered.
+sentences are mapped to terms in the logical language (--) via an interpreted
+grammar, and these terms are in turn interpreted as propositions (sets of possible
+worlds). For the latter, there are options of translation into the finite state
+calculus in order to represent propositions as finite state machines (Section 3), and
+representation in Haskell via lazy lists of guarded strings (Section 4).  The grammar
+is a semantically interpreted multi-modal categorial grammar, consisting of a lexicon
+of words, their categorial types, and interpretations in a logical lambda language.
+\ex{phenomena1} lists that are covered.
 
 \begin{example}   \label{phenomena1}
 {\em Phenomena}
@@ -637,30 +641,95 @@ so that the language is infinite, and includes talk of beliefs about beliefs, or
 of arbitrarily iterated belief.
 
 \ex{lexicon1} gives illustrative lexical entries. The grammar and semantics are in
-certain way optimized for the simple fragment of English concerned with clausal
+certain way optimized for a simple fragment of English concerned with clausal
 complementation.  The agent names {\em Amy} and {\em Bob} contribute the epistemic
 alternative relations for those agents, rather than individuals.  This is possible
 because the agents are never arguments of extensional predicates, so what matters
 about the agents is their epistemic alternative relations.  The root verb {\em know}
 contributes existential modal force.  The complementizers {\em that} and {\em
   whether} are the heads of their dominating clauses, and assemble an alternative
-relation, modal force, and proposition contributed by the complement, in part by
-introducing the dual of the existential modal force to obtain universal modal force.
-These moves are bizarre, but are offered here as a way of constructing a compact
-interpreted grammar. They can easily be reformulated with more complicated
-constructions that are better motivated in more comprehensive interpreted grammar of
-English.
+relation, modal force, and proposition contributed by the complement.  These
+complementizers introduce the dual via two negations, in order to arrive universal
+modal force.  These moves are offered here as a way of constructing a compact
+interpreted grammar. They can easily be reformulated in a more comprehensive
+interpreted grammar of English.
 
 \begin{example}   \label{lexicon1}
 {\em Lexicon (partial)}
   
 \hspace{-10mm}\begin{tabular}[t]{l|c|c}
-Amy & $e$ & $\doublehat{R}_a$\\
-Bob & $e$ & $\doublehat{R}_b$\\ 
-heads & $d \backslash_D t$ & $W{\cdot}h$ \\
-it's & $t\slash(d \backslash_D t)$ & $\lambda p.p$ \\
+Amy & $e$ & ${R}_a$\\
+Bob & $e$ & ${R}_b$\\
+it & $d$ & $d$ \\
+heads & $d \backslash_D t$ & $\lambda x.0^c{\cdot}h$ \\
+tails & $d \backslash_D t$ & $\lambda x.0^c{\cdot}!h$ \\
+is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P.\lambda x.P x$ \\
+knows & $(e \backslash t)\slash_M t$ &  $\lambda p.\lambda R. {\Diamond}R p$\\
+that  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \backslash t)) \slash t$} \\
+& \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
+whether  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \backslash t)) \slash t$} \\
+& \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
+& \multicolumn{2}{r}{$+ {\sim}(m p R)$} \\
 \end{tabular}
 \end{example}  
+
+Multimodal categories such as $\backslash_D$ and $\backslash_M$ are used to control
+the derivation.  For instance the category of {\em heads} $d \backslash_D t$.  The
+dummy expletive subject {\em it} has category $d$, but the phrase {\em it heads} of
+category $t$ can not be formed, because $\backslash_D$ is not syntactically active as
+a function.  Instead {\em it is heads} can be formed with a predicator {\em is} of
+category $(d \backslash t)\slash(d \backslash_D t)$.  (This uses Lambek/Bar-Hillel
+notation for slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
+with $d \backslash_D t$ on the right to give a value that combines with $d$ on the
+left to give $t$.)  Similarly {\em knows} has a category with the top-level slash
+$\slash_M$, and combines to form a sentence as an argument of {\em that} or {\em
+  whether}, which has a category that looks for the category of {\em know} on the
+left, after combining with a complement sentence on the right.
+
+The semantic translations in the third column of \ex{lexicon1} use the Epik term
+language, incremented with lambda.  The body of $\lambda x.0^c{\cdot}h$, which is the
+semantic lexical entry for {\em heads}, is a term denoting the set of all worlds
+where the coin is heads, represented as the set of all guarded strings that end with
+a Boolean valuation where the primitive proposition $h$ (it's heads) is true.  There
+is $\lambda x$ at the front because of a correspondence the grammar formalism uses a
+correspondence between syntactic and semantic types. However, it does not bind
+anything, because sentences such as {\em it isn't heads} have an expletive subject.
+The body ${\Diamond}R p$ of $\lambda p.\lambda R. {\Diamond}R p$, which is the
+semantic lexical entry of {\em knows}, is an Epik term denoting the pre-image of the
+set of worlds $p$ according to the relation $\doublehat{R}$ between guarded strings
+that is determined by the event-level relation $R$.  This is not the right semantics
+for {\em Amy knows that it's heads}, because it is an existential modality ${\Diamond_R}p$,
+rather than an universal modality ${\Box_R}p$.  This is corrected by the complementizer
+{\em that} or {\em whether}, which introduces the dual.
+
+Sentences are parsed with a chart parser for categorial grammar.  The semantics for
+complex phrases are obtained by syntactic application of semantic translations,
+accompanied by beta reduction.  Semantic terms in the parsing formalism are
+expressions of untyped lambda calculus.  The grammar is set up so that lambda is
+eliminated by beta reduction in the semantic term corresponding to a sentence. In
+consequence, the semantic term translating a sentence is a term of the Epik language
+(--).  Such a term designates a set of possible words (guarded strings) in the
+possible worlds model deterimened by an Epik specification such as the one in Figure
+1.  \exi{three}{a} is an English sentence with predicate conjunction and three levels
+of clausal embedding.  Using the grammar and parser, the sentence is mapped to the
+Epik term \exi{b}.  Using the result from Section 3, this term can be mapped in an
+implementation of the finite state calculus to a finite state machine that represents
+a countably infinite set of possible worlds, represented as guarded strings.  Using
+the result from Section 4, it can be mapped to an infinite lazy list of guarded
+strings, representing the same set of possible worlds.  Either of these is a concrete
+computational representation of the propositional semantic value \semval{Amy knows
+  that Bob knows that Amy knows whether it is heads and knows that Bob does not know
+  that Amy knows that it is tails}, in the familiar sense of Montague semantics for
+natural language.
+
+\begin{examples}  \label{three}
+\itema  Amy knows that Bob knows that Amy knows whether it is heads and
+knows that Bob does not know that Amy knows that it is tails.
+\itemb
+\end{examples}  
+
+
+
 
 \section{Examples and discussion}
 
