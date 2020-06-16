@@ -16,11 +16,14 @@
 \usepackage[hyperref]{acl2020}
 \usepackage{times}
 \usepackage{latexsym}
-\usepackage{amsmath,accents}
+\usepackage{amssymb,amsmath,accents}
+\usepackage{stmaryrd}
+\usepackage{array}
 \usepackage{hang}
 \renewcommand{\UrlFont}{\ttfamily\small}
 \usepackage{microtype}
 
+\newcommand{\dom}{\ensuremath{\mathrm{dom}}}
 \input{syntax.tex}
 \usepackage{wasysym,graphicx}
 
@@ -296,7 +299,8 @@ agent bob \\
 
 \caption{Epik program describing a possible-worlds event sequence model for two agents
   with information about one coin, and events of the agents semi-privately looking
-at the coin.}
+  at the coin.}
+\label{fig:epik-example}
 \end{figure}
 
 The discussion of \ex{coin2} mentioned building worlds by incrementing worlds with events.
@@ -605,23 +609,77 @@ terms can be mapped to finite state machines that represent sets of
 guarded strings, interpreted as propositions.
 
 
-\section{Interpretation using lazy lists of strings}
-%\pagebreak
-%Hi Mom!
+\section{Interpretation}
 
-%\pagebreak
+To write down an Epik program, we need to describe the set of worlds
+and then write down terms that can be evaluated in that world. First,
+\texttt{state} declarations describe the domain of the worlds as a
+list of atomic test variables. For instance in
+Figure~\ref{fig:epik-example}, there are two variables in the world,
+\texttt{h} and \texttt{t}, which will correspond to when a the coin is
+\texttt{heads} or \texttt{tails}. Then, we can write down
+\texttt{constraint}s on the allowable set of worlds described by a
+boolean expression. This constraint is denoted by the variable
+$\phi$. In this example, the expression $h!t + t!h$ says that $h$ and
+$t$ are mutually exclusive. Third, we describe the collection of
+\texttt{event}s and their decorations. The set of input-output pairs
+denoted by the \texttt{event} declarations is event pairs, is denoted
+$P(e)$, and the set of all events as $\dom(P)$. For instance, in
+Figure~\ref{fig:epik-example}, the event \texttt{a1}, which
+corresponds to Aly semi-privately sensing the value of the coin, is
+decorated with input test \texttt{h} and output test \texttt{h}. The
+final piece we need to write down is the collection of alternative
+relations for each agent $a$, which we write down as sequence of $ e
+\to e_0 + \cdots + e_n$ where $e$ is an event in the base world and
+each $e_i$ is an alternative for agent $a$ to event $e$. We write each
+agent $a$'s alternative relation, as indicated by these descriptions,
+as $R_a$.
 
-%Hi Sis!
-%\pagebreak
+Finally, we can write down terms in the Epik language using the
+grammar described in Figure~\ref{fig:epik-grammar}. We include the
+basic KAT operators and constatns atomic tests, events, $1$, $0$ and
+operators $+$, $;$, $*$, and $!$), which are interpreted in the
+standard way (bearing in mind $P$ and $\phi$) as sets of guarded
+strings in \ref{fig:interp}.  We also have the complement operator
+$\sim p$ which is interpreted as the set of worlds less the set of
+worlds denoted by $p$. The the alternative operator $\langle a
+\rangle~p$, is interpreted as applying the preimage of $a$'s
+alternative relation denoted by $p$. The intersection operator $p\&q$,
+is simply denotes the intersection of the denoted sets, and the
+wild-card pattern $\_$ denotes the set of all events.  These are
+interpreted as sets of guarded strings in Figure~\ref{fig:interp}.
+
+TODO MORE DETAIl.
+
+\begin{figure}
+  \[\begin{array}{l >{\triangleq}c l}
+  \llbracket e \rrbracket^{\phi,P}&& \{\alpha \cdot e \cdot \beta \mid
+  (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \phi \}
+  \\ \llbracket \_ \rrbracket^{\phi,P}&& \bigcup_{e \in
+    \dom(P)}\llbracket e \rrbracket^{\phi,P}\\
+  \llbracket t \rrbracket^{\phi,P} && \{\alpha \mid \alpha \Rightarrow \phi\}\\
+  \llbracket{p+q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cup \llbracket q \rrbracket^{\phi,P}\\
+  \llbracket{p \& q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cap \llbracket q \rrbracket^{\phi,P}\\
+  \llbracket{p;q}\rrbracket^{\phi,P} && \llbracket p \rrbracket^{\phi,P} \cdot \llbracket{q}\rrbracket^{\phi,P}\\
+  \llbracket p^*\rrbracket^{\phi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\phi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\phi,P}}_{n}} \\
+  \llbracket \sim p \rrbracket^{\phi,P} && \llbracket \_^*\rrbracket^{\phi,P} \setminus \llbracket p \rrbracket^{\phi,P} \\
+  \llbracket \langle a \rangle~p \rrbracket && \doublehat{R_a}\llbracket p \rrbracket
+  
+  \end{array}
+  \]
+  \caption{Interpretation of Epik terms as sets of guarded strings}
+  \label{fig:interp}
+\end{figure}
 
 
+TODO WRITE ABOUT FINITE INTERPRETATION
 
 \section{Syntax-semantics interface}
 
 
 \begin{figure}
 \begin{tabular}{lll}
-agents & $a,b...$ & $a {:}{:}{=} \, \tuple{\mbox{atomic agents}}$ 
+agents & $a,b...$ & $a {:}{:}{=} \, \tuple{\mbox{atomic agents}}$
 \end{tabular}
 
 \begin{tabular}{lll}
@@ -630,19 +688,20 @@ tests & $T,S...$ & $T{:}{:}{=} \, \begin{array}[t]{l}\tuple{\mbox{atomic tests}}
 
 \begin{tabular}{lll}
 propositions & $p,q...$ & \(p{:}{:}{=} \,
-\begin{array}[t]{l}\tuple{\mbox{atomic events}}\,| \\
+\begin{array}[t]{l}\tuple{\mbox{atomic events}}\,|\,\_\, |\\
 T \,|\, 
 p{+}q \,|\,
 p\mbox{\&}q \,|\, \\
 p{;}q \;|\;
 p{*} \;|\; {\sim}p \;|\\
-{\diamond} a p
+{\langle a \rangle}~p
 \end{array}\)
 \end{tabular}
 
 
 \caption{The language of Epik terms. Propositional terms are interpreted
-as sets of guarded strings.}
+  as sets of guarded strings.}
+\label{fig:epik-grammar}
 \end{figure}
 
 
