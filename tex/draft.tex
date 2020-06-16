@@ -595,6 +595,16 @@ Union is union in the string algebra. The complement of a proposition
 is complement relative to the set of worlds, as defined by
 set difference in the string algebra.
 
+This scheme provides for an interpretation of the language of Epik
+terms that is defined in Figure 4.  An Epik specifications such as
+Figure 1 is translated to a straight-line program of the finite state
+calculus that defines constants and functions, including the ones from
+Figures 2 and 3.  In Xfst or Foma, which are interpreters for the
+finite state calculus, the program is read, and then propositional
+terms can be mapped to finite state machines that represent sets of
+guarded strings, interpreted as propositions.
+
+
 \section{Interpretation using lazy lists of strings}
 %\pagebreak
 %Hi Mom!
@@ -605,8 +615,38 @@ set difference in the string algebra.
 %\pagebreak
 
 
-\pagebreak
+
 \section{Syntax-semantics interface}
+
+
+\begin{figure}
+\begin{tabular}{lll}
+agents & $a,b...$ & $a {:}{:}{=} \, \tuple{\mbox{atomic agents}}$ 
+\end{tabular}
+
+\begin{tabular}{lll}
+tests & $T,S...$ & $T{:}{:}{=} \, \begin{array}[t]{l}\tuple{\mbox{atomic tests}}\,|\,0\,|\,1\,|\\ T{+}S\;|\;T\,{;}\,S\;|\;!T\end{array}$
+\end{tabular}
+
+\begin{tabular}{lll}
+propositions & $p,q...$ & \(p{:}{:}{=} \,
+\begin{array}[t]{l}\tuple{\mbox{atomic events}}\,| \\
+T \,|\, 
+p{+}q \,|\,
+p\mbox{\&}q \,|\, \\
+p{;}q \;|\;
+p{*} \;|\; {\sim}p \;|\\
+{\diamond} a p
+\end{array}\)
+\end{tabular}
+
+
+\caption{The language of Epik terms. Propositional terms are interpreted
+as sets of guarded strings.}
+\end{figure}
+
+
+
 An architecture of interpretation by transtlation is employed, where English
 sentences are mapped to terms in the logical language (--) via an interpreted
 grammar, and these terms are in turn interpreted as propositions (sets of possible
@@ -617,11 +657,8 @@ is a semantically interpreted multi-modal categorial grammar, consisting of a le
 of words, their categorial types, and interpretations in a logical lambda language.
 \ex{phenomena1} lists that are covered.
 
-\begin{example}   \label{phenomena1}
-{\em Phenomena}
-
-\vspace{1mm}
-\hspace{-10mm}\begin{tabular}[t]{l|l}
+\begin{figure}  
+\begin{tabular}[t]{l|l}
   Basic statives & It's heads. \\
   & It's tails.\\ \hline
 That-complement & Amy knows \\ & \hspace{2mm} that it's heads. \\ \hline
@@ -633,12 +670,16 @@ verbal forms & \hspace{2mm} that it's heads.      \\
 Sentence conjunction & It's heads and Bob \\ & \hspace{2mm} doesn't know \\ & \hspace{2mm} that it's heads \\ \hline
 Predicate conjunction & Bob knows that \\ & Amy knows whether \\ & it's heads and
 \\ & doesn't know that \\ & Amy knows that \\ & it's heads.
-\end{tabular}    
-\end{example}  
+\end{tabular}
+\caption{Phenomena covered in the English grammar fragment.}
+\end{figure}  
 
 As illustrated towards the end, there is recursion through conjuction and verbal complementation,
 so that the language is infinite, and includes talk of beliefs about beliefs, or in general, talk
 of arbitrarily iterated belief.
+
+
+
 
 \ex{lexicon1} gives illustrative lexical entries. The grammar and semantics are in
 certain way optimized for a simple fragment of English concerned with clausal
