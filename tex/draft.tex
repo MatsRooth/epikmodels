@@ -28,9 +28,12 @@
 % but it will improve the layout of the manuscript,
 % and will typically save some space.
 
-
-%\aclfinalcopy % Uncomment this line for the final submission
+% Uncomment this line for the final submission
+% Or comment it for the submission version with line numbers.
+\aclfinalcopy 
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+% CHECK THE BIB STYLE FOR THE STARSEM SUBMISSION
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -44,16 +47,12 @@
 % Reserve that for a journal paper if we get to that.
 \title{Epistemic Semantics in Guarded String Models}
   
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\}
+\author{Eric Campbell \\
+  Cornell University\\
+  \texttt{ehc86@cornell.edu} \\\And
+  Mats Rooth \\
+  Cornell University\\
+  \texttt{mr249@cornell.edu} \\}
 
 \date{}
 
@@ -66,10 +65,13 @@
   account is framed as a formal language Epik (Epistemic KAT) for
   defining such models.  The language is interpreted by translation
   into the finite state calculus, and alternatively by modeling
-  propositions as lazy lists. The syntax-semantics interface for
+  propositions as lazy lists in Haskell. The syntax-semantics interface for
   a fragment of English is defined by a categorial grammar.
 \end{abstract}
 
+
+\nocite{beesley2003finite,hulden2009foma}
+\nocite{karttunen2010update}
 
 \section{Introduction and Related Work}
 Linguistic semantics in the Montague tradition proceeds by assigning
@@ -695,10 +697,8 @@ modal force.  These moves are offered here as a way of constructing a compact
 interpreted grammar. They can easily be reformulated in a more comprehensive
 interpreted grammar of English.
 
-\begin{example}   \label{lexicon1}
-{\em Lexicon (partial)}
-  
-\hspace{-10mm}\begin{tabular}[t]{l|c|c}
+\begin{figure}  
+\begin{tabular}[t]{l|c|c}
 Amy & $e$ & ${R}_a$\\
 Bob & $e$ & ${R}_b$\\
 it & $d$ & $d$ \\
@@ -712,7 +712,10 @@ whether  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \back
 & \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
 & \multicolumn{2}{r}{$+ {\sim}(m p R)$} \\
 \end{tabular}
-\end{example}  
+\caption{Partial categorial grammar lexicon. The first column has a word form.
+  the second column a categorial type, and third column a semantic translation in
+a notation that extends the Epik term language with lambds.}
+\end{figure}  
 
 Multimodal categories such as $\backslash_D$ and $\backslash_M$ are used to control
 the derivation.  For instance the category of {\em heads} $d \backslash_D t$.  The
@@ -785,6 +788,11 @@ Page breakdown
   6   & 1.0  & Examples and discussion\\
 \end{tabular}
 
+
+\pagebreak
+
+\bibliographystyle{chicago}
+\bibliography{fs}
 
 \end{document}
 
