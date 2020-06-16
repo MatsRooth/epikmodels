@@ -31,9 +31,13 @@
 % but it will improve the layout of the manuscript,
 % and will typically save some space.
 
-
-%\aclfinalcopy % Uncomment this line for the final submission
+% Uncomment this line for the final submission
+% Or comment it for the submission version with line numbers.
+\aclfinalcopy 
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
+% Make the references come out black. TAKE THIS OUT for submission.
+\definecolor{darkblue}{rgb}{0, 0, 0}
+% CHECK THE BIB STYLE FOR THE STARSEM SUBMISSION
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -47,16 +51,12 @@
 % Reserve that for a journal paper if we get to that.
 \title{Epistemic Semantics in Guarded String Models}
   
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\}
+\author{Eric Campbell \\
+  Cornell University\\
+  \texttt{ehc86@cornell.edu} \\\And
+  Mats Rooth \\
+  Cornell University\\
+  \texttt{mr249@cornell.edu} \\}
 
 \date{}
 
@@ -69,17 +69,20 @@
   account is framed as a formal language Epik (Epistemic KAT) for
   defining such models.  The language is interpreted by translation
   into the finite state calculus, and alternatively by modeling
-  propositions as lazy lists. The syntax-semantics interface for
+  propositions as lazy lists in Haskell. The syntax-semantics interface for
   a fragment of English is defined by a categorial grammar.
 \end{abstract}
 
+
+\nocite{beesley2003finite,hulden2009foma}
+\nocite{karttunen2010update}
 
 \section{Introduction and Related Work}
 Linguistic semantics in the Montague tradition proceeds by assigning
 propositional {\em semantic values} to disambiguated sentences of a
 natural language.  A proposition is a set or class of {\em possible
   worlds}.  These worlds are often assumed to be things with the same
-nature and complexity as the world we occupy (Lewis 1986).  But
+nature and complexity as the world we occupy \citep{lewis1986plurality}.  But
 alternatively, one can work with small idealized models, in order to
 illustrate and test ideas.  To build such models, spaces of worlds and
 individuals are stipulated as small finite sets, and semantic values
@@ -100,28 +103,30 @@ strings, or finite state machines that describe sets of strings.
 
 The approach taken here synthesizes five antecedents in a certain way.
 John McCarthy's {\em Situation Calculus} is the source of the idea of
-constructing possible worlds as event sequences (McCarthy 1963, Reiter
-2001).  The algebraic theory of {\em Kleene Algebra with Tests}
-characterizes algebras with elements corresponding to propositions and
-event types in our application (Kozen 2003).  The models we propose
-are an epistemic extension of guarded string models for KAT, where a
-unary operation interpreted as an existential epistemic modality is
-included for each agent.  {\em Action models} in dynamic epistemic
-semantics introduced the technique of constructing epistemic models
-from primitive alternative relations on events, in order to capture
-the epistemic consequences of perceptual events (Baltag, Moss, and
-Solecki 1998). This is the basis for our construction of epistemic
-alternative relations.  Literature on finite state methods in
-linguistic semantics has used event strings and sets of event strings
-to theorize about tense and aspect in natural language semantics
-(Fernando 2003, Carlson 2009) and to express propositions (Fernando
-2017).  Literature on finite state intensiononal semantics has 
-shown how to do the semantics of intensional complementation
-including indirect questions in a setting where propositions are
-represented using finite state machines, and compositional semantics
-is expressed in a finite state calculus (Rooth 2017, Collard 2018).
-We adopt this in our syntax-semantics interface for
-English.
+constructing possible worlds as event sequences
+\citep{mccarthy1963situations,reiter2001knowledge}.  The algebraic
+theory of {\em Kleene Algebra with Tests} characterizes algebras with
+elements corresponding to propositions and event types in our
+application \citep{kozen2001automata}.\marginpar{2001 or 2003?}  The
+models we propose are an epistemic extension of guarded string models
+for KAT, where a unary operation interpreted as an existential
+epistemic modality is included for each agent.  {\em Action models} in
+dynamic epistemic semantics introduced the technique of constructing
+epistemic models from primitive alternative relations on events, in
+order to capture the epistemic consequences of perceptual events
+\citep{baltag1999logic}. This is the basis for our construction of
+epistemic alternative relations.  Literature on finite state methods
+in linguistic semantics has used event strings and sets of event
+strings to theorize about tense and aspect in natural language
+semantics \citep{fernando2004finite,fernando2007observing,carlson2009tense} and to
+express intensionality \cite{fernando2017intensions}.  Literature on
+finite state intensiononal semantics has discussed how to do the
+semantics of intensional complementation including indirect questions
+in a setting where compositional semantics is expressed in a finite
+state calculus \citep{rooth2017finite,collard2018finite}.  We adopt
+this in our syntax-semantics interface for English.
+
+
 
 We begin with examples of event-sequence models.  {\em The
   Elevator}. An elevator moves up and down in a four-story building,
@@ -232,7 +237,7 @@ d & \evr{(!q!p)}{(!qp)} + \evr{(!qp)}{(q!p)} + \evr{(q!p)}{(qp)} \\
 \end{example}
 
 \section{Epistemic guarded string models}
-Figure 1 shows an Epik program that describes a possible worlds model for two agents
+Figure \ref{epikfigure} shows an Epik program that describes a possible worlds model for two agents
 with information about one coin, and events of the agents semi-privately
 looking at the coin. The line beginning with {\tt state} lists the basic
 stative propositions. To illustrate syntax, a second proposition $t$ (tails) is
@@ -246,22 +251,29 @@ arrow. The interpretation of Amy's alternatives for $b_1$ (Bill peeks at heads),
 that when $b_1$ happens, for Amy either $b_1$ or $b_0$ (Bill peeks at tails) could
 be happening.
 
-Kleene Algebra with Tests is an algebraic theory that is defined by equations and
-inequalities, which a has model classes including guarded string models, relational
-models, finite models, and matrix models.  This paper focuses on defining a family of
-concrete guarded string algebras, the elements of which are sets of guarded strings.
-Definitions and notation mostly follow Kozen (2003).  Additional syntax and semantics
-is included to model multi-agent epistemic semantics.  Guarded strings over a finite
-alphabet $E$ are like ordinary strings, but with truth assignments to a set $T$ of
-primitive propositions (primitive tests) alternating with the symbols from $E$.  In
-the algebra described by Figure 1, $E$ is the set of events $\{a_1,a_0,b_1,b_0\}$,
-and in the elevator example, $\{u,d\}$.  In the elevator example, $T$ is $\{p,q\}$,
-and in the coin example it is $\{h,t\}$.  We write truth assigments to the primitive
-propositions that observe the constraint as Boolean vectors. In the coin example, we
-get the vectors 01, 10 and in the elevator example, the vectors 00, 01, 10, 11.
-Guarded strings are strings of events, alternating with such vectors, and starting
-and ending with vectors.  \ex{gs1} gives the encoding as guarded strings of the
-worlds in \ex{elevator1} and \ex{coin1}.
+
+
+  
+Kleene Algebra with Tests is an algebraic theory that is defined by
+equations and inequalities, which a has model classes including
+guarded string models, relational models, finite models, and matrix
+models.  This paper focuses on defining a family of concrete guarded
+string algebras, the elements of which are sets of guarded strings.
+Definitions and notation mostly follow \cite{kozen2001automata}.
+Additional syntax and semantics is included to model multi-agent
+epistemic semantics.  Guarded strings over a finite alphabet $E$ are
+like ordinary strings, but with truth assignments to a set $T$ of
+primitive propositions (primitive tests) alternating with the symbols
+from $E$.  In the algebra described by Figure \ref{epikfigure}, $E$ is the set of
+events $\{a_1,a_0,b_1,b_0\}$, and in the elevator example, $\{u,d\}$.
+In the elevator example, $T$ is $\{p,q\}$, and in the coin example it
+is $\{h,t\}$.  We write truth assigments to the primitive propositions
+that observe the constraint as Boolean vectors. In the coin example,
+we get the vectors 01, 10 and in the elevator example, the vectors 00,
+01, 10, 11.  Guarded strings are strings of events, alternating with
+such vectors, and starting and ending with vectors.  \ex{gs1} gives
+the encoding as guarded strings of the worlds in \ex{elevator1} and
+\ex{coin1}.
 
 \begin{example}   \label{gs1}
 \begin{tabular}[t]{ll}
@@ -301,6 +313,7 @@ agent bob \\
   with information about one coin, and events of the agents semi-privately looking
   at the coin.}
 \label{fig:epik-example}
+\label{epikfigure}
 \end{figure}
 
 The discussion of \ex{coin2} mentioned building worlds by incrementing worlds with events.
@@ -380,7 +393,7 @@ between guarded strings, $\Diamond_a x = \setabs{u}{\exists v.\element{v}{x} \we
 
 
 It remains to define the Kripke relation on guarded strings from an agent specification
-as in Figure 1. An an agent specification pairs each bare event with a set of bare events,
+as in Figure \ref{epikfigure}. An an agent specification pairs each bare event with a set of bare events,
 and so determines a relation between bare events, call it relation $R_a$ for an
 agent $e$.  This determines
 a relation $\hat{R_a}$ between decorated events, see \ex{Rhat}.
@@ -446,9 +459,13 @@ natural language.
 \section{Translation into the finite state calculus}
 The finite state calculus is an algebra of regular sets of strings and regular
 relations between strings that was designed for use in computationonal phonology and
-morphographemics (cite Karttunen etc.)  Current implementations allow for the
+morphographemics 
+\citep{kaplan1994regular,beesley2003finite}.
+Current implementations allow for the
 definition of functions with the status of defined operators on regular sets and
-relations.  Such definitions are used to define an embedding of epistemic KAT in a
+relations
+\citep{hulden2009foma,karttunen2010update}.
+Such definitions are used to define an embedding of epistemic KAT in a
 string algebra. The methodology follows Section 2 closely.  Let ${\cal K}$ be an
 epistemic algebra as described in Section 2.  A given element of ${\cal K}$ is
 represented in the the string algebra by the very same set of strings, i.e. by a set
@@ -456,7 +473,7 @@ of strings that have the form of a sequence of bare event symbols, with interlea
 Boolean vectors. Product in the KAT can not be modeled as concatenation in the string
 algebra, because this would not enforce identity of states, and would result in
 lengthening Boolean vectors at the concatenation point.  Instead, KAT product and KAT
-Kleene star are defined operations in the string algebra, see Figure 2.  The
+Kleene star are defined operations in the string algebra, see Figure \ref{fstfigure1}.  The
 operations concatenate in the string algebra, delete strings with non-matching tests,
 and then delete the second of two tests create a well-formed guarded string.
 
@@ -508,6 +525,7 @@ KAT Kleene plus and Kleene star in Fst. The Fst operation {\tt |} is union.
 \end{hangingpar}
 
 \caption{Translation into Fst of KAT product and KAT Kleene star.}
+\label{fstfigure1}
 \end{figure}
 
 A given bare event such as $a_1$ (Aly looks at heads) is in the KAT algebra a set of
@@ -516,12 +534,12 @@ bare events decorated with compatible tests on each side, semantically $\{ 10 a_
 of the KAT algebra are sets. Worlds in the KAT algebra are defined by sequencing
 events using {\em Kst}. The operation enforces compatibility of states, so that
 $(a_1 + a_0)(b_1 + b_0)$ contains two worlds rather than four.  The program in
-Figure 1 as interpreted in FST defines a countably infinite set of possible worlds by
+Figure \ref{epikfigure} as interpreted in FST defines a countably infinite set of possible worlds by
 KAT Kleene closure as $\mbox{\em Kst}(a_1 + a_0 +b_1 + b_0)$, and an algebra of
 propositions as regular sets of strings drawn from this space of worlds.
 
 It remains to define an epistemic alternative relation on worlds for each agent.  The
-relevant information in Figure 1 is a relation between bare events for each
+relevant information in Figure \ref{epikfigure} is a relation between bare events for each
 agent. This determines a relation in the guarded string algebra a relation between
 bare events decorated with compatible tests.  For agent Aly, this is the relation
 described in \ex{alyrel1} as a set of ordered pairs.
@@ -591,7 +609,8 @@ The Fst operation {\tt{.x.}} is Cartesian product.
 \end{hangingpar}
 
 \caption{Definition in Fst of the Kleene concatenation closure of
-a relation between guarded strings.}
+  a relation between guarded strings.}
+\label{fstfigure2}
 \end{figure}
 
 Other operations in the guarded string algebra as defined in FST are simpler.
@@ -600,7 +619,7 @@ is complement relative to the set of worlds, as defined by
 set difference in the string algebra.
 
 This scheme provides for an interpretation of the language of Epik
-terms that is defined in Figure 4.  An Epik specifications such as
+terms that is defined in Figure \ref{termfigure}.  An Epik specifications such as
 Figure 1 is translated to a straight-line program of the finite state
 calculus that defines constants and functions, including the ones from
 Figures 2 and 3.  In Xfst or Foma, which are interpreters for the
@@ -702,6 +721,7 @@ p{*} \;|\; {\sim}p \;|\\
 \caption{The language of Epik terms. Propositional terms are interpreted
   as sets of guarded strings.}
 \label{fig:epik-grammar}
+\label{termfigure}
 \end{figure}
 
 
@@ -714,7 +734,7 @@ calculus in order to represent propositions as finite state machines (Section 3)
 representation in Haskell via lazy lists of guarded strings (Section 4).  The grammar
 is a semantically interpreted multi-modal categorial grammar, consisting of a lexicon
 of words, their categorial types, and interpretations in a logical lambda language.
-\ex{phenomena1} lists that are covered.
+Figure \ref{phenomenafigure} lists phenomena that are covered.
 
 \begin{figure}  
 \begin{tabular}[t]{l|l}
@@ -731,6 +751,7 @@ Predicate conjunction & Bob knows that \\ & Amy knows whether \\ & it's heads an
 \\ & doesn't know that \\ & Amy knows that \\ & it's heads.
 \end{tabular}
 \caption{Phenomena covered in the English grammar fragment.}
+\label{phenomenafigure}
 \end{figure}  
 
 As illustrated towards the end, there is recursion through conjuction and verbal complementation,
@@ -740,7 +761,7 @@ of arbitrarily iterated belief.
 
 
 
-\ex{lexicon1} gives illustrative lexical entries. The grammar and semantics are in
+Figure \ref{lexiconfigure} gives illustrative lexical entries. The grammar and semantics are in
 certain way optimized for a simple fragment of English concerned with clausal
 complementation.  The agent names {\em Amy} and {\em Bob} contribute the epistemic
 alternative relations for those agents, rather than individuals.  This is possible
@@ -754,10 +775,8 @@ modal force.  These moves are offered here as a way of constructing a compact
 interpreted grammar. They can easily be reformulated in a more comprehensive
 interpreted grammar of English.
 
-\begin{example}   \label{lexicon1}
-{\em Lexicon (partial)}
-  
-\hspace{-10mm}\begin{tabular}[t]{l|c|c}
+\begin{figure}  
+\begin{tabular}[t]{l|c|c}
 Amy & $e$ & ${R}_a$\\
 Bob & $e$ & ${R}_b$\\
 it & $d$ & $d$ \\
@@ -771,7 +790,11 @@ whether  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \back
 & \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
 & \multicolumn{2}{r}{$+ {\sim}(m p R)$} \\
 \end{tabular}
-\end{example}  
+\caption{Partial categorial grammar lexicon. The first column has a word form.
+  the second column a categorial type, and third column a semantic translation in
+a logical language that extends the Epik term language with lambda.}
+\label{lexiconfigure}
+\end{figure}  
 
 Multimodal categories such as $\backslash_D$ and $\backslash_M$ are used to control
 the derivation.  For instance the category of {\em heads} $d \backslash_D t$.  The
@@ -786,7 +809,7 @@ $\slash_M$, and combines to form a sentence as an argument of {\em that} or {\em
   whether}, which has a category that looks for the category of {\em know} on the
 left, after combining with a complement sentence on the right.
 
-The semantic translations in the third column of \ex{lexicon1} use the Epik term
+The semantic translations in the third column of Figure \ref{lexiconfigure} use the Epik term
 language, incremented with lambda.  The body of $\lambda x.0^c{\cdot}h$, which is the
 semantic lexical entry for {\em heads}, is a term denoting the set of all worlds
 where the coin is heads, represented as the set of all guarded strings that end with
@@ -844,6 +867,11 @@ Page breakdown
   6   & 1.0  & Examples and discussion\\
 \end{tabular}
 
+
+\pagebreak
+
+\bibliographystyle{chicago}
+\bibliography{fs}
 
 \end{document}
 
