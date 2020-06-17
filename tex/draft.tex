@@ -237,23 +237,23 @@ d & \evr{(!q!p)}{(!qp)} + \evr{(!qp)}{(q!p)} + \evr{(q!p)}{(qp)} \\
 \end{example}
 
 \section{Epistemic guarded string models}
-Figure \ref{epikfigure} shows an Epik program that describes a possible worlds model for two agents
-with information about one coin, and events of the agents semi-privately
-looking at the coin. The line beginning with {\tt state} lists the basic
-stative propositions. To illustrate syntax, a second proposition $t$ (tails) is
-included.  The line beginning with {\tt constraint} defines compatibilities among the
-propositions: the coin is heads or tails and not both.  The lines beginning with {\tt
-  event} declare events, their preconditions, and their effect on state, following
-the format in \ex{event1}.  Finally the lines beginning with {\tt agent} define {\em
-  event alternative} relations for agents.  Each clause with an arrow has a single
-event symbol on the left, and a disjunction of alternative events on the right of the
-arrow. The interpretation of Amy's alternatives for $b_1$ (Bill peeks at heads), is
-that when $b_1$ happens, for Amy either $b_1$ or $b_0$ (Bill peeks at tails) could
-be happening.
+Figure \ref{epikfigure} shows an Epik program that describes a
+possible worlds model for two agents with information about one coin,
+and events of the agents semi-privately looking at the coin. The line
+beginning with {\tt state} lists the basic stative propositions. To
+illustrate syntax, a second proposition $t$ (tails) is included.  The
+line beginning with {\tt constraint} defines compatibilities among the
+propositions: the coin is heads or tails and not both.  The lines
+beginning with {\tt event} declare events, their preconditions, and
+their effect on state, following the format in \ex{event1}.  Finally
+the lines beginning with {\tt agent} define {\em event alternative}
+relations for agents.  Each clause with an arrow has a single event
+symbol on the left, and a disjunction of alternative events on the
+right of the arrow. The interpretation of Amy's alternatives for $b_1$
+(Bill peeks at heads), is that when $b_1$ happens, for Amy either
+$b_1$ or $b_0$ (Bill peeks at tails) could be happening.
 
 
-
-  
 Kleene Algebra with Tests is an algebraic theory that is defined by
 equations and inequalities, which a has model classes including
 guarded string models, relational models, finite models, and matrix
@@ -264,24 +264,37 @@ Additional syntax and semantics is included to model multi-agent
 epistemic semantics.  Guarded strings over a finite alphabet $E$ are
 like ordinary strings, but with truth assignments to a set $T$ of
 primitive propositions (primitive tests) alternating with the symbols
-from $E$.  In the algebra described by Figure \ref{epikfigure}, $E$ is the set of
+from $E$. Following \cite{kozen2001automata}, we call these truth
+assignments \emph{atoms}; the set of atoms is notated $\mathcal A$.
+In the algebra described by Figure \ref{epikfigure}, $E$ is the set of
 events $\{a_1,a_0,b_1,b_0\}$, and in the elevator example, $\{u,d\}$.
 In the elevator example, $T$ is $\{p,q\}$, and in the coin example it
-is $\{h,t\}$.  We write truth assigments to the primitive propositions
-that observe the constraint as Boolean vectors. In the coin example,
-we get the vectors 01, 10 and in the elevator example, the vectors 00,
-01, 10, 11.  Guarded strings are strings of events, alternating with
-such vectors, and starting and ending with vectors.  \ex{gs1} gives
-the encoding as guarded strings of the worlds in \ex{elevator1} and
-\ex{coin1}.
+is $\{h,t\}$.  We write atoms as the boolean formulae that uniquely
+specify the truth assignment. In the elevator example, we have atoms
+the vectors $\bar q \bar p$, $\bar q p$, $q \bar p$, $q p$.  In the
+coin example, we get $h\bar t$ and $\bar h t$, as well as the bogus
+atoms $\bar h \bar t$ and $ht$!  To preclude bogosity, the
+\texttt{constraint} declaration in Figure~\ref{epikfigure} describes
+the set of \emph{feasible atoms}, which we parse into a formula
+$\varphi$ (if there are multiple \texttt{constraint declarations},
+$\varphi$ is the conjunction of the parsed formulae). For a formula
+$\phi$, the set of feasible atoms is $\mathcal A_\phi$. In the coin
+example, the constraint $\varphi$ is $h\bar t + \bar h t$. Since $\bar
+h t \models \varphi$ and $h \bar t \models \varphi$, they are
+permitted feasible atoms, and since $\bar h \bar t$ and $h t$ do not
+satisfy $\phi$ they are not permitted.
+
+Guarded strings are strings of events, alternating with such atoms,
+and starting and ending with atoms.  \ex{gs1} gives the encoding as
+guarded strings of the worlds in \ex{elevator1} and \ex{coin1}.
 
 \begin{example}   \label{gs1}
 \begin{tabular}[t]{ll}
-$v_1$ & $00 u 01 u 10 d 01 u 10$ \\
-$v_2$ & $00 u 01 u 10 u 11$ \\   
-$w_1$ & $01$ \\
-$w_2$ & $01 a_0 01$ \\  
-$w_3$ & $01 a_0 01 b_0 01$ \\
+$v_1$ & $\bar p \bar q ~u~ \bar p q ~u~ q \bar p ~d~ \bar p q ~u~ q \bar p$ \\
+$v_2$ & $\bar p \bar q ~u~ \bar p q ~u~ p\bar q ~u~ pq$ \\   
+$w_1$ & $\bar h t$ \\
+$w_2$ & $\bar h t ~a_0~ \bar h t$ \\  
+$w_3$ & $\bar h t ~a_0~ \bar h t ~b_0~ \bar h t$ \\
 \end{tabular}
 \end{example}
 
@@ -324,29 +337,29 @@ start of the second one.  \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
-\hspace{-2mm}\( 00 u 01 u 10 d 01 \cdot 01 u 10 = 00 u 01 u 10 d 01 u 10 \)
+\hspace{-2mm}\( \bar p q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q \cdot \bar p q ~u~ p \bar q = \bar p q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q ~u~ p \bar q \)
 
-\hspace{-2mm}\( 00 u 01 u 10 d 01 \cdot 10 u 11 = \mbox{\em{undefined}} \)
+\hspace{-2mm}\( \bar p \bar q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q \cdot p \bar q ~u~ pq = \mbox{\em{undefined}} \)
 
-\hspace{-2mm}\(01 \cdot 01 a_0 01 = 01 a_0 01 \)
+\hspace{-2mm}\(\bar h t \cdot \bar h t ~a_0~ \bar h t = \bar h t ~a_0~ \bar h t \)
 
-\hspace{-2mm}\(01 \cdot 10 a_1 10 = \mbox{\em{undefined}} \)
+\hspace{-2mm}\(\bar h t \cdot h \bar t ~a_1~ h \bar t = \mbox{\em{undefined}} \)
 \end{example}
 
-Rather than guarded strings, elements of a guarded string model for
-KAT are sets of guarded strings.  In the application, these elements
-have the interpretation of propositions (sets of possible worlds)
-and/or event types.  An event such as $u$ in the guarded string model
-corresponds to the set of guarded strings where the bare event is
-flanked by compatible truth assigments, as defined in an Epik program
-by the event declaration and the constraint declaration.  These have
-the status of event types, in that they can ``happen'' in different
-possible worlds. Here happening corresponds to incrementing the world
-with some compatible element of the event type.  Where $e$ is a bare
-event symbol, $\llbracket e \rrbracket^{\varphi,P}$ is the corresponding
-set of guarded strings, consisting of the bare event decorated with
-compatible truth assignments denoted by $P$ that are admitted by the
-world-constraints $\varphi$.  See this formally in
+Rather than individual guarded strings, elements of a guarded string
+model for KAT are sets of guarded strings.  In the application, these
+elements have the interpretation of propositions (sets of possible
+worlds) and/or event types.  An event such as $u$ in the guarded
+string model corresponds to the set of guarded strings where the bare
+event is flanked by compatible atoms. In standard KATs, this is  as defined in an Epik
+program by the event declaration and the constraint declaration.
+These have the status of event types, in that they can ``happen'' in
+different possible worlds. Here happening corresponds to incrementing
+the world with some compatible element of the event type.  Where $e$
+is a bare event symbol, $\llbracket e \rrbracket^{\varphi,P}$ is the
+corresponding set of guarded strings, consisting of the bare event
+decorated with compatible truth assignments denoted by $P$ that are
+admitted by the world-constraints $\varphi$.  See this formally in
 Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 % u (!q!p):(!qp) + (!qp):(q!p) + (q!p):(qp) 173
 % d (!qp):(!q!p) + (q!p):(!qp) + (qp):(q!p)
@@ -355,12 +368,12 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 \(
 \begin{array}[t]{l|c}
   e & \llbracket e \rrbracket^{\varphi, P} \\ \hline  
-  u & \{ 00u01, 01u10, 10u11\}\\
-  d & \{ 01d00, 10d01, 11d10\}\\
-  a_1 & \{10 a_1 10 \}\\
-  a_0 & \{01 a_0 01\}\\
-  b_1 & \{10 b_1 10 \}\\
-  b_0 & \{01 b_0 01 \}\\
+  u & \{ \bar p \bar q ~u~ \bar p q, \bar p q ~u ~p \bar q,  p \bar q ~u~ pq\}\\
+  d & \{ \bar p q ~d~ \bar p \bar q, p \bar q~d~\bar p q, p q~d~ p \bar q\}\\
+  a_1 & \{h \bar t ~a_1~ h \bar t \}\\
+  a_0 & \{t \bar h ~a_0~ t \bar h\}\\
+  b_1 & \{h\bar t ~b_1~ h \bar t \}\\
+  b_0 & \{t \bar h ~b_0~ t \bar h \}\\
 \end{array}
 \)
 \end{example}
