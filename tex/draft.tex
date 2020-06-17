@@ -333,26 +333,28 @@ start of the second one.  \ex{fusion1} gives some examples.
 \hspace{-2mm}\(01 \cdot 10 a_1 10 = \mbox{\em{undefined}} \)
 \end{example}
 
-Rather than guarded strings, elements of a guarded string model for KAT are sets of
-guarded strings.  In the application, these elements have the interpretation of
-propositions (sets of possible worlds) and/or event types.  An event such as $u$ in
-the guarded string model corresponds to the set of guarded strings where the bare
-event is flanked by compatible truth assigments, as defined in an Epik program by the
-event declaration and the constraint declaration. 
-These have the status of event types, in that they
-can ``happen'' in different possible worlds. Here happening corresponds to
-incrementing the world with some compatible element of the event type.
-Where $e$ is a bare event symbol, $\hat{e}$ is the
-corresponding set of guarded strings,
-consisting of the bare event decorated with compatible truth assignments.
-See the examples in \ex{events1}.
+Rather than guarded strings, elements of a guarded string model for
+KAT are sets of guarded strings.  In the application, these elements
+have the interpretation of propositions (sets of possible worlds)
+and/or event types.  An event such as $u$ in the guarded string model
+corresponds to the set of guarded strings where the bare event is
+flanked by compatible truth assigments, as defined in an Epik program
+by the event declaration and the constraint declaration.  These have
+the status of event types, in that they can ``happen'' in different
+possible worlds. Here happening corresponds to incrementing the world
+with some compatible element of the event type.  Where $e$ is a bare
+event symbol, $\llbracket e \rrbracket^{\phi,P}$ is the corresponding
+set of guarded strings, consisting of the bare event decorated with
+compatible truth assignments denoted by $P$ that are admitted by the
+world-constraints $\phi$.  See this formally in
+Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 % u (!q!p):(!qp) + (!qp):(q!p) + (q!p):(qp) 173
 % d (!qp):(!q!p) + (q!p):(!qp) + (qp):(q!p)
 
 \begin{example} \label{events1}
 \(
 \begin{array}[t]{l|c}
-  e & \hat{e} \\ \hline  
+  e & \llbracket e \rrbracket^{\phi, P} \\ \hline  
   u & \{ 00u01, 01u10, 10u11\}\\
   d & \{ 01d00, 10d01, 11d10\}\\
   a_1 & \{10 a_1 10 \}\\
@@ -364,24 +366,38 @@ See the examples in \ex{events1}.
 \end{example}
 
 Kleene Algebra with Tests has the algebraic signature
-$\tuple{K,+,\cdot,*,\bar{},0,1}$.  To this we add an unary operation $\Diamond_a$ for
-each agent, and a unary complent operation $\cdot^{c}$ on propositions.  This results
-in the signature $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_a,\Diamond_b}$ for
-epistemic KAT with two agents.  In a guarded string model in our construction, the
-elements of $K$ are sets of guarded strings.  The operation $+$ is set union. The
-constant $0$ is the empty set.  The constant 1 is the set of all truth assignments
-obeying the constraint on truth assignments, i.e. $\{10,10\}$ in the coin example.
-The operation $\cdot$ is fusion product raised to sets: $x \cdot y$ is the set of all
-defined fusion products of an element of $x$ with and element of $y$.  The operation
-$*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$, where $x^i$ is the $i$-times
-product of $x$ with itself and $x^0=1$.  Subsets of $1$ are also elements of $K$, and
-these form the Boolean algebra of tests as a set Boolean algebra.  The overbar
-operation is complement in this Boolean algebra.  The complement operation ${}^c$ is
-complement at the level of sets of guarded strings, with $x^c = 0^c - x$, where the
-operation on the right is set difference.  The epistemic modality $\Diamond_a$ is
-interpreted using Kripke semantics, as pre-image relative to a fixed relation $R_a$
-between guarded strings, $\Diamond_a x = \setabs{u}{\exists v.\element{v}{x} \wedge u
-  R_a v}$.  Here $u$ and $v$ are guarded strings, while $x$ is an element of $K$.
+$\tuple{K,+,\cdot,*,\bar{},0,1}$.  To this we add an unary operation
+$\Diamond_a$ for each agent, and a unary complent operation
+$\cdot^{c}$ on propositions.  This results in the signature
+$\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_a,\Diamond_b}$ for
+epistemic KAT with two agents.
+
+We interpret each term in as a set of guarded strings as indicated in
+Figure~\ref{fig:interp}. A bare event $e$ is interpreted as the set of
+guarded strings allowed by $\phi$ and $P$. The operation $p + q$ is
+set union. The constant $0$ is the empty set.  The constant 1 is the
+set of all truth assignments obeying the constraint on truth
+assignments, i.e. $\{10,01\}$ in the coin example.  The operation
+$\cdot$ is fusion product raised to sets: $x \cdot y$ is the set of
+all defined fusion products of an element of $x$ with and element of
+$y$.  The operation $*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$,
+where $x^i$ is the $i$-times product of $x$ with itself and $x^0=1$.
+Subsets of $1$ indicated by $t$ are also elements of $K$, and these
+form the Boolean algebra of tests, denoting all atoms admitted by the
+constraint $\phi$ and the boolean test $t$.  We ``overload'' $\cdot$
+to further indicate boolean conjunction, $+$ to further indicate
+boolean disjunction, and $0,1$ to indicate the zero and one elements
+of the boolean algebra. The overbar operation denotes complement in
+this Boolean algebra: $\overline t$ denotes all atoms $\alpha$ such
+that $\alpha \Rightarrow \neg t$.  Other boolean operators (such as
+implication $\Rightarrow$) are encoded as syntactic sugar in the
+standard way. The complement operation ${p}^c$ is complement at the
+level of sets of guarded strings, defined to every set the universe
+$\_^*$ except those denoted by $p$. Finally, the epistemic modality
+$\Diamond_a$ is interpreted using Kripke semantics, as pre-image
+relative to a fixed relation $R_a$ between guarded strings,
+$\Diamond_a x = \setabs{u}{\exists v.\element{v}{x} \wedge u R_a v}$.
+Here $u$ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 
 \newlength{\dhatheight}
@@ -392,16 +408,17 @@ between guarded strings, $\Diamond_a x = \setabs{u}{\exists v.\element{v}{x} \we
       \smash{\hat{#1}}}}
 
 
-It remains to define the Kripke relation on guarded strings from an agent specification
-as in Figure \ref{epikfigure}. An an agent specification pairs each bare event with a set of bare events,
-and so determines a relation between bare events, call it relation $R_a$ for an
-agent $e$.  This determines
-a relation $\hat{R_a}$ between decorated events, see \ex{Rhat}.
-It is generalized to a relation $\doublehat{R}$ on arbitrary guarded strings by
-relational Kleene star, as defined in \ex{Rhathat}. The operation $\cdot$ in the
-definition is KAT product, which enforces matching of tests.
-The number of terms $n$ is construed as satisfying $n\geq 1$.
-{\em What is desired for $n=0$?}
+It remains to define the Kripke relation on guarded strings from an
+agent specification as in Figure \ref{epikfigure}. An an agent
+specification pairs each bare event with a set of bare events, and so
+determines a relation between bare events, call it relation $R_a$ for
+an agent $a$.  This determines a relation $\hat{R_a}$ between
+decorated events, see \ex{Rhat}.  It is generalized to a relation
+$\doublehat{R}$ on arbitrary guarded strings by relational Kleene
+star, as defined in \ex{Rhathat}. The operation $\cdot$ in the
+definition is KAT product, which enforces matching of tests.  The
+number of terms $n$ is construed as satisfying $n\geq 1$.  {\em What
+  is desired for $n=0$?}
 
 \begin{example}   \label{Rhat}
 \hspace{-2mm} \(
@@ -433,6 +450,29 @@ events.  See Section 6 for linguistic examples.  Since an epistemic
 alternative has the same lenght as its base world, it follows from the
 construction that agents know how many events have transpired in their
 base worlds.
+
+\begin{figure}
+  \[\begin{array}{l >{\triangleq}c l}
+  \llbracket 0 \rrbracket^{\phi,P} && \{\} \\  
+  \llbracket 1 \rrbracket^{\phi,P} && \{\alpha \mid \alpha \Rightarrow \phi\}\\
+  \llbracket e \rrbracket^{\phi,P}&& \{\alpha \cdot e \cdot \beta \mid
+  (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \phi \}
+  \\ \llbracket \_ \rrbracket^{\phi,P}&& \bigcup_{e \in
+    \dom(P)}\llbracket e \rrbracket^{\phi,P}\\
+  \llbracket t \rrbracket^{\phi,P} &&  \{\alpha \mid \alpha \Rightarrow \phi \wedge t\}\\
+  \llbracket{p+q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cup \llbracket q \rrbracket^{\phi,P}\\
+  \llbracket{p \& q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cap \llbracket q \rrbracket^{\phi,P}\\
+  \llbracket{p;q}\rrbracket^{\phi,P} && \llbracket p \rrbracket^{\phi,P} \cdot \llbracket{q}\rrbracket^{\phi,P}\\
+  \llbracket p^*\rrbracket^{\phi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\phi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\phi,P}}_{n}} \\
+  \llbracket \sim p \rrbracket^{\phi,P} && \llbracket \_^*\rrbracket^{\phi,P} \setminus \llbracket p \rrbracket^{\phi,P} \\
+  \llbracket \langle a \rangle~p \rrbracket && \doublehat{R_a}\llbracket p \rrbracket
+  
+  \end{array}
+  \]
+  \caption{Interpretation of Epik terms as sets of guarded strings}
+  \label{fig:interp}
+\end{figure}
+
 
 
 Universal box modalites are defined as duals, $\Box_a x = (\Diamond_a
@@ -628,70 +668,8 @@ terms can be mapped to finite state machines that represent sets of
 guarded strings, interpreted as propositions.
 
 
-\section{Interpretation}
+\section{Direct Bounded Implementation}
 
-To write down an Epik program, we need to describe the set of worlds
-and then write down terms that can be evaluated in that world. First,
-\texttt{state} declarations describe the domain of the worlds as a
-list of atomic test variables. For instance in
-Figure~\ref{fig:epik-example}, there are two variables in the world,
-\texttt{h} and \texttt{t}, which will correspond to when a the coin is
-\texttt{heads} or \texttt{tails}. Then, we can write down
-\texttt{constraint}s on the allowable set of worlds described by a
-boolean expression. This constraint is denoted by the variable
-$\phi$. In this example, the expression $h!t + t!h$ says that $h$ and
-$t$ are mutually exclusive. Third, we describe the collection of
-\texttt{event}s and their decorations. The set of input-output pairs
-denoted by the \texttt{event} declarations is event pairs, is denoted
-$P(e)$, and the set of all events as $\dom(P)$. For instance, in
-Figure~\ref{fig:epik-example}, the event \texttt{a1}, which
-corresponds to Aly semi-privately sensing the value of the coin, is
-decorated with input test \texttt{h} and output test \texttt{h}. The
-final piece we need to write down is the collection of alternative
-relations for each agent $a$, which we write down as sequence of $ e
-\to e_0 + \cdots + e_n$ where $e$ is an event in the base world and
-each $e_i$ is an alternative for agent $a$ to event $e$. We write each
-agent $a$'s alternative relation, as indicated by these descriptions,
-as $R_a$.
-
-Finally, we can write down terms in the Epik language using the
-grammar described in Figure~\ref{fig:epik-grammar}. We include the
-basic KAT operators and constatns atomic tests, events, $1$, $0$ and
-operators $+$, $;$, $*$, and $!$), which are interpreted in the
-standard way (bearing in mind $P$ and $\phi$) as sets of guarded
-strings in \ref{fig:interp}.  We also have the complement operator
-$\sim p$ which is interpreted as the set of worlds less the set of
-worlds denoted by $p$. The the alternative operator $\langle a
-\rangle~p$, is interpreted as applying the preimage of $a$'s
-alternative relation denoted by $p$. The intersection operator $p\&q$,
-is simply denotes the intersection of the denoted sets, and the
-wild-card pattern $\_$ denotes the set of all events.  These are
-interpreted as sets of guarded strings in Figure~\ref{fig:interp}.
-
-TODO MORE DETAIl.
-
-\begin{figure}
-  \[\begin{array}{l >{\triangleq}c l}
-  \llbracket e \rrbracket^{\phi,P}&& \{\alpha \cdot e \cdot \beta \mid
-  (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \phi \}
-  \\ \llbracket \_ \rrbracket^{\phi,P}&& \bigcup_{e \in
-    \dom(P)}\llbracket e \rrbracket^{\phi,P}\\
-  \llbracket t \rrbracket^{\phi,P} && \{\alpha \mid \alpha \Rightarrow \phi\}\\
-  \llbracket{p+q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cup \llbracket q \rrbracket^{\phi,P}\\
-  \llbracket{p \& q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cap \llbracket q \rrbracket^{\phi,P}\\
-  \llbracket{p;q}\rrbracket^{\phi,P} && \llbracket p \rrbracket^{\phi,P} \cdot \llbracket{q}\rrbracket^{\phi,P}\\
-  \llbracket p^*\rrbracket^{\phi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\phi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\phi,P}}_{n}} \\
-  \llbracket \sim p \rrbracket^{\phi,P} && \llbracket \_^*\rrbracket^{\phi,P} \setminus \llbracket p \rrbracket^{\phi,P} \\
-  \llbracket \langle a \rangle~p \rrbracket && \doublehat{R_a}\llbracket p \rrbracket
-  
-  \end{array}
-  \]
-  \caption{Interpretation of Epik terms as sets of guarded strings}
-  \label{fig:interp}
-\end{figure}
-
-
-TODO WRITE ABOUT FINITE INTERPRETATION
 
 \section{Syntax-semantics interface}
 
