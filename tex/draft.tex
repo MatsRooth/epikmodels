@@ -363,12 +363,24 @@ model for KAT are sets of guarded strings.  In the application, these
 elements have the interpretation of propositions (sets of possible
 worlds) and/or event types.  An event such as $u$ in the guarded
 string model corresponds to the set of guarded strings where the bare
-event is flanked by compatible atoms. In standard KATs, this is  as defined in an Epik
-program by the event declaration and the constraint declaration.
-These have the status of event types, in that they can ``happen'' in
-different possible worlds. Here happening corresponds to incrementing
-the world with some compatible element of the event type.  Where $e$
-is a bare event symbol, $\llbracket e \rrbracket^{\varphi,P}$ is the
+event is flanked by compatible atoms. In standard KATs, every possible
+atom is allowed to surround every event, which leads to nonsensical
+strings like $\hat 1 ~u~\hat 0$ in the denotation of $u$, indicating
+that the elevator travelled up from floor 1 to floor 0 (a physical
+impossibility).
+
+Fortunately, Epik provides a syntax to specify the input-output
+behavior via the \texttt{event} declarations. From these we construct
+a function $P$ from agents to relations on atoms that specify the
+effects each action can have. If there are multiple event declarations
+for the same event, only the latter one is incorporated. To construct
+the effect relation $P(e)$ for event $e$, we add a pair $\alpha,
+\beta$ to the relation $P(e)$ for every disjunct $\phi:\phi'$ such
+that $\alpha \models \phi$ and $\beta \models \phi'$.  These have the
+status of event types, in that they can ``happen'' in different
+possible worlds. Here happening corresponds to incrementing the world
+with some compatible element of the event type.  Where $e$ is a bare
+event symbol, $\llbracket e \rrbracket^{\varphi,P}$ is the
 corresponding set of guarded strings, consisting of the bare event
 decorated with compatible truth assignments denoted by $P$ that are
 admitted by the world-constraints $\varphi$.  See this formally in
@@ -377,9 +389,10 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 % d (!qp):(!q!p) + (q!p):(!qp) + (qp):(q!p)
 
 \begin{example} \label{events1}
+  \renewcommand{\arraystretch}{1.1}
 \(
 \begin{array}[t]{l|c}
-  e & \llbracket e \rrbracket^{\varphi, P} \\ \hline  
+  e & \llbracket e \rrbracket^{\varphi, P} \\ \hline
   u & \{ \hat 0 ~u~ \hat 1, \hat 1 ~u~ \hat 2,  \hat 2 ~u~ \hat 3\}\\
   d & \{ \hat 1 ~d~ \hat 0, \hat 2~d~\hat 1, \hat 3 ~d~ \hat 2\}\\
   a_1 & \{H ~a_1~ H\}\\
@@ -388,6 +401,8 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
   b_0 & \{T ~b_0~ T \}
 \end{array}
 \)
+  \renewcommand{\arraystretch}{1}
+
 \end{example}
 
 Kleene Algebra with Tests has the algebraic signature
