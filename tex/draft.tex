@@ -343,10 +343,10 @@ by the event declaration and the constraint declaration.  These have
 the status of event types, in that they can ``happen'' in different
 possible worlds. Here happening corresponds to incrementing the world
 with some compatible element of the event type.  Where $e$ is a bare
-event symbol, $\llbracket e \rrbracket^{\phi,P}$ is the corresponding
+event symbol, $\llbracket e \rrbracket^{\varphi,P}$ is the corresponding
 set of guarded strings, consisting of the bare event decorated with
 compatible truth assignments denoted by $P$ that are admitted by the
-world-constraints $\phi$.  See this formally in
+world-constraints $\varphi$.  See this formally in
 Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 % u (!q!p):(!qp) + (!qp):(q!p) + (q!p):(qp) 173
 % d (!qp):(!q!p) + (q!p):(!qp) + (qp):(q!p)
@@ -354,7 +354,7 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 \begin{example} \label{events1}
 \(
 \begin{array}[t]{l|c}
-  e & \llbracket e \rrbracket^{\phi, P} \\ \hline  
+  e & \llbracket e \rrbracket^{\varphi, P} \\ \hline  
   u & \{ 00u01, 01u10, 10u11\}\\
   d & \{ 01d00, 10d01, 11d10\}\\
   a_1 & \{10 a_1 10 \}\\
@@ -374,7 +374,7 @@ epistemic KAT with two agents.
 
 We interpret each term in as a set of guarded strings as indicated in
 Figure~\ref{fig:interp}. A bare event $e$ is interpreted as the set of
-guarded strings allowed by $\phi$ and $P$. The operation $p + q$ is
+guarded strings allowed by $\varphi$ and $P$. The operation $p + q$ is
 set union. The constant $0$ is the empty set.  The constant 1 is the
 set of all truth assignments obeying the constraint on truth
 assignments, i.e. $\{10,01\}$ in the coin example.  The operation
@@ -384,7 +384,7 @@ $y$.  The operation $*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$,
 where $x^i$ is the $i$-times product of $x$ with itself and $x^0=1$.
 Subsets of $1$ indicated by $t$ are also elements of $K$, and these
 form the Boolean algebra of tests, denoting all atoms admitted by the
-constraint $\phi$ and the boolean test $t$.  We ``overload'' $\cdot$
+constraint $\varphi$ and the boolean test $t$.  We ``overload'' $\cdot$
 to further indicate boolean conjunction, $+$ to further indicate
 boolean disjunction, and $0,1$ to indicate the zero and one elements
 of the boolean algebra. The overbar operation denotes complement in
@@ -453,18 +453,18 @@ base worlds.
 
 \begin{figure}
   \[\begin{array}{l >{\triangleq}c l}
-  \llbracket 0 \rrbracket^{\phi,P} && \{\} \\  
-  \llbracket 1 \rrbracket^{\phi,P} && \{\alpha \mid \alpha \Rightarrow \phi\}\\
-  \llbracket e \rrbracket^{\phi,P}&& \{\alpha \cdot e \cdot \beta \mid
-  (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \phi \}
-  \\ \llbracket \_ \rrbracket^{\phi,P}&& \bigcup_{e \in
-    \dom(P)}\llbracket e \rrbracket^{\phi,P}\\
-  \llbracket t \rrbracket^{\phi,P} &&  \{\alpha \mid \alpha \Rightarrow \phi \wedge t\}\\
-  \llbracket{p+q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cup \llbracket q \rrbracket^{\phi,P}\\
-  \llbracket{p \& q}\rrbracket^{\phi,P} && \llbracket{p}\rrbracket^{\phi,P} \cap \llbracket q \rrbracket^{\phi,P}\\
-  \llbracket{p;q}\rrbracket^{\phi,P} && \llbracket p \rrbracket^{\phi,P} \cdot \llbracket{q}\rrbracket^{\phi,P}\\
-  \llbracket p^*\rrbracket^{\phi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\phi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\phi,P}}_{n}} \\
-  \llbracket \sim p \rrbracket^{\phi,P} && \llbracket \_^*\rrbracket^{\phi,P} \setminus \llbracket p \rrbracket^{\phi,P} \\
+  \llbracket 0 \rrbracket^{\varphi,P} && \{\} \\  
+  \llbracket 1 \rrbracket^{\varphi,P} && \{\alpha \mid \alpha \Rightarrow \varphi\}\\
+  \llbracket e \rrbracket^{\varphi,P}&& \{\alpha \cdot e \cdot \beta \mid
+  (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \varphi \}
+  \\ \llbracket \_ \rrbracket^{\varphi,P}&& \bigcup_{e \in
+    \dom(P)}\llbracket e \rrbracket^{\varphi,P}\\
+  \llbracket t \rrbracket^{\varphi,P} &&  \{\alpha \mid \alpha \Rightarrow \varphi \wedge t\}\\
+  \llbracket{p+q}\rrbracket^{\varphi,P} && \llbracket{p}\rrbracket^{\varphi,P} \cup \llbracket q \rrbracket^{\varphi,P}\\
+  \llbracket{p \& q}\rrbracket^{\varphi,P} && \llbracket{p}\rrbracket^{\varphi,P} \cap \llbracket q \rrbracket^{\varphi,P}\\
+  \llbracket{p;q}\rrbracket^{\varphi,P} && \llbracket p \rrbracket^{\varphi,P} \cdot \llbracket{q}\rrbracket^{\varphi,P}\\
+  \llbracket p^*\rrbracket^{\varphi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\varphi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\varphi,P}}_{n}} \\
+  \llbracket \sim p \rrbracket^{\varphi,P} && \llbracket \_^*\rrbracket^{\varphi,P} \setminus \llbracket p \rrbracket^{\varphi,P} \\
   \llbracket \langle a \rangle~p \rrbracket && \doublehat{R_a}\llbracket p \rrbracket
   
   \end{array}
@@ -668,7 +668,66 @@ terms can be mapped to finite state machines that represent sets of
 guarded strings, interpreted as propositions.
 
 
-\section{Direct Bounded Implementation}
+\section{Direct Bounded Interpretation}
+
+We also implement the semantics of Epik terms using lazy lists~\cite{LazyLists}
+in Haskell, rather than the direct interpretation as sets. Unfortunately,
+regular expressions, and hence also Epik, can denote infinite sets of strings,
+for example the term $\_^*$. Normally regular languages are represented using a
+finite coalgebra~\cite{}. However the non-distributivity of $\diamond$ accross
+$;$ complicates this construction~\footnote{Axiomatic and Coalgebraic models for
+  Epik are open questions}. To sidestep this, we parameterize the interpretation
+function on a positive integer $n$ and only produce guarded strings of length
+$n$ or less.  The length of a guarded string $g$, written $|g|$ is the number of
+events in the string, so $\alpha$ has length $0$, $\alpha e\beta$ has length
+$1$, and $\alpha e \beta e' \gamma$ has length $2$.
+
+We translate the Epik terms into a Haskell algebraic datatype that represents
+terms with the same signature as described in Section 2. We then paramaterize
+the interpretation function, $\llparenthesis p \rrparenthesis^{\varphi,P}_n$ on an
+integer $n$ that describes the maximum length of a string we will produce. The
+bounded interpretation into lists of strings is very similar to the unbounded
+interpretation into sets of strings, except for the bounds checking. The full
+details are shown in Figure~\ref{fig:list-interp}: we use list-comprehension
+notation, which is analogous to set-builder notation, except that it produces a
+list (potentially with duplicated elements) instead of a set, and so is written
+with square brackets $[]$. We use $+$ to indicate list concatenation, and $\sum
+l$ to indicate the concatenation of a list of lists $l$. We overload the set
+membership symbol $\in$ to also indicate membership in a list. We also lift the
+fusion operator $\cdot$ to lists. For a list of guarded strings $l$, we write
+$l|_n$ as shorthand for the set $[ g~|~g \in l , |g| \leq n]$.
+
+First of all, whenever $n = 0$, the set of guarded strings is empty. TODO ADD
+MORE TEXT.
+
+The final step is to convert the list of guarded strings into a set of guarded
+strings. Since a list is just an ordered multiset, we forget the order, and
+remove all duplicates. Haskell's libraries have a built-in function for this,
+\texttt{Data.Set.fromList}, which converts a list into a set.
+
+\begin{figure}
+  \[\begin{array}{r >{\triangleq}c l}
+  \llparenthesis p \rrparenthesis^{\varphi,P}_0 && [] \\
+  \llparenthesis 0 \rrparenthesis^{\varphi,P}_n && [] \\
+  \llparenthesis 1 \rrparenthesis^{\varphi,P}_n && [\alpha \mid \alpha \leq \varphi] \\
+  \llparenthesis e \rrparenthesis^{\varphi,P}_n && [\alpha \cdot e \cdot \beta \mid (\alpha, \beta) \in P(e), \alpha\vee \beta \Rightarrow \varphi] \\
+  \llparenthesis \_ \rrparenthesis^{\varphi,P}_n && \sum [\llparenthesis e \rrparenthesis^{\varphi,P} \mid e \in \dom(P) ] \\
+  \llparenthesis t \rrparenthesis^{\varphi,P}_n && [\alpha\mid \alpha \Rightarrow \varphi \wedge t] \\
+  \llparenthesis p + q \rrparenthesis^{\varphi,P}_n && \llparenthesis p \rrparenthesis^{\varphi,P}_n + \llparenthesis q \rrparenthesis^{\varphi,P}_n \\
+  \llparenthesis p \& q \rrparenthesis^{\varphi,P}_n &&
+  [g~|~g \in \llparenthesis p \rrparenthesis_n^{\varphi,P}, g \in \llparenthesis q \rrparenthesis_n^{\varphi,P}] \\
+  \llparenthesis p;q \rrparenthesis^{\varphi,P}_n &&
+  \left(\llparenthesis p \rrparenthesis^{\varphi,P}_n \cdot \llparenthesis q\rrparenthesis^{\varphi,P}_n\right)|_n\\
+  \llparenthesis p^* \rrparenthesis^{\varphi,P}_n && [] + \left(\llparenthesis p\rrparenthesis^{\varphi,P}_n \cdot  \llparenthesis p^* \rrparenthesis^{\varphi,P}_{n-i}\right)|_n \\
+  \multicolumn 2 r {} & \text{where}~i = \max\{1,\min\{|g|\mid g \in \llbracket p \rrbracket^{\varphi,P}\}\}\\
+  \llparenthesis \sim p \rrparenthesis^{\varphi,P}_n && [g \mid g \in \llbracket \_^* \rrbracket^{\varphi,P}_n, g \not\in \llbracket p \rrbracket^{\varphi,P}_n] \\
+  \llparenthesis \langle a \rangle p \rrparenthesis^{\varphi,P}_n &&
+  [g' \mid g \in g'~\doublehat{R_a}~g, g \in \llparenthesis p \rrparenthesis^{\varphi,P}]
+  \end{array}
+  \]
+\end{figure}
+
+TODO Describe advantages of Lazy Lists
 
 
 \section{Syntax-semantics interface}
