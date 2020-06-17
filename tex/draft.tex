@@ -405,38 +405,38 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 
 \end{example}
 
-Kleene Algebra with Tests has the algebraic signature
-$\tuple{K,+,\cdot,*,\bar{},0,1}$.  To this we add an unary operation
-$\Diamond_a$ for each agent, and a unary complent operation
-$\cdot^{c}$ on propositions.  This results in the signature
-$\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_a,\Diamond_b}$ for
-epistemic KAT with two agents.
-
-We interpret each term in as a set of guarded strings as indicated in
-Figure~\ref{fig:interp}. A bare event $e$ is interpreted as the set of
-guarded strings allowed by $\varphi$ and $P$. The operation $p + q$ is
-set union. The constant $0$ is the empty set.  The constant 1 is the
-set of all truth assignments obeying the constraint on truth
-assignments, i.e. $\{10,01\}$ in the coin example.  The operation
-$\cdot$ is fusion product raised to sets: $x \cdot y$ is the set of
-all defined fusion products of an element of $x$ with and element of
-$y$.  The operation $*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$,
-where $x^i$ is the $i$-times product of $x$ with itself and $x^0=1$.
-Subsets of $1$ indicated by $t$ are also elements of $K$, and these
-form the Boolean algebra of tests, denoting all atoms admitted by the
-constraint $\varphi$ and the boolean test $t$.  We ``overload'' $\cdot$
-to further indicate boolean conjunction, $+$ to further indicate
-boolean disjunction, and $0,1$ to indicate the zero and one elements
-of the boolean algebra. The overbar operation denotes complement in
-this Boolean algebra: $\overline t$ denotes all atoms $\alpha$ such
-that $\alpha \Rightarrow \neg t$.  Other boolean operators (such as
+These operators combine to form the algebraic structure Kleene Algebra
+with Tests (\textsc{Kat}), which has the algebraic signature
+$\tuple{K,+,\cdot,*,\bar{},0,1}$.  We interpret each term in as a set
+of guarded strings as indicated in Figure~\ref{fig:interp}. A bare
+event $e$ is interpreted as the set of guarded strings allowed by
+$\varphi$ and $P$. The operation $p + q$ is set union. The constant
+$0$ is the empty set.  The constant 1 is the set of all truth
+assignments obeying the constraint on truth assignments,
+i.e. $\{10,01\}$ in the coin example.  The operation $\cdot$ is fusion
+product raised to sets: $x \cdot y$ is the set of all defined fusion
+products of an element of $x$ with and element of $y$.  The operation
+$*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$, where $x^i$ is the
+$i$-times product of $x$ with itself and $x^0=1$.  Subsets of $1$
+indicated by $t$ are also elements of $K$, and these form the Boolean
+algebra of tests, denoting all atoms admitted by the constraint
+$\varphi$ and the boolean test $t$.  We ``overload'' $\cdot$ to
+further indicate boolean conjunction, $+$ to further indicate boolean
+disjunction, and $0,1$ to indicate the zero and one elements of the
+boolean algebra. The overbar operation denotes complement in this
+Boolean algebra: $\overline t$ denotes all atoms $\alpha$ such that
+$\alpha \Rightarrow \neg t$.  Other boolean operators (such as
 implication $\Rightarrow$) are encoded as syntactic sugar in the
-standard way. The complement operation ${p}^c$ is complement at the
-level of sets of guarded strings, defined to every set the universe
-$\_^*$ except those denoted by $p$. Finally, the epistemic modality
-$\Diamond_a$ is interpreted using Kripke semantics, as pre-image
+standard way. 
+
+
+To this we add an unary operation $\Diamond_a$ for each agent $a$, and a
+unary complent operation $\cdot^{c}$ on terms.  This results in the
+signature $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_a,\Diamond_b}$
+for epistemic KAT with two agents.  We interpret the epistemic
+epistemic modality $\Diamond_a$ using Kripke semantics, as pre-image
 relative to a fixed relation $R_a$ between guarded strings,
-$\Diamond_a x = \setabs{u}{\exists v.\element{v}{x} \wedge u R_a v}$.
+$\Diamond_a~x = \{u \mid \exists v. v \in x \wedge u \mathrel{R_a} v\}$.
 Here $u$ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 
@@ -449,31 +449,31 @@ Here $u$ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 
 It remains to define the Kripke relation on guarded strings from an
-agent specification as in Figure \ref{epikfigure}. An an agent
-specification pairs each bare event with a set of bare events, and so
-determines a relation between bare events, call it relation $R_a$ for
-an agent $a$.  This determines a relation $\hat{R_a}$ between
-decorated events, see \ex{Rhat}.  It is generalized to a relation
-$\doublehat{R}$ on arbitrary guarded strings by relational Kleene
-star, as defined in \ex{Rhathat}. The operation $\cdot$ in the
-definition is KAT product, which enforces matching of tests.  The
-number of terms $n$ is construed as satisfying $n\geq 1$.  {\em What
-  is desired for $n=0$?}
+agent specification as in Figure \ref{epikfigure}. In Epik, an agent
+specification pairs each bare event with a set of ($+$-separated) bare
+events, and so determines a relation between bare events, call it
+relation $R_a$ for an agent $a$.  We can lift this to a relation
+$\hat{R_a}$ between decorated events for a given $\varphi$ and $P$,
+see \ex{Rhat}, and again to generalized to a relation $\doublehat{R}$
+on arbitrary guarded strings by relational Kleene star (as opposed to
+the Kleene star from aboce) , as defined in \ex{Rhathat}. The
+operation $\cdot$ in the definition is KAT product, which enforces
+matching of tests.
 
-\begin{example}   \label{Rhat}
-\hspace{-2mm} \(
-\hat{R} =_{\mbox{\footnotesize{def.}}} 
-\{\tuple{u,v} | \exists c \exists d. cRd \wedge \element{u}{\hat{c}}  \wedge \element{v}{\hat{d}} \, \} \)
-\end{example}
+%% \begin{example}   \label{Rhat}
+%% \hspace{-2mm} \(
+%% \hat{R} \triangleq
+%% \{\tuple{u,v} \mid \exists c \exists d. c\mathrel R d \wedge u \in \hat{c}  \wedge v \in \hat{d} \, \} \)
+%% \end{example}
 
 \begin{example}   \label{Rhathat}
 \hspace{-2mm}\(
-\doublehat{R} =_{\mbox{\footnotesize{def.}}} 
+\doublehat{R} \triangleq
 \hspace{-2mm}\begin{array}[t]{l}
-\{ \tuple{x,y}| \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
-\hspace{6mm} u_1\hat{R}v_1 \wedge ... \wedge u_n\hat{R}v_n \wedge\\
-\hspace{6mm} x = u_1 \cdot ... \cdot u_n \hspace{1mm} \wedge \\
-\hspace{6mm} y = v_1 \cdot ... \cdot v_n \hspace{2mm} \}
+\{ \tuple{x,y} \mid \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
+\hspace{6mm} u_1\mathrel{R}v_1 \wedge ... \wedge u_n\mathrel{R}v_n \wedge\\
+\hspace{6mm} x \in \llbracket u_1 \cdot ... \cdot u_n \rrbracket^{\varphi,P}\hspace{1mm} \wedge \\
+\hspace{6mm} y \in \llbracket v_1 \cdot ... \cdot v_n \rrbracket^{\varphi,P} \hspace{2mm} \}
 \end{array}
 \)
 \end{example}
@@ -513,26 +513,32 @@ base worlds.
   \label{fig:interp}
 \end{figure}
 
+The complement operation ${p}^c$ is complement at the level of sets of
+guarded strings, defined to every set the universe $\_^*$ except those
+denoted by $p$. Note that $\llbracket 0^c \rrbracket^{\varphi,P} =
+\llbracket\_^*\rrbracket^{\varphi,P}$. We use the complement to define
+universal box modalites as the dual of the diamond modality, $\Box_a x
+= (\Diamond_a x^c)^c$.  For instance, Aly is certain that the coin is
+heads if and only if she does not consider it possible that it is not
+heads.
 
-
-Universal box modalites are defined as duals, $\Box_a x = (\Diamond_a
-x^c)^c$.  For instance, Aly is certain that the coin is heads if and
-only if she does not consider it possible that it is not heads.
-
-Summing up, given an Epik program with $n$ agents, we construct a concrete guarded
-string model $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_1,...,\Diamond_n}$.  The
-elements of $K$ are interpreted as propositions.  $0^c$ is the set of worlds, and it
-may be countably infinite.  $\Diamond_i$ is an epistemic modality for the $i$th
-agent.  Or referring to the Kripke relations $\doublehat{R}_i$, the construction
-defines a multi-agent Kripke frame $\tuple{0^c,\doublehat{R}_1,...,\doublehat{R}_n}$
-(usually a countable one) from an Epik specification. The frame consists of a set of
-worlds, and an epistemic-alternative relation for each agent.  These models are used
-as a target for natural-language interpretation in Section 5 and Section 6, where we
-obtain semantic values such as \sem{Amy knows that it's heads and Bob knows that Amy
-  knows whether it is heads or tails, and does not know that it's heads} as elements
-of $K$. Concretely the proposositions are sets of guarded strings (usually countable
-ones), construed as sets of worlds as they figure in possible worlds semantics for
-natural language.
+Summing up, given an Epik program with $n$ agents, we construct a
+concrete guarded string model
+$\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_{a_1},...,\Diamond_{a_n}}$.
+The elements of $K$ are interpreted as propositions.  $0^c$ is the set
+of worlds, and it may be countably infinite.  $\Diamond_{a_i}$ is an
+epistemic modality for the $i$th agent.  Or referring to the Kripke
+relations $\doublehat{R}_i$, the construction defines a multi-agent
+Kripke frame $\tuple{0^c,\doublehat{R}_1,...,\doublehat{R}_n}$
+(usually a countable one) from an Epik specification. The frame
+consists of a set of worlds, and an epistemic-alternative relation for
+each agent.  These models are used as a target for natural-language
+interpretation in Section 5 and Section 6, where we obtain semantic
+values such as \sem{Amy knows that it's heads and Bob knows that Amy
+  knows whether it is heads or tails, and does not know that it's
+  heads} as elements of $K$. Concretely the proposositions are sets of
+guarded strings (usually countable ones), construed as sets of worlds
+as they figure in possible worlds semantics for natural language.
 
 % $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_1,...,\Diamond_n}$
 
