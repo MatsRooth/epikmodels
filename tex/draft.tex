@@ -271,32 +271,44 @@ events $\{a_1,a_0,b_1,b_0\}$, and in the elevator example, $\{u,d\}$.
 In the elevator example, $T$ is $\{p,q\}$, and in the coin example it
 is $\{h,t\}$.  We write atoms as the boolean formulae that uniquely
 specify the truth assignment. In the elevator example, we have atoms
-the vectors $\bar q \bar p$, $\bar q p$, $q \bar p$, $q p$.  In the
-coin example, we get $h\bar t$ and $\bar h t$, as well as the bogus
-atoms $\bar h \bar t$ and $ht$!  To preclude bogosity, the
-\texttt{constraint} declaration in Figure~\ref{epikfigure} describes
-the set of \emph{feasible atoms}, which we parse into a formula
-$\varphi$ (if there are multiple \texttt{constraint declarations},
-$\varphi$ is the conjunction of the parsed formulae). For a formula
-$\phi$, the set of feasible atoms is $\mathcal A_\phi$. In the coin
-example, the constraint $\varphi$ is $h\bar t + \bar h t$. Since $\bar
-h t \models \varphi$ and $h \bar t \models \varphi$, they are
-permitted feasible atoms, and since $\bar h \bar t$ and $h t$ do not
-satisfy $\phi$ they are not permitted.
+$\bar q \bar p$, $\bar q p$, $q \bar p$, $q p$, for notational
+simplicity we will write these as $\hat0$, $\hat1$, $\hat2$, $\hat3$
+respectivelyto indicate the floor each atom represents. In the coin
+example, we get $h\bar t$ and $\bar h t$ (for which we use the
+shorthand $H$ and $T$), as well as the bogus atoms $\bar h \bar t$ and
+$ht$!  To preclude bogosity, the \texttt{constraint} declaration in
+Figure~\ref{epikfigure} describes the set of \emph{feasible atoms},
+which we parse into a formula $\varphi$ (if there are multiple
+\texttt{constraint} declarations, $\varphi$ is the conjunction of the
+parsed formulae in each). For a formula $\phi$, the set of feasible atoms is
+$\mathcal A_\phi$. In the coin example, the constraint $\varphi$ is
+$h\bar t + \bar h t$. Since $\bar h t \models \varphi$ and $h \bar t
+\models \varphi$, they are permitted feasible atoms, and since $\bar h
+\bar t$ and $h t$ do not satisfy $\phi$ they are not permitted.
 
 Guarded strings are strings of events, alternating with such atoms,
 and starting and ending with atoms.  \ex{gs1} gives the encoding as
 guarded strings of the worlds in \ex{elevator1} and \ex{coin1}.
 
+%% \begin{example}   \label{gs1}
+%% \begin{tabular}[t]{ll}
+%% $v_1$ & $\bar p \bar q ~u~ \bar p q ~u~ q \bar p ~d~ \bar p q ~u~ q \bar p$ \\
+%% $v_2$ & $\bar p \bar q ~u~ \bar p q ~u~ p\bar q ~u~ pq$ \\   
+%% $w_1$ & $\bar h t$ \\
+%% $w_2$ & $\bar h t ~a_0~ \bar h t$ \\  
+%% $w_3$ & $\bar h t ~a_0~ \bar h t ~b_0~ \bar h t$ \\
+%% \end{tabular}
+%% \end{example}
 \begin{example}   \label{gs1}
 \begin{tabular}[t]{ll}
-$v_1$ & $\bar p \bar q ~u~ \bar p q ~u~ q \bar p ~d~ \bar p q ~u~ q \bar p$ \\
-$v_2$ & $\bar p \bar q ~u~ \bar p q ~u~ p\bar q ~u~ pq$ \\   
-$w_1$ & $\bar h t$ \\
-$w_2$ & $\bar h t ~a_0~ \bar h t$ \\  
-$w_3$ & $\bar h t ~a_0~ \bar h t ~b_0~ \bar h t$ \\
+$v_1$ & $\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2$ \\
+$v_2$ & $\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~u~ \hat 3$ \\   
+$w_1$ & $H$ \\
+$w_2$ & $H ~a_0~ H$ \\  
+$w_3$ & $T~a_0~ T ~b_0~ T$ \\
 \end{tabular}
 \end{example}
+
 
 
 \begin{figure}
@@ -337,13 +349,13 @@ start of the second one.  \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
-\hspace{-2mm}\( \bar p q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q \cdot \bar p q ~u~ p \bar q = \bar p q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q ~u~ p \bar q \)
+\hspace{-2mm}\(\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \cdot \hat 1 ~u~ \hat 2 = \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2 \)
 
-\hspace{-2mm}\( \bar p \bar q ~u~ \bar p q ~u~ p \bar q ~d~ \bar p q \cdot p \bar q ~u~ pq = \mbox{\em{undefined}} \)
+\hspace{-2mm}\( \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \cdot \hat 2 ~u~ \hat 3 = \mbox{\em{undefined}} \)
 
-\hspace{-2mm}\(\bar h t \cdot \bar h t ~a_0~ \bar h t = \bar h t ~a_0~ \bar h t \)
+\hspace{-2mm}\(H \cdot H ~a_0~ H = H ~a_0~ H \)
 
-\hspace{-2mm}\(\bar h t \cdot h \bar t ~a_1~ h \bar t = \mbox{\em{undefined}} \)
+\hspace{-2mm}\(T \cdot T ~a_1~ T = \mbox{\em{undefined}} \)
 \end{example}
 
 Rather than individual guarded strings, elements of a guarded string
@@ -368,12 +380,12 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 \(
 \begin{array}[t]{l|c}
   e & \llbracket e \rrbracket^{\varphi, P} \\ \hline  
-  u & \{ \bar p \bar q ~u~ \bar p q, \bar p q ~u ~p \bar q,  p \bar q ~u~ pq\}\\
-  d & \{ \bar p q ~d~ \bar p \bar q, p \bar q~d~\bar p q, p q~d~ p \bar q\}\\
-  a_1 & \{h \bar t ~a_1~ h \bar t \}\\
-  a_0 & \{t \bar h ~a_0~ t \bar h\}\\
-  b_1 & \{h\bar t ~b_1~ h \bar t \}\\
-  b_0 & \{t \bar h ~b_0~ t \bar h \}\\
+  u & \{ \hat 0 ~u~ \hat 1, \hat 1 ~u~ \hat 2,  \hat 2 ~u~ \hat 3\}\\
+  d & \{ \hat 1 ~d~ \hat 0, \hat 2~d~\hat 1, \hat 3 ~d~ \hat 2\}\\
+  a_1 & \{H ~a_1~ H\}\\
+  a_0 & \{T ~a_0~ T\}\\
+  b_1 & \{H ~b_1~ H \}\\
+  b_0 & \{T ~b_0~ T \}
 \end{array}
 \)
 \end{example}
