@@ -799,7 +799,7 @@ terms can be mapped to finite state machines that represent sets of
 guarded strings, interpreted as propositions.
 
 
-\section{Direct Bounded Interpretation}
+\section{Bounded Lazy Interpretation}
 
 We also implement the semantics of Epik terms using lazy
 lists~\cite{LazyLists} in Haskell, rather than the direct
@@ -816,23 +816,34 @@ We translate the Epik terms into a Haskell algebraic datatype that
 represents terms with the same signature as described in Section 2. We
 then paramaterize the interpretation function, $\llparenthesis p
 \rrparenthesis^{\varphi,{\mathcal{E}}}_n$ on an integer $n$ that
-describes the maximum length of a string we will produce. The bounded
-interpretation into lists of strings is very similar to the unbounded
-interpretation into sets of strings, except for the bounds
-checking. The full details are shown in Figure~\ref{fig:list-interp}:
-we use list-comprehension notation, which is analogous to set-builder
-notation, except that it produces a list (potentially with duplicated
-elements) instead of a set, and so is written with square brackets
-$[]$. We use $+$ to indicate list concatenation, and $\sum l$ to
-indicate the concatenation of a list of lists $l$. We overload the set
-membership symbol $\in$ to also indicate membership in a list. We also
-lift the fusion operator $\diamond$ to lists. For a list of guarded
-strings $l$, we write $l|_n$ as shorthand for the set $[ g~|~g \in l ,
-  |g| \leq n]$. Finally, we write $\lfloor X \rfloor$ to convert a set
-$X$ into a list containing same elements with an arbitrary order.
+describes the maximum length of a string we will produce.
 
-First of all, whenever $n = 0$, the set of guarded strings is empty. TODO ADD
-MORE TEXT.
+The bounded interpretation into lists of strings is very similar to
+the unbounded interpretation into sets of strings, except for the
+bounds checking. The full details are shown in
+Figure~\ref{fig:list-interp}. First note that when $n=0$, we simply
+return the empty list, denoted $[]$. Terms of the form $0$, $1$, $e$,
+and $\psi$ have the same denotation as before, translated into a list
+(for a set $X$, $\lfloor X \rfloor$ is a list with the same elements
+as $X$ arbitrarily ordered). The term $p+q$ denotes the list
+concatenation (written $\texttt{+\!+}$) of the denotation of $p$ and of
+$q$. The term $p;q$ denotes the fusion product (lifted to lists) of
+the denotations of $p$ and in $q$ restricted to only those strings
+shorter than $n$ (for a list $l$, $l|_n$ filters out elements longer
+than $n$). The denotation of $p^*$ uses the fact that $p^*$ and $1 +
+p;p^*$ are equivalent, and decrements the size threshold on the
+recursive denotation of $p^*$ by $i$, where $i$ is the length of the
+longest (nonzero) string in the denotation of $p$, making sure to
+filter out guarded strings that are too long. The denotation of $\neg
+p$ is the strings that occur in $\_^*$ and not in $p$ (the $\setminus$
+operator on lists is analogous to the $\setminus$ operator on
+sets). The denotation of $\Diamond_a~p$ is analogous to the set
+denotation, depicted in Figure~\ref{fig:list-interp}-comprehension
+notation\footnote{List comprehension notation is analogous to set
+  builder notation, except that it is written using square
+  brackets. The order preservation is indicated by the keyword
+  \texttt{for}}.
+
 
 To convert from a list of guarded strings $l$ to a set of guarded
 strings, we simply write $\lceil l\rceil$. Note that for any $p$,
@@ -847,27 +858,45 @@ $\varphi$, $\mathcal E$, and $n$, $\left\lceil\llparenthesis p
   \llparenthesis 1 \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \mathcal A_{\mathsf B}^\varphi \rfloor \\
   \llparenthesis e \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \hat{\mathcal E}^\varphi(e)\rfloor \\
   \llparenthesis \psi \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \mathcal A_{\mathsf B}^{\varphi~\psi} \rfloor \\
-  \llparenthesis p + q \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n + \llparenthesis q \rrparenthesis^{\varphi,{\mathcal{E}}}_n \\
+  \llparenthesis p + q \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \mathbin{\texttt{+\!+}} \llparenthesis q \rrparenthesis^{\varphi,{\mathcal{E}}}_n \\
   \llparenthesis p;q \rrparenthesis^{\varphi,{\mathcal{E}}}_n &&
-  \left(\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \cdot \llparenthesis q\rrparenthesis^{\varphi,{\mathcal{E}}}_n\right)|_n\\
-  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [] + \left(\llparenthesis p\rrparenthesis^{\varphi,{\mathcal{E}}}_n \diamond  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_{n-i}\right)|_n \\
-  \multicolumn 2 r {} & \text{where}~i = \max\{1,\min\{|g|\mid g \in \llbracket p \rrbracket^{\varphi,{\mathcal{E}}}\}\}\\
-  \llparenthesis \neg p \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [g \mid g \in \llbracket \_^* \rrbracket^{\varphi,{\mathcal{E}}}_n, g \not\in \llbracket p \rrbracket^{\varphi,{\mathcal{E}}}_n] \\
+  \left(\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \diamond \llparenthesis q\rrparenthesis^{\varphi,{\mathcal{E}}}_n\right)|_n\\
+  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [] + \left(\llparenthesis p\rrparenthesis^{\varphi,{\mathcal{E}}}_n \diamond  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_{m}\right)|_n \\
+  \multicolumn 3 r {\text{where}~
+    \begin{array}[t]{r >{\hspace{-.7em}}l}
+      i &= \max\{1,\min\{|g|\mid g \in \llparenthesis p \rrparenthesis_n^{\varphi,{\mathcal{E}}}\}\}\\
+      m &= \max\{0, n - i\}
+    \end{array}}\\
+  \llparenthesis \neg p \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \llparenthesis \_^* \rrparenthesis^{\varphi,{\mathcal{E}}}_n \setminus \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \\
   \llparenthesis \Diamond_a~p \rrparenthesis^{\varphi,{\mathcal{E}}}_n &&
-  [g' \mid g \in g'~\hat{R_a}~g, g \in \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}]
+  [g' \mid g'~\hat{R_a}~g,~\texttt{for}~g~\texttt{in}~\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n]
   \end{array}
   \]
   \caption{Bounded interpretation using lazy lists}
+  \label{fig:bound-interp}
 \end{figure}
 
-TODO Describe advantages of Lazy Lists
+The lists we use here are \emph{lazy} (as opposed to \emph{strict}),
+which broadly means that computation is delayed until the value is
+needed. This allows us to avoid computing large, unnecessary
+iterations. In the elevator example, this means that $\hat 0;u;u;u^*$
+will unroll the $u^*$ 0 times, once, and then discover that it is
+impossible to unroll it a second time, because $\llparenthesis\hat
+3;u\rrparenthesis^{\varphi,\mathcal E}_n = []$, for any $n$. So
+$\llparenthesis\hat 3;u\rrparenthesis^{\varphi,\mathcal E}_n \diamond
+\llparenthesis u^*\rrparenthesis^{\varphi,\mathcal E}_{n-1}$ will
+return $[]$ without having to compute the full fixpoint of
+$\llparenthesis u\rrparenthesis^{\varphi,\mathcal E}$. Similar
+behavior occurs once $n = 0$.
 
+Conversely, if we used sets (as in the math) instead of lists we would
+need to constantly verify the set invariant (that every element is
+unique) which means processing every element in the set. Verifying
+that every element in $\llparenthesis
+u^*\rrparenthesis^{\varphi,\mathcal E}$ is unique would require the full
+computation of the fixpoint.
 
 \section{Syntax-semantics interface}
-
-
-
-
 
 An architecture of interpretation by transtlation is employed, where English
 sentences are mapped to terms in the logical language (--) via an interpreted
