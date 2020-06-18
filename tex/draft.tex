@@ -258,11 +258,11 @@ defining relations between valuations, as defined in Figure
 state formula as well.  For the heads-tails example, let the state
 formula and the effect formula for $a_1$ (Aly peeking at heads) be as
 specified in \ex{effect}. Then the set of valuations determined by
-$\rho$ and the relation on valuations for the event $u$ are \sem{rho}
-and $\sem{\zeta}^{\sem{rho}}$ as given at the bottom in \ex{6}.  Given
-a state formula $\rho$, the the relation characterizing pre- and
-post-conditions of an event with effect formula $\zeta$ is defined to
-be $\sem{\zeta}^{\sem{\rho}}$.
+$\rho$ and the relation on valuations for the event $u$ are
+$\sem{\rho}$ and $\sem{\zeta}^{\sem{\rho}}$ as given at the bottom in
+\ex{6}.  Given a state formula $\rho$, the the relation characterizing
+pre- and post-conditions of an event with effect formula $\zeta$ is
+defined to be $\sem{\zeta}^{\sem{\rho}}$.
 
 \begin{example}   \label{effect}
 \begin{tabular}[t]{l}
@@ -286,7 +286,7 @@ Effect formula for $a_1$ ($\zeta$)  $\ev{h}{h}$ \\
 \(
 \begin{array}{cll}
   \sem{\rho} & = & \mbox{Set of Boolean valuations of} \\
-            && \mbox{the atomic tests that verify $\rho$.} \\
+            && \mbox{the atomic tests that satisfy $\rho$.} \\
 \sem{\rho\,{:}\,\sigma}^V & = & (\sem{\rho}\cap V)\times(\sem{\sigma}\cap V)\\
 \sem{\zeta{+}\eta}^V & = & \sem{\zeta}^V\cup\sem{\eta}^V\\
 \sem{\zeta{\&}\eta}^V & = & \sem{\zeta}^V\cap\sem{\eta}^V\\
@@ -326,8 +326,8 @@ models.  This paper focuses on defining a family of concrete guarded
 string algebras, the elements of which are sets of guarded strings.
 Definitions and notation mostly follow \cite{kozen2001automata}.
 Additional syntax and semantics is included to model multi-agent
-epistemic semantics.  Guarded strings over a finite alphabet {\sf{P}} are
-like ordinary strings, but with truth assignments to a set $T$ of
+epistemic semantics.  Guarded strings over a finite alphabet {\sf{P}}
+are like ordinary strings, but with truth assignments to a set $T$ of
 primitive propositions (primitive tests) alternating with the symbols
 from $E$. Following \cite{kozen2001automata}, we call these truth
 assignments \emph{atoms}; the set of atoms is notated $\mathcal A$.
@@ -345,11 +345,14 @@ $ht$!  To preclude bogosity, the \texttt{constraint} declaration in
 Figure~\ref{epikfigure} describes the set of \emph{feasible atoms},
 which we parse into a formula $\varphi$ (if there are multiple
 \texttt{constraint} declarations, $\varphi$ is the conjunction of the
-parsed formulae in each). For a formula $\phi$, the set of feasible atoms is
-$\mathcal A_\phi$. In the coin example, the constraint $\varphi$ is
-$h\bar t + \bar h t$. Since $\bar h t \models \varphi$ and $h \bar t
-\models \varphi$, they are permitted feasible atoms, and since $\bar h
-\bar t$ and $h t$ do not satisfy $\phi$ they are not permitted.
+parsed formulae in each). For a formula $\varphi$, the set of atoms
+that satisfy $\varphi$ is $\mathcal A_\varphi$ -- these are the
+feasible atoms. In the coin example, the constraint $\varphi$ is
+$h\bar t + \bar h t$. Since $\bar h t$ satisfies $\varphi$ and $h \bar
+t$ satisfies $\varphi$, they are permitted feasible atoms, and since
+$\bar h \bar t$ and $h t$ do not satisfy $\varphi$ they are not
+permitted. We omit boolean satisfiability since its definition is
+standard.
 
 Guarded strings are strings of events, alternating with such atoms,
 and starting and ending with atoms.  \ex{gs1} gives the encoding as
@@ -414,13 +417,13 @@ start of the second one.  \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
-\hspace{-2mm}\(\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \cdot \hat 1 ~u~ \hat 2 = \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2 \)
+\hspace{-2mm}\(\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \diamond \hat 1 ~u~ \hat 2 = \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2 \)
 
-\hspace{-2mm}\( \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \cdot \hat 2 ~u~ \hat 3 = \mbox{\em{undefined}} \)
+\hspace{-2mm}\( \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \diamond \hat 2 ~u~ \hat 3 = \mbox{\em{undefined}} \)
 
-\hspace{-2mm}\(H \cdot H ~a_0~ H = H ~a_0~ H \)
+\hspace{-2mm}\(H \diamond H ~a_0~ H = H ~a_0~ H \)
 
-\hspace{-2mm}\(T \cdot T ~a_1~ T = \mbox{\em{undefined}} \)
+\hspace{-2mm}\(T \diamond T ~a_1~ T = \mbox{\em{undefined}} \)
 \end{example}
 
 Rather than individual guarded strings, elements of a guarded string
@@ -440,8 +443,8 @@ a function $P$ from agents to relations on atoms that specify the
 effects each action can have. If there are multiple event declarations
 for the same event, only the latter one is incorporated. To construct
 the effect relation $P(e)$ for event $e$, we add a pair $\alpha,
-\beta$ to the relation $P(e)$ for every disjunct $\phi:\phi'$ such
-that $\alpha \models \phi$ and $\beta \models \phi'$.  These have the
+\beta$ to the relation $P(e)$ for every disjunct $\varphi:\varphi'$ such
+that $\alpha$ satisfies $\phi$ and $\beta$ satisfies $\varphi'$.  These have the
 status of event types, in that they can ``happen'' in different
 possible worlds. Here happening corresponds to incrementing the world
 with some compatible element of the event type.  Where $e$ is a bare
@@ -470,39 +473,79 @@ Figure~\ref{fig:interp}, and the examples in \ex{events1}.
 
 \end{example}
 
-These operators combine to form the algebraic structure Kleene Algebra
-with Tests (\textsc{Kat}), which has the algebraic signature
-$\tuple{K,+,\cdot,*,\bar{},0,1}$.  We interpret each term in as a set
-of guarded strings as indicated in Figure~\ref{fig:interp}. A bare
-event $e$ is interpreted as the set of guarded strings allowed by
-$\varphi$ and $P$. The operation $p + q$ is set union. The constant
-$0$ is the empty set.  The constant 1 is the set of all truth
-assignments obeying the constraint on truth assignments,
-i.e. $\{10,01\}$ in the coin example.  The operation $\cdot$ is fusion
-product raised to sets: $x \cdot y$ is the set of all defined fusion
-products of an element of $x$ with and element of $y$.  The operation
-$*$ is Kleene star, with $x* = \cup_{i\geq 0}x^i$, where $x^i$ is the
-$i$-times product of $x$ with itself and $x^0=1$.  Subsets of $1$
-indicated by $t$ are also elements of $K$, and these form the Boolean
-algebra of tests, denoting all atoms admitted by the constraint
-$\varphi$ and the boolean test $t$.  We ``overload'' $\cdot$ to
-further indicate boolean conjunction, $+$ to further indicate boolean
-disjunction, and $0,1$ to indicate the zero and one elements of the
-boolean algebra. The overbar operation denotes complement in this
-Boolean algebra: $\overline t$ denotes all atoms $\alpha$ such that
-$\alpha \Rightarrow \neg t$.  Other boolean operators (such as
-implication $\Rightarrow$) are encoded as syntactic sugar in the
-standard way. 
+\section{A Language for Epistemic Sets of Guarded Strings}
 
+To reason about epistemic alternatives, guarded strings are used to
+represent different possible worlds, so agents' knowledge/beliefs are
+represented by sets of guarded strings. The standard algebra for
+manipulating guarded strings is Kleene Algebra with Tests
+(\textsc{KAT}), which has the algebraic signature
+$\tuple{K,+,;,*,\bar{},0,1}$ \cite{kozen2001automata}. However, the
+KATs don't permit native reasoning about modal operators, so Epik's
+signature needs to subsume the KAT operators.
 
-To this we add an unary operation $\Diamond_a$ for each agent $a$, and a
-unary complent operation $\cdot^{c}$ on terms.  This results in the
-signature $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_a,\Diamond_b}$
-for epistemic KAT with two agents.  We interpret the epistemic
-epistemic modality $\Diamond_a$ using Kripke semantics, as pre-image
-relative to a fixed relation $R_a$ between guarded strings,
-$\Diamond_a~x = \{u \mid \exists v. v \in x \wedge u \mathrel{R_a} v\}$.
-Here $u$ and $v$ are guarded strings, while $x$ is an element of $K$.
+Figure~\ref{fig:epik-grammar} depicts the syntax of Epik's formal
+term language. As in KAT, $0$ is the null element, $1$ is the unit
+element, $+$ indicates disjuction, $;$ indicates event sequencing or
+boolean conjunction, $!$ indicates boolean negation, and $*$ indicates
+iteration. We add some additional operations to reason about epistemic
+alternatives: the term $\Diamond_a~p$ represents epistemic possibility
+for agent $a$ in worlds $p$, and complement $\neg p$ represents the
+worlds not described by $p$. We can encode $\Box_a~p$, i.e. epistemic
+certainty for agent $a$ in worlds $p$, by $\Box_a~p =
+(\Diamond_a~p^c)^c$.
+
+\begin{figure}
+
+  \[\begin{array}{l>{\hspace{-.5em}}c>{\hspace{-0.75em}}l}
+  \multicolumn 2 l {\textrm{tests}}& a~\textrm{is an atomic test} \\
+  t,s & ::=& a~|~0~|~1~|~t+t~|~t;t~|~!t\\
+  \multicolumn 2 l {\textrm{terms}} & e~\textrm{is an atomic event} \\
+  p,q & ::=& e~|~0~|~1~|~t~|~p+p~|~p;p~|~p^*~|\neg p~|\Diamond_a~p
+  \end{array}\]
+
+  Derived Operators\\
+  \mbox{}\qquad \(\Box_a p \triangleq \neg\Diamond_a\neg p \qquad p\&q \triangleq \neg(\neg p + \neg q) \)
+ 
+\caption{The language of Epik terms and key derived
+  operators}
+\label{fig:epik-grammar}
+\label{termfigure}
+\end{figure}
+
+We interpret each term in as a set of guarded strings as indicated in
+Figure~\ref{fig:interp}. The function $\llbracket p
+\rrbracket^{\varphi,P}$ interprets a term $p$ as a set of guarded
+strings consistent with state constraints $\varphi$ and effect
+relation $P$. A bare event $e$ is interpreted as the set of guarded
+strings allowed by $\varphi$ and $P$. The constant $0$ is interpreted
+as the empty set.  The constant $1$ is interpreted as the set of all
+atoms obeying $\varphi$, i.e. $\{h\bar t, \bar h t\}$ in the coin
+example. The operation $p + q$ is interpreted as the union of the
+interpretations of $p$ and $q$. The operation $p;q$ interpreted as the
+fusion product of the interpretations of $p$ and $q$ raised to sets:
+$X \diamond Y = \{ x \diamond y \mid x \in X, y \in Y, x\diamond
+y~\textit{defined}\}$.  The operation $p*$ is Kleene star, which is
+interpreted to be least upper bound of the iterated fusion product of
+the denotation of $p$ with itself. Subsets of $1$ indicated by $t$ are
+also elements of $K$, and these form the Boolean algebra of tests,
+denoting all atoms admitted by the constraint $\varphi$ and the
+boolean test $t$.  We ``overload'' $;$ to further indicate boolean
+conjunction, $+$ to further indicate boolean disjunction, and $0,1$ to
+indicate the zero and one elements of the boolean algebra. The overbar
+operation denotes complement in this Boolean algebra: $\overline t$
+denotes all atoms $\alpha$ such that $\alpha \Rightarrow \neg t$.
+Other boolean operators (such as implication $\Rightarrow$) are
+encoded as syntactic sugar in the standard way. A boolean test $t$
+denotes the set of atoms that satisfy $t;\varphi$, that is, they
+satisfy both $t$ and $\varphi$.
+
+The unary epistemic alternative operation $\Diamond_a$ for each agent
+$a$, is interpreted using using Kripke semantics, as pre-image
+relative to a fixed relation $\hat{R_a}$ between guarded strings,
+$\Diamond_a~x = \{u \mid \exists v. v \in x \wedge u \mathrel{R_a}
+v\}$.  Here $u$ and $v$ are guarded strings, while $x$ is an element
+of $K$.
 
 
 \newlength{\dhatheight}
@@ -518,11 +561,8 @@ agent specification as in Figure \ref{epikfigure}. In Epik, an agent
 specification pairs each bare event with a set of ($+$-separated) bare
 events, and so determines a relation between bare events, call it
 relation $R_a$ for an agent $a$.  We can lift this to a relation
-$\hat{R_a}$ between decorated events for a given $\varphi$ and $P$,
-see \ex{Rhat}, and again to generalized to a relation $\doublehat{R}$
-on arbitrary guarded strings by relational Kleene star (as opposed to
-the Kleene star from aboce) , as defined in \ex{Rhathat}. The
-operation $\cdot$ in the definition is KAT product, which enforces
+$\hat{R_a}$ between guarded strings, as defined in \ex{Rhathat}. The
+operation $(\mathop;)$ in the definition is KAT product, which enforces
 matching of tests.
 
 %% \begin{example}   \label{Rhat}
@@ -533,12 +573,12 @@ matching of tests.
 
 \begin{example}   \label{Rhathat}
 \hspace{-2mm}\(
-\doublehat{R} \triangleq
+\hat{R} \triangleq
 \hspace{-2mm}\begin{array}[t]{l}
 \{ \tuple{x,y} \mid \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
 \hspace{6mm} u_1\mathrel{R}v_1 \wedge ... \wedge u_n\mathrel{R}v_n \wedge\\
-\hspace{6mm} x \in \llbracket u_1 \cdot ... \cdot u_n \rrbracket^{\varphi,P}\hspace{1mm} \wedge \\
-\hspace{6mm} y \in \llbracket v_1 \cdot ... \cdot v_n \rrbracket^{\varphi,P} \hspace{2mm} \}
+\hspace{6mm} x \in \llbracket u_1 ; ... ; u_n \rrbracket^{\varphi,P}\hspace{1mm} \wedge \\
+\hspace{6mm} y \in \llbracket v_1 ; ... ; v_n \rrbracket^{\varphi,P} \hspace{2mm} \}
 \end{array}
 \)
 \end{example}
@@ -559,18 +599,17 @@ base worlds.
 \begin{figure}
   \[\begin{array}{l >{\triangleq}c l}
   \llbracket 0 \rrbracket^{\varphi,P} && \{\} \\  
-  \llbracket 1 \rrbracket^{\varphi,P} && \{\alpha \mid \alpha \Rightarrow \varphi\}\\
-  \llbracket e \rrbracket^{\varphi,P}&& \{\alpha \cdot e \cdot \beta \mid
+  \llbracket 1 \rrbracket^{\varphi,P} && \{\alpha \mid \alpha \in \mathcal A_\varphi\}\\
+  \llbracket e \rrbracket^{\varphi,P}&& \{\alpha~e~\beta \mid
   (\alpha,\beta) \in P(e), \alpha, \beta \Rightarrow \varphi \}
   \\ \llbracket \_ \rrbracket^{\varphi,P}&& \bigcup_{e \in
     \dom(P)}\llbracket e \rrbracket^{\varphi,P}\\
-  \llbracket t \rrbracket^{\varphi,P} &&  \{\alpha \mid \alpha \Rightarrow \varphi \wedge t\}\\
+  \llbracket t \rrbracket^{\varphi,P} &&  \{\alpha \mid \alpha \in \mathcal A_{\varphi;t}\}\\
   \llbracket{p+q}\rrbracket^{\varphi,P} && \llbracket{p}\rrbracket^{\varphi,P} \cup \llbracket q \rrbracket^{\varphi,P}\\
-  \llbracket{p \& q}\rrbracket^{\varphi,P} && \llbracket{p}\rrbracket^{\varphi,P} \cap \llbracket q \rrbracket^{\varphi,P}\\
-  \llbracket{p;q}\rrbracket^{\varphi,P} && \llbracket p \rrbracket^{\varphi,P} \cdot \llbracket{q}\rrbracket^{\varphi,P}\\
-  \llbracket p^*\rrbracket^{\varphi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\varphi,P}\cdot \ldots \cdot \llbracket p \rrbracket^{\varphi,P}}_{n}} \\
-  \llbracket \sim p \rrbracket^{\varphi,P} && \llbracket \_^*\rrbracket^{\varphi,P} \setminus \llbracket p \rrbracket^{\varphi,P} \\
-  \llbracket \langle a \rangle~p \rrbracket && \doublehat{R_a}\llbracket p \rrbracket
+  \llbracket{p;q}\rrbracket^{\varphi,P} && \llbracket p \rrbracket^{\varphi,P} \diamond \llbracket{q}\rrbracket^{\varphi,P}\\
+  \llbracket p^*\rrbracket^{\varphi,P} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\varphi,P}\diamond \ldots \diamond \llbracket p \rrbracket^{\varphi,P}}_{n}} \\
+  \llbracket \neg p \rrbracket^{\varphi,P} && \llbracket \_^*\rrbracket^{\varphi,P} \setminus \llbracket p \rrbracket^{\varphi,P} \\
+  \llbracket \langle a \rangle~p \rrbracket && \{x \mid x~\hat{R_a}~y, y \in \llbracket p \rrbracket\}
   
   \end{array}
   \]
@@ -587,23 +626,25 @@ universal box modalites as the dual of the diamond modality, $\Box_a x
 heads if and only if she does not consider it possible that it is not
 heads.
 
-Summing up, given an Epik program with $n$ agents, we construct a
-concrete guarded string model
-$\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_{a_1},...,\Diamond_{a_n}}$.
-The elements of $K$ are interpreted as propositions.  $0^c$ is the set
-of worlds, and it may be countably infinite.  $\Diamond_{a_i}$ is an
-epistemic modality for the $i$th agent.  Or referring to the Kripke
-relations $\doublehat{R}_i$, the construction defines a multi-agent
-Kripke frame $\tuple{0^c,\doublehat{R}_1,...,\doublehat{R}_n}$
-(usually a countable one) from an Epik specification. The frame
-consists of a set of worlds, and an epistemic-alternative relation for
-each agent.  These models are used as a target for natural-language
-interpretation in Section 5 and Section 6, where we obtain semantic
-values such as \sem{Amy knows that it's heads and Bob knows that Amy
-  knows whether it is heads or tails, and does not know that it's
-  heads} as elements of $K$. Concretely the proposositions are sets of
-guarded strings (usually countable ones), construed as sets of worlds
-as they figure in possible worlds semantics for natural language.
+Summing up, given an Epik program with $n$ agents, we construct state
+constraints $\varphi$, effect relations $P$, and a concrete guarded
+string model for each term using $\llbracket -
+\rrbracket^{\varphi,P}$.
+%% $\tuple{K,+,;,*,\bar{},0,1,{}^c,\Diamond_{a_1},...,\Diamond_{a_n}}$.
+ $0^c$ is the set of worlds, and it may be countably infinite.
+$\Diamond_{a_i}$ is an epistemic modality for the $i$th agent.  Or
+referring to the Kripke relations $\hat{R}_i$, the construction
+defines a multi-agent Kripke frame
+$\tuple{0^c,\hat{R}_1,...,\hat{R}_n}$ (usually a countable one) from
+an Epik specification. The frame consists of a set of worlds, and an
+epistemic-alternative relation for each agent.  These models are used
+as a target for natural-language interpretation in Section 5 and
+Section 6, where we obtain semantic values such as \sem{Amy knows that
+  it's heads and Bob knows that Amy knows whether it is heads or
+  tails, and does not know that it's heads} as elements of
+$K$. Concretely the proposositions are sets of guarded strings
+(usually countable ones), construed as sets of worlds as they figure
+in possible worlds semantics for natural language.
 
 % $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_1,...,\Diamond_n}$
 
@@ -844,33 +885,6 @@ TODO Describe advantages of Lazy Lists
 \section{Syntax-semantics interface}
 
 
-\begin{figure}
-\begin{tabular}{lll}
-agents & $a,b...$ & $a {:}{:}{=} \, \tuple{\mbox{atomic agents}}$
-\end{tabular}
-
-\begin{tabular}{lll}
-tests & $T,S...$ & $T{:}{:}{=} \, \begin{array}[t]{l}\tuple{\mbox{atomic tests}}\,|\,0\,|\,1\,|\\ T{+}S\;|\;T\,{;}\,S\;|\;!T\end{array}$
-\end{tabular}
-
-\begin{tabular}{lll}
-propositions & $p,q...$ & \(p{:}{:}{=} \,
-\begin{array}[t]{l}\tuple{\mbox{atomic events}}\,|\,\_\, |\\
-T \,|\, 
-p{+}q \,|\,
-p\mbox{\&}q \,|\, \\
-p{;}q \;|\;
-p{*} \;|\; {\sim}p \;|\\
-{\langle a \rangle}~p
-\end{array}\)
-\end{tabular}
-
-
-\caption{The language of Epik terms. Propositional terms are interpreted
-  as sets of guarded strings.}
-\label{fig:epik-grammar}
-\label{termfigure}
-\end{figure}
 
 
 
