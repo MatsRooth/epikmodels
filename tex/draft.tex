@@ -210,8 +210,8 @@ coin is heads up.  In the other example, let $q$ be the proposition
 that the elevator is on a high floor (2 or 3), and $p$ be the
 proposition that it is on an odd floor (1 or 3). Then preconditions
 can be described by Boolean formulas, with $h$ being the precondition
-of $a_1$, and $!(pq)$ being the precondition of $u$. Juxtaposition is
-used for Boolean conjunction, and the exclamation point for for
+of $a_1$, and $\overline{pq}$ being the precondition of $u$. Juxtaposition is
+used for Boolean conjunction, and the overbar for
 Boolean negation. Events come as well with a relation between prior
 and following state, for instance with $u$ incrementing the floor.
 This is expressed using an operator ``$:$'' (read ``and next'') that
@@ -229,12 +229,77 @@ Plus is disjunction.
 \begin{example}   \label{event1}
 \hspace{-5mm}\( \begin{array}[t]{cl}
 a_1 & h:h \\
-a_0 & \ev{(!h)}{(!h)} \\
-% u & (!q!p) \! : \!(!qp) + \\
-u & \ev{(!q!p)}{(!qp)} + \ev{(!qp)}{(q!p)} + \ev{(q!p)}{(qp)} \\
-d & \evr{(!q!p)}{(!qp)} + \evr{(!qp)}{(q!p)} + \evr{(q!p)}{(qp)} \\ 
+a_0 & \ev{\bar{h}}{\bar{h}} \\
+% u & (\bar{q}\bar{p}) \! : \!(\bar{q}p) + \\
+u & \ev{(\bar{q}\bar{p})}{(\bar{q}p)} + \ev{(\bar{q}p)}{(q\bar{p})} + \ev{(q\bar{p})}{(qp)} \\
+d & \evr{(\bar{q}\bar{p})}{(\bar{q}p)} + \evr{(\bar{q}p)}{(q\bar{p})} + \evr{(q\bar{p})}{(qp)} \\ 
 \end{array} \)
 \end{example}
+
+In this discussion, a sequence such as $\bar{q}{p}$ can be viewed as a
+valuation of the primitive propositions $q$ and $p$, which is used to
+describe world state. The primitives are listed in fixed order, and
+left unmarked (indicating true) or marked with the overbar (indicating
+false).  Suppose that in the coin example, we had an additional
+primitive stative proposition (or atomic test) $t$, interpreted as
+tails.  Since a coin is heads or tails but not both, we want to allow
+the valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
+$\bar{h}\bar{t}$.  This is enforced by a {\em state formula},
+which is a simply Boolean formula, in this case \exi{effect}{a}.
+Where
+{\sf{B}} is a set of atomic tests and $\rho$ is a state constraint
+over {\sf{B}}, ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\rho}$ is the set of valuations of
+{\sf{B}} that make formula $\rho$ true. 
+
+Formulas like the ones in \ex{event1} that describe pre- and
+post-conditions are {\em effect formulas}. They are interpreted as
+defining relations between valuations, as defined in Figure
+\ref{effectfigure}.  The valuations they relate are constrained by the
+state formula as well.  For the heads-tails example, let the state
+formula and the effect formula for $a_1$ (Aly peeking at heads) be as
+specified in \ex{effect}. Then the set of valuations determined by
+$\rho$ and the relation on valuations for the event $u$ are \sem{rho}
+and $\sem{\zeta}^{\sem{rho}}$ as given at the bottom in \ex{6}.  Given
+a state formula $\rho$, the the relation characterizing pre- and
+post-conditions of an event with effect formula $\zeta$ is defined to
+be $\sem{\zeta}^{\sem{\rho}}$.
+
+\begin{example}   \label{effect}
+\begin{tabular}[t]{l}
+State formula ($\rho$)  $h\bar{t} + \bar{h}t$ \\
+Effect formula for $a_1$ ($\zeta$)  $\ev{h}{h}$ \\
+\( \sem{\rho} = \{h\bar{t},\bar{h}t\} \)  \\
+\( \sem{\zeta}^{\sem{\rho}} = \{\pair{h\bar{t}}{h\bar{t}}\} \)  \\
+\end{tabular}
+\end{example}  
+
+
+\begin{figure}
+\hspace{-2mm}\begin{tabular}{lll}
+  state formulas & $\rho,\sigma...$ & $\rho{:}{:}{=} \, \begin{array}[t]{l}\tuple{\mbox{atomic tests}}\,|\\
+    0\,|\,1\,| \; \rho{+}\sigma\;| \\ \rho\,{\&}\,\sigma\;|\;\bar{\rho}\end{array}$ \\
+  effect formulas & $\zeta,\eta...$ & $\zeta{:}{:}{=} \, \begin{array}[t]{l} \rho\,{:}\,\sigma \,|\, \zeta{+}\eta \\
+    \zeta\,{\&}\,\eta\;|\;\bar{\zeta}\end{array}$
+\end{tabular}
+\vspace{1mm}
+
+\(
+\begin{array}{cll}
+  \sem{\rho} & = & \mbox{Set of Boolean valuations of} \\
+            && \mbox{the atomic tests that verify $\rho$.} \\
+\sem{\rho\,{:}\,\sigma}^V & = & (\sem{\rho}\cap V)\times(\sem{\sigma}\cap V)\\
+\sem{\zeta{+}\eta}^V & = & \sem{\zeta}^V\cup\sem{\eta}^V\\
+\sem{\zeta{\&}\eta}^V & = & \sem{\zeta}^V\cap\sem{\eta}^V\\
+\sem{\bar{\zeta}}^V & = & V \times V \setminus \sem{\zeta}^V\\
+\end{array}  
+\)
+
+\caption{Syntax and semantics of state formulas and effect formulas. Effect formulas
+  are evaluated relative to as set Boolean valuations $V$, and denote relations between
+  Boolean valuations.}
+\label{effectfigure}
+\end{figure}
+
 
 \section{Epistemic guarded string models}
 Figure \ref{epikfigure} shows an Epik program that describes a
@@ -261,7 +326,7 @@ models.  This paper focuses on defining a family of concrete guarded
 string algebras, the elements of which are sets of guarded strings.
 Definitions and notation mostly follow \cite{kozen2001automata}.
 Additional syntax and semantics is included to model multi-agent
-epistemic semantics.  Guarded strings over a finite alphabet $E$ are
+epistemic semantics.  Guarded strings over a finite alphabet {\sf{P}} are
 like ordinary strings, but with truth assignments to a set $T$ of
 primitive propositions (primitive tests) alternating with the symbols
 from $E$. Following \cite{kozen2001automata}, we call these truth
@@ -385,8 +450,8 @@ corresponding set of guarded strings, consisting of the bare event
 decorated with compatible truth assignments denoted by $P$ that are
 admitted by the world-constraints $\varphi$.  See this formally in
 Figure~\ref{fig:interp}, and the examples in \ex{events1}.
-% u (!q!p):(!qp) + (!qp):(q!p) + (q!p):(qp) 173
-% d (!qp):(!q!p) + (q!p):(!qp) + (qp):(q!p)
+% u (\bar{q}\bar{p}):(\bar{q}p) + (\bar{q}p):(q\bar{p}) + (q\bar{p}):(qp) 173
+% d (\bar{q}p):(\bar{q}\bar{p}) + (q\bar{p}):(\bar{q}p) + (qp):(q\bar{p})
 
 \begin{example} \label{events1}
   \renewcommand{\arraystretch}{1.1}
