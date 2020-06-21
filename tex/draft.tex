@@ -81,7 +81,7 @@
 Linguistic semantics in the Montague tradition proceeds by assigning
 propositional {\em semantic values} to disambiguated sentences of a
 natural language.  A proposition is a set or class of {\em possible
-  worlds}.  These worlds are often assumed to be things with the same
+  worlds}.  These are often assumed to be things with the same
 nature and complexity as the world we occupy \citep{lewis1986plurality}.  But
 alternatively, one can work with small idealized models, in order to
 illustrate and test ideas.  To build such models, spaces of worlds and
@@ -94,8 +94,8 @@ to scale up toy or idealized models to countable sets of worlds, and
 to constructive and computable modeling of epistemic alternatives for
 agents.  We describe a certain systematic way of defining such models,
 and illustrate how to apply them in natural language semantics.
-The focus on epistemic semantics and clausal embedding. The fundamental move is to
-identify possible worlds with strings primitive events, so that
+The focus is on epistemic semantics and clausal embedding. The fundamental move is to
+identify possible worlds with strings of primitive events, so that
 propositions are sets of strings. An advantage in this is that it
 allows for a mathematical description of an algebra of a propositions,
 coupled with a computational representation using either lazy lists of
@@ -118,13 +118,14 @@ order to capture the epistemic consequences of perceptual events
 epistemic alternative relations.  Literature on finite state methods
 in linguistic semantics has used event strings and sets of event
 strings to theorize about tense and aspect in natural language
-semantics \citep{fernando2004finite,fernando2007observing,carlson2009tense} and to
-express intensionality \cite{fernando2017intensions}.  Literature on
-finite state intensiononal semantics has discussed how to do the
-semantics of intensional complementation including indirect questions
-in a setting where compositional semantics is expressed in a finite
-state calculus \citep{rooth2017finite,collard2018finite}.  We adopt
-this in our syntax-semantics interface for English.
+semantics
+\citep{fernando2004finite,fernando2007observing,carlson2009tense} and
+to express intensionality \cite{fernando2017intensions}.  Literature
+on finite state intensiononal semantics has investigated how to do the
+semantics of intensional complementation, including indirect
+questions, in a setting where compositional semantics is expressed in
+a finite state calculus \citep{rooth2017finite,collard2018finite}.  We
+adopt this in our syntax-semantics interface for English.
 
 
 
@@ -166,7 +167,7 @@ sentences shown in \ex{elevator2} are observed.
 \end{example}
 
 {\em The Concealed Coin}.  Amy and Bob are seated at a table.  There is a coin on the
-table under a cup, heads up (H).  The coin could be H (heads) or T (tails), and
+table under a cup, heads up.  The coin could be heads or tails, and
 neither agent knows which it is.  This initial situation is possible world $w_1$.
 Two additional worlds $w_2$ and $w_2$ are
 defined by sequencing events after the initial state, with events interpreted as in
@@ -175,10 +176,10 @@ sentences shown in \ex{coin3} are observed.
 
 \begin{example}  \label{coin1}
 \hspace{-4mm} \begin{tabular}[t]{ll}
-  $a_1$  & Amy peeks at H, by tipping the cup.
-  \\ & Bob sees she's peeking, but not what \\
-  & she sees. \\
-  $b_1$  & Bob peeks at H. \\ 
+  $a_1$  & Amy peeks at heads, by tipping the
+  \\ & cup. Bob sees she's peeking, but not\\
+  & what she sees. \\
+  $b_1$  & Bob peeks at heads. \\ 
 \end{tabular}
 \end{example}
 
@@ -193,10 +194,10 @@ sentences shown in \ex{coin3} are observed.
 \begin{example} \label{coin3}
 \hspace{-9mm} \begin{tabular}[t]{cccl}
   $w_1$ & $w_2$  & $w_3$ & Sentence\\
-  false & true & true& Amy knows it's H. \\
-  false & false & true& Bob knows it's H. \\
-  false & false & true& Bob knows Amy \\ &&& knows it's H. \\
-  false & true & true& Bob knows Amy knows \\ &&& whether it's H or T. \\
+  false & true & true& Amy knows that it's \\ &&& heads. \\
+  false & false & true& Bob knows thats it's \\&&&heads. \\
+  false & false & true& Bob knows Amy \\ &&& knows it's heads. \\
+  false & true & true& Bob knows Amy \\ &&& knows  whether it's \\ &&& heads or tails. \\
 \end{tabular}
 \end{example}
 
@@ -226,6 +227,8 @@ $d$ in similar terms.  Plus is disjunction.
 \newcommand{\ev}[2]{#1 \!\! : \!\! #2}
 \newcommand{\evr}[2]{#2 \!\! : \!\! #1}
 
+\renewcommand{\arraystretch}{1.0}
+
 \begin{example}   \label{event1}
 \hspace{-5mm}\( \begin{array}[t]{cl}
 a_1 & h:h \\
@@ -236,142 +239,93 @@ d & \evr{(\bar{q}\bar{p})}{(\bar{q}p)} + \evr{(\bar{q}p)}{(q\bar{p})} + \evr{(q\
 \end{array} \)
 \end{example}
 
-In this discussion, a sequence such as $\bar{q}{p}$ can be viewed as a
-valuation of the primitive propositions $q$ and $p$, which is used to
-describe world state. The primitives are listed in fixed order, and
-left unmarked (indicating true) or marked with the overbar (indicating
-false).  Suppose that in the coin example, we had an additional
-primitive stative proposition (or atomic test) $t$, interpreted as
-tails.  Since a coin is heads or tails but not both, we want to allow
-the valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
-$\bar{h}\bar{t}$.  This is enforced by a {\em state formula}, which is
-a simply Boolean formula, in this case \exi{effect}{a}.  Where
-{\sf{B}} is a set of atomic tests and $\rho$ is a state constraint
-over {\sf{B}}, ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\rho}$ is the set of
-valuations of {\sf{B}} that make formula $\rho$ true. Following
-\cite{kozen2001automata}, we call the valuations
-\emph{atoms}.
+\section{Epistemic guarded string models}
+
+In the discussion at the end of the last section, a sequence such as
+$\bar{q}{p}$ can be viewed as a valuation of primitive test
+propositions, which is used to describe world state. The primitives
+are listed in fixed order, and left unmarked (indicating true) or
+marked with the overbar (indicating false).  Suppose that in the coin
+example, we have an additional primitive stative proposition (or
+atomic test) $t$, interpreted as tails.  Since a coin is heads or
+tails but not both, we want to allow the valuations $h\bar{t}$ and
+$\bar{h}t$, and disallow $ht$ and $\bar{h}\bar{t}$.  This is enforced
+by a {\em state formula}, which is a simply Boolean formula, in this
+case \exi{effect}{a}.  Where {\sf{B}} is a set of atomic tests and
+$\phi$ is a state constraint over {\sf{B}},
+${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\phi}$ is the set of valuations of
+{\sf{B}} that make formula $\phi$ true. The valuations are called
+atoms, because they correspond to the atoms of Boolean algebra of
+tests \citep{kozen2001automata}.
+
 
 Formulas like the ones in \ex{event1} that describe pre- and
 post-conditions are {\em effect formulas}. They are interpreted as
-defining relations between valuations, as defined in Figure
-\ref{effectfigure}.  The valuations they relate are constrained by the
+defining relations between atoms, as defined in Figure
+\ref{effectfigure}.  The atoms they relate are constrained by the
 state formula as well.  For the heads-tails example, let the state
 formula and the effect formula for $a_1$ (Aly peeking at heads) be as
-specified in \ex{effect}. Then the set of valuations determined by
-$\varphi$ and the relation on valuations for the event $u$ are
-$\mathcal A_{\mathsf B}^\varphi$ and
-$\llbracket\zeta\rrbracket^\varphi$ as given at the bottom in \ex{6}.
-Given a state formula $\rho$, the the relation characterizing pre- and
-post-conditions of an event with effect formula $\zeta$ is defined to
-be $\sem{\zeta}^{\sem{\rho}}$.
+specified in \ex{effect}. Then ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\varphi}$
+and the relation on atoms for the event $a_1$ are as given at
+the bottom in \ex{effect}.
+
 
 \begin{example}   \label{effect}
-\begin{tabular}[t]{l}
-State formula: $\varphi = h\bar{t} + \bar{h}t$ \\
-Effect formula for $a_1$: $\zeta = h \mathbin{:} h$ \\
-\( \mathcal{A}^\varphi_{\mathsf B} = \{h\bar{t},\bar{h}t\} \)  \\
-\( \sem{\zeta}^\varphi = \{\pair{h\bar{t}}{h\bar{t}}\} \)  \\
-\end{tabular}
-\end{example}  
+\(\begin{array}[t]{ll}
+{\sf{B}} & \{h,t\}\\
+\mbox{state formula $\varphi$} & h\bar{t} + \bar{h}t \\
+\mbox{effect formula $\zeta$ for $a_1$} &  h \mathbin{:} h \\
+ \mathcal{A}^\varphi_{\mathsf B} & \{h\bar{t},\bar{h}t\}   \\
+\sem{\zeta}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
+\end{array}\)
+\end{example}
+
 
 
 \begin{figure}
   \[\begin{array}{lcl}
   \multicolumn 3 l {\textrm{state formulas}\hfill (a \in \mathsf{B}) \hfill \mbox{}}\\
-  \varphi,\psi &::=& a \mid0 \mid 1 \mid\varphi{+}\psi \mid \varphi~\psi \mid \bar{\varphi} \\
+  \rho,\sigma,\varphi &::=& a \mid0 \mid 1 \mid\rho+\sigma \mid \rho\,\sigma \mid \bar{\rho} \\ \\
   \multicolumn {3} l {\textrm{effect formulas}}\\
-  \zeta,\eta & ::= & \varphi \mathbin{:} \sigma \mid \zeta{+}\eta
+  \zeta,\eta & ::= & \rho \mathbin{:} \sigma \mid \zeta+\eta
     \mid \zeta \mathbin{\&} \eta \mid \bar{\zeta}
   \end{array}\]
   
 \[
-\begin{array}{cll}
-  \llbracket\psi_1\mathbin{:}\psi_2\rrbracket^\varphi & = &
-  \mathcal A^{(\varphi~\psi_1)}_{\mathsf{B}}\times\mathcal A^{(\varphi~\psi_2)}_{\mathsf{B}}\\[.1em]
-\llbracket\zeta{+}\eta\rrbracket^\varphi & = & \llbracket\zeta\rrbracket^\varphi\cup\llbracket\eta\rrbracket^\varphi\\
-\llbracket\zeta{\&}\eta\rrbracket^\varphi & = & \llbracket\zeta\rrbracket^\varphi\cap\llbracket\eta\rrbracket^\varphi\\
-\llbracket\bar{\zeta}\rrbracket^\varphi & = & V \times V \setminus \llbracket\zeta\rrbracket^\varphi\\
+\begin{array}{lll}
+  \sem{\rho\mathbin{:}\sigma}^\varphi & = &
+  {\mathcal A}^{\rho\varphi}_{\mathsf{B}}\times{\mathcal A}^{\sigma\varphi}_{\mathsf{B}}\\[.1em]
+\sem{\zeta +\eta}^\varphi & = & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
+\sem{\zeta \mathbin{\&}  \eta}^\varphi & = & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
+\sem{\bar{\zeta}}^\varphi & = & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
 \end{array}  
 \]
 
-\caption{Syntax and semantics of state formulas and effect formulas. Effect formulas
-  are evaluated relative to as set Boolean valuations $V$, and denote relations between
-  Boolean valuations.}
+
+
+\vspace{-2mm}
+
+\caption{Syntax of state formulas and syntax and semantics of effect formulas. Effect formulas
+  denote relations between atoms. In a state formula, juxtaposition $\rho\,\sigma$ is conjunction.}
 \label{effectfigure}
 \end{figure}
 
+\vspace{1mm}
 
-\section{Epistemic guarded string models}
 Figure \ref{epikfigure} shows an Epik program that describes a
 possible worlds model for two agents with information about one coin,
 and events of the agents semi-privately looking at the coin. The line
-beginning with {\tt state} lists the basic stative propositions. To
-illustrate syntax, a second proposition $t$ (tails) is included.  The
-line beginning with {\tt constraint} defines compatibilities among the
-propositions: the coin is heads or tails and not both.  The lines
-beginning with {\tt event} declare events, their preconditions, and
-their effect on state, following the format in \ex{event1}.  Finally
+beginning with {\tt state} enumerates ${\sf{B}}$. The
+line beginning with {\tt constraint} gives the state formula.
+The lines
+beginning with {\tt event} declare events and their effect formulas.
+Finally
 the lines beginning with {\tt agent} define {\em event alternative}
 relations for agents.  Each clause with an arrow has a single event
 symbol on the left, and a disjunction of alternative events on the
 right of the arrow. The interpretation of Amy's alternatives for $b_1$
 (Bill peeks at heads), is that when $b_1$ happens, for Amy either
 $b_1$ or $b_0$ (Bill peeks at tails) could be happening.
-
-
-Kleene Algebra with Tests is an algebraic theory that is defined by
-equations and inequalities, which a has model classes including
-guarded string models, relational models, finite models, and matrix
-models.  This paper focuses on defining a family of concrete guarded
-string algebras, the elements of which are sets of guarded strings.
-Definitions and notation mostly follow \cite{kozen2001automata}.
-Additional syntax and semantics is included to model multi-agent
-epistemic semantics.  Guarded strings over a finite alphabet {\sf{P}}
-are like ordinary strings, but with truth assignments to a set $T$ of
-primitive propositions (primitive tests) alternating with the symbols
-from $E$.  In the algebra described by Figure \ref{epikfigure}, $E$ is
-the set of events $\{a_1,a_0,b_1,b_0\}$, and in the elevator example,
-$\{u,d\}$.  In the elevator example, $T$ is $\{p,q\}$, and in the coin
-example it is $\{h,t\}$.  We write atoms as the boolean formulae that
-uniquely specify the truth assignment. In the elevator example, we
-have atoms $\bar q \bar p$, $\bar q p$, $q \bar p$, $q p$, for
-notational simplicity we will write these as $\hat0$, $\hat1$,
-$\hat2$, $\hat3$ respectivelyto indicate the floor each atom
-represents. In the coin example, we get $h\bar t$ and $\bar h t$ (for
-which we use the shorthand $H$ and $T$), as well as the bogus atoms
-$\bar h \bar t$ and $ht$!  To preclude bogosity, the
-\texttt{constraint} declaration in Figure~\ref{epikfigure} describes a
-state formula $\varphi$ which denotes the set of \emph{feasible atoms}
-$\mathcal A_{\mathsf B}^\varphi$.
-
-Guarded strings are strings of events, alternating with such atoms,
-and starting and ending with atoms. The length of a guarded string
-$g$, written $|g|$ is the number of events in $g$, ignoring the atoms.
-\ex{gs1} gives the encoding as guarded strings of the worlds in
-\ex{elevator1} and \ex{coin1}.
-
-%% \begin{example}   \label{gs1}
-%% \begin{tabular}[t]{ll}
-%% $v_1$ & $\bar p \bar q ~u~ \bar p q ~u~ q \bar p ~d~ \bar p q ~u~ q \bar p$ \\
-%% $v_2$ & $\bar p \bar q ~u~ \bar p q ~u~ p\bar q ~u~ pq$ \\   
-%% $w_1$ & $\bar h t$ \\
-%% $w_2$ & $\bar h t ~a_0~ \bar h t$ \\  
-%% $w_3$ & $\bar h t ~a_0~ \bar h t ~b_0~ \bar h t$ \\
-%% \end{tabular}
-%% \end{example}
-\begin{example}   \label{gs1}
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}[t]{llc}
-     \multicolumn 2 c {\textit{Guarded String}} & \textit{Length}\\ \hline
-$v_1$ & $\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2$ & $4$ \\
-$v_2$ & $\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~u~ \hat 3$ & $3$ \\   
-$w_1$ & $H$ & $0$\\
-$w_2$ & $H ~a_0~ H$ & $1$ \\  
-$w_3$ & $T~a_0~ T ~b_0~ T$ & $3$\\
-  \end{tabular}
-    \renewcommand{\arraystretch}{1}
-\end{example}
 
 \begin{figure}
 \begin{center}
@@ -403,72 +357,198 @@ agent bob \\
 \label{epikfigure}
 \end{figure}
 
-The discussion of \ex{coin2} mentioned building worlds by incrementing worlds with events.
-This is accomplished in guarded string models with fusion product, a partial operation
-that combines two guarded strings, subject to the condition that the truth assignment
-at the end of the the first argument is identical to the truth assigment at the
-start of the second one.  \ex{fusion1} gives some examples.
+
+Kleene Algebra with Tests is an algebraic theory that is defined by
+equations and inequalities, which has model classes including
+guarded string models, relational models, finite models, and matrix
+models.  This paper focuses on defining a a concrete guarded
+string algebra, the elements of which are sets of guarded strings, from
+an Epik specification.
+Definitions and notation mostly follow \cite{kozen2001automata}.
+Additional syntax and semantics is included to cover multi-agent
+epistemic semantics.  Guarded strings over a finite alphabet ${\sf{P}}$
+are like ordinary strings, but with atoms 
+alternating with the symbols
+from ${\sf{P}}$.  In the algebra described by Figure \ref{epikfigure}, 
+is the set of events $\{a_1,a_0,b_1,b_0\}$, and in the elevator example,
+$\sf{P}$ is $\{u,d\}$.  In the elevator example, $\sf{B}$ is $\{p,q\}$, and in the coin
+example it is $\{h,t\}$.
+Assuming a trivially true state formula $\rho$,
+${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\rho}$
+in the elevator example is
+$\{\bar q \bar p$, $\bar q p$, $q \bar p$, $q p\}$,
+which we write $\{\hat0$, $\hat1$,
+$\hat2$, $\hat3\}$.
+In the coin example, as we already saw in
+\ex{effect},
+$\mathcal{A}^\varphi_{\mathsf B}$ is $\{h\bar{t},\bar{h}t\}$,
+for which we use the shorthand $\{H,T\}$.
+Guarded strings are strings of events, alternating with atoms,
+and beginning and ending with atoms.
+\ex{gs1} gives the encoding as guarded strings of the worlds in
+\ex{elevator1} and \ex{coin1}.
+The length of a guarded string
+$p$, written $|p|$ is the number of events in $p$.
+An atom such as $H$ is a guarded string of length $0$.
+
+\begin{example}   \label{gs1}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}[t]{clc}
+{\textit{World}} & {\textit{Guarded string}} & \textit{Length}\\ \hline
+$v_1$ & $\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \,u\, \hat 2$ & $4$ \\
+$v_2$ & $\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,u\, \hat 3$ & $3$ \\   
+$w_1$ & $H$ & $0$\\
+$w_2$ & $H \,a_0\, H$ & $1$ \\  
+$w_3$ & $T\,a_0\, T \,b_0\, T$ & $2$\\
+  \end{tabular}
+    \renewcommand{\arraystretch}{1}
+\end{example}
+
+
+The discussion of \ex{coin2} mentioned building worlds by incrementing
+worlds with events.  This is accomplished in guarded string models
+with fusion product $\diamond$, a partial operation that combines two
+guarded strings, subject to the condition that the atom at the end of
+the the first argument is identical to the atom at the start of the
+second one.  \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
-\hspace{-2mm}\(\hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \diamond \hat 1 ~u~ \hat 2 = \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 ~u~ \hat 2 \)
+\hspace{-2mm}\(\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \; \diamond \; \hat 1 \,u\, \hat 2 = \hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \,u\, \hat 2 \)
 
-\hspace{-2mm}\( \hat 0 ~u~ \hat 1 ~u~ \hat 2 ~d~ \hat 1 \diamond \hat 2 ~u~ \hat 3 = \mbox{\em{undefined}} \)
+\hspace{-2mm}\( \hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \; \diamond \; \hat 2 \,u\, \hat 3 = \textit{undefined} \)
 
-\hspace{-2mm}\(H \diamond H ~a_0~ H = H ~a_0~ H \)
+\hspace{-2mm}\(H \; \diamond \; H \,a_1\, H = H \,a_0\, H \)
 
-\hspace{-2mm}\(T \diamond T ~a_1~ T = \mbox{\em{undefined}} \)
+\hspace{-2mm}\(H \; \diamond \; T \,a_1\, T = \textit{undefined} \)
 \end{example}
 
 Rather than individual guarded strings, elements of a guarded string
 model for KAT are sets of guarded strings.  In the application, these
 elements have the interpretation of propositions (sets of possible
-worlds) and/or event types.  An event such as $u$ in the guarded
-string model corresponds to the set of guarded strings where the bare
-event is flanked by compatible atoms. In standard KATs, every possible
-atom is allowed to surround every event, which leads to nonsensical
-strings like $\hat 1 ~u~\hat 0$ in the denotation of $u$, indicating
-that the elevator travelled up from floor 1 to floor 0 (a physical
-impossibility).
+worlds).  In a free guarded string model for KAT, any event can be
+adjacent to any atom in a guarded string that is an element of the
+underlying set for the algebra.  We instead impose the constraints
+coming from the state and effect formulas.  \ex{wf1} defines the
+well-formed guarded strings determined by and Epic specification.  (i)
+says that each atom is consistent with the state constraint, and (ii)
+says that each constituent token event $\alpha_ie_i\alpha_{i+1}$ is
+consistent with the effect constraint on $e_i$.\footnote{
+An alternative is to define equations such as
+$\bar{\phi}=0$ (from the state formula $\phi$)
+and $a_1\,{=}\,ha_{1}h$ (from the effect formula $h\mathbin{:}h$ for event $a_1$),
+and construct a quotient algebra from the equivalence relation generated
+by these equations.  This results in equating sets of guarded strings in the free algebra that
+differ by guarded strings that are ill-formed according to the state and
+effect formulas.  In the development in the text, we instead use
+a set of guarded strings that are well-formed according to the state
+and effect formulas as the representative of the equivalence class.
+}
 
-Fortunately, Epik provides a syntax to specify the input-output
-behavior via the \texttt{event} declarations. From these we construct
-a function $\mathcal E$ from agents to relations on atoms that specify
-the effects each action can have. Notably for every declaration
-$\texttt{event}~e~\zeta$, we have $\mathcal E^\varphi(e) =
-\llbracket\zeta\rrbracket^\varphi$. We can lift $\mathcal E^\varphi$
-to $\hat{\mathcal E}$ which decorates the events with their permitted
-atoms, that is $\hat{\mathcal E}^\varphi(e) = \{\alpha~e~\beta \mid
-\alpha, \beta \in \mathcal E^\varphi (e) \}$. See the examples in
-\ex{events1}.
-% u (\bar{q}\bar{p}):(\bar{q}p) + (\bar{q}p):(q\bar{p}) + (q\bar{p}):(qp) 173
-% d (\bar{q}p):(\bar{q}\bar{p}) + (q\bar{p}):(\bar{q}p) + (qp):(q\bar{p})
+\begin{example}   \label{wf1}
+Given $\sf{P}$, $\sf{B}$, a
+state formula $\varphi$, and an effect formula $\zeta_e$ for each
+event $e$ in $\sf{P}$,    
+$\alpha_0e_0 ... e_n\alpha_{n+1}$ is well-formed iff
+
+\vspace{1mm}
+
+\hspace{2mm}(i) $\element{\alpha_i}{{\mathcal A}^{\varphi}_{\mathsf{B}}}$ ($0{\leq}i{\leq}n$), and 
+
+\hspace{2mm}(ii) $\element{\tuple{\alpha_i,\alpha_{i+1}}}{\sem{\zeta_{ei}}^{\varphi}}$, ($0{\leq} i {\le} n$).
+\end{example}
+
+Well-formed guarded strings have the interpretation of worlds in the
+application to natural-language semantics.  The set of possible worlds
+in the Kripke frame determined by an Epik specification is the set of
+well-formed guarded strings.  At this point, we could say in the way
+familiar from the type theory of possible worlds semantics that any
+set of worlds is a proposition, so that the set of propositions is the
+power set of the set of worlds \citep{montague,gallin}.  We will
+instead define a more restrictive set of propositions corresponding to the regular sets
+of strings. This is deferred to the next section.
+
+In the natural language application, sets of well-formed guarded strings 
+have the addional interpretation of event types.
+An event-type is something that can ``happen'' is different worlds.
+The event of the elevator going up is modeled not as the bare event
+symbol $u$ or its unit set $\{u\}$, but as the set of guarded strings
+\( \hat 0 \,u\, \hat 1, \hat 1 \,u\, \hat 2,  \hat 2 \,u\, \hat 3\).
+The event of the elevator going up in a given world $w$ corresponds
+to $w$ being incremented to form $w \diamond x$, where $x$ is an element
+of the event type.  \ex{events1} gives the event types for
+the examples.  
 
 \begin{example} \label{events1}
   \renewcommand{\arraystretch}{1.1}
 \(
 \begin{array}[t]{l|c}
-  e &  \hat{\mathcal E}^\varphi(e) \\ \hline
-  u & \{ \hat 0 ~u~ \hat 1, \hat 1 ~u~ \hat 2,  \hat 2 ~u~ \hat 3\}\\
-  d & \{ \hat 1 ~d~ \hat 0, \hat 2~d~\hat 1, \hat 3 ~d~ \hat 2\}\\
-  a_1 & \{H ~a_1~ H\}\\
-  a_0 & \{T ~a_0~ T\}\\
-  b_1 & \{H ~b_1~ H \}\\
-  b_0 & \{T ~b_0~ T \}
+   &  {\mbox{Event type}}\\ \hline
+  u & \{ \hat 0 \,u\, \hat 1, \hat 1 \,u\, \hat 2,  \hat 2 \,u\, \hat 3\}\\
+  d & \{ \hat 1 \,d\, \hat 0, \hat 2\,d\,\hat 1, \hat 3 \,d\, \hat 2\}\\
+  a_1 & \{H \,a_1\, H\}\\
+  a_0 & \{T \,a_0\, T\}\\
+  b_1 & \{H \,b_1\, H \}\\
+  b_0 & \{T \,b_0\, T \}
 \end{array}
 \)
   \renewcommand{\arraystretch}{1}
-
 \end{example}
 
-It remains to define the Kripke relation on guarded strings from an
-agent specification as in Figure \ref{epikfigure}. In Epik, an agent
-specification pairs each bare event with a set of ($+$-separated) bare
-events, and so determines a relation between bare events, call it
-relation $R_a$ for an agent $a$.  We can lift this to a relation
-$\hat{R_a}$ between guarded strings, as defined in \ex{Rhathat}. The
-operation $(\mathop;)$ in the definition is KAT product, which enforces
-matching of tests.
+The construction so far defines a set of worlds $W$ from an Epik specification.
+Normally and in our examples, $W$ is countably infinite, though some choices of effect
+formulas can result in a finite set of worlds.
+The next step is to define an alternative relation $R_a$ on worlds for each
+agent $a$. This will result in a Kripke frame $\tuple{W,R_a,...}$ in the 
+standard sense, consisting of a set of worlds, and a world-alternative relation
+for each agent \citep{kripke, hintikka}.
+An Epik specification defines an alternative relation on bare events for each
+agent $a$, which we notate as $\hat{R}_{a}$.  This should be lifted to a relation
+$R_a$ on worlds.  The rough idea is that when a world $w$ is incremented with
+an event $e$, in the resulting world $w \diamond e$, epistemic alternatives
+for agent $a$ are of the form $w' \diamond e'$, where $w'$ is an alternative to
+for $a$ in $w$, and $e'$ is and event-alternative for $a$ (Moore --, Baltag --).\footnote{
+ In this it is important that the event-alternative relation for an agent
+ is constant across worlds. We anticipate that the definition given here produces
+ results equivalent to what is found in literature on event alternatives in
+ dynamic epistemic semantics, though we have not verified this.  That literature primarily focuses on mapping
+ an epistemic model for a single time and situation to another, and uses general first-order models, rather than
+ guarded string models. See ---, and articles in ---.  We picked up the idea from papers by Moss and his colleagues, together
+ with Moore () and subsequent literature in situation theory.  This previous literature is motivated by epistemic
+ logic and AI planning, rather than natural language semantics as in our application.
+} This need to be implemented in a way that takes account of pre- and post-conditions for
+events. For this, our approach is to refer the definition of well-formed guarded strings.
+\ex{raise1} defines a relation on worlds from a relation on bare events.
+
+\begin{example}  \label{raise1}
+Let a set of guarded strings $W$ over events P and primitive tests B, and a relation $\hat{R}$ on P be given.
+The corresponding relation $R$ on $W$ holds between a guarded string
+\[
+\alpha_0e_0 ... e_n\alpha_{n+1} 
+\]
+in $W$ and a guarded string $q$ in $W$ iff $q$ is of the form
+
+\[
+\alpha_0'e_0' ... e_n'\alpha_{n+1}', 
+\]
+
+where for $0 \leq n$, $\element{\tuple{e_i,e'_i}}{R}$.
+
+\end{example}  
+
+
+This requires that in the alternative world $q$, each constituent event $e'_i$ is an alternative
+to the event $e_i$ in the base world according to $R$.  Compatibilities between events in the alternative
+world are enforced by the general definition of worlds. Consider a scenario like the one from Figure 1, with
+an additional agent Cem. The base world $T b_0 c_0$ is one where the coin is tails, and first Bob looks at tails,
+and them Cem looks at tails. The first event $b_0$ has the alternatives $b_0$ and $b_1$ for Aly,
+and the second event $c_0$ has the alternatives $c_0$ and $c_1$ for Aly.
+This results in the combinations $b_0c_0$, $b_0c_1$, $b_1c_0$, $b_1c_1$. But these
+are filtered by post- and pre-conditions of events in the alternative world, so that
+the set of alernatives for Aly in $T b_0 c_0$ is  $\{T b_0 c_0,H b_1 c_1\}$,
+with two world-alternatives instead of four.
+
+
 
 %% \begin{example}   \label{Rhat}
 %% \hspace{-2mm} \(
@@ -482,8 +562,8 @@ matching of tests.
 \hspace{-2mm}\begin{array}[t]{l}
 \{ \tuple{x,y} \mid \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
 \hspace{6mm} u_1\mathrel{R}v_1 \wedge ... \wedge u_n\mathrel{R}v_n \wedge\\
-\hspace{6mm} x \in \llbracket u_1 ; ... ; u_n \rrbracket^{\varphi,{\mathcal{E}}}\hspace{1mm} \wedge \\
-\hspace{6mm} y \in \llbracket v_1 ; ... ; v_n \rrbracket^{\varphi,{\mathcal{E}}} \hspace{2mm} \}
+\hspace{6mm} x \in \sem{ u_1 ; ... ; u_n }^{\varphi,{\mathcal{E}}}\hspace{1mm} \wedge \\
+\hspace{6mm} y \in \sem{ v_1 ; ... ; v_n }^{\varphi,{\mathcal{E}}} \hspace{2mm} \}
 \end{array}
 \)
 \end{example}
@@ -500,6 +580,20 @@ events.  See Section 6 for linguistic examples.  Since an epistemic
 alternative has the same lenght as its base world, it follows from the
 construction that agents know how many events have transpired in their
 base worlds.
+
+
+Fortunately, Epik provides a syntax to specify the input-output
+behavior via the \texttt{event} declarations. From these we construct
+a function $\mathcal E$ from agents to relations on atoms that specify
+the effects each action can have. Notably for every declaration
+$\texttt{event}~e~\zeta$, we have $\mathcal E^\varphi(e) =
+\sem{\zeta}^\varphi$. We can lift $\mathcal E^\varphi$
+to $\hat{\mathcal E}$ which decorates the events with their permitted
+atoms, that is $\hat{\mathcal E}^\varphi(e) = \{\alpha~e~\beta \mid
+\alpha, \beta \in \mathcal E^\varphi (e) \}$. See the examples in
+\ex{events1}.
+% u (\bar{q}\bar{p}):(\bar{q}p) + (\bar{q}p):(q\bar{p}) + (q\bar{p}):(qp) 173
+% d (\bar{q}p):(\bar{q}\bar{p}) + (q\bar{p}):(\bar{q}p) + (qp):(q\bar{p})
 
 
 \section{A Language for Epistemic Sets of Guarded Strings}
@@ -542,8 +636,8 @@ certainty for agent $a$ in worlds $p$, by $\Box_a~p =
 \end{figure}
 
 We interpret each term in as a set of guarded strings as indicated in
-Figure~\ref{fig:interp}. The function $\llbracket p
-\rrbracket^{\varphi,{\mathcal{E}}}$ interprets a term $p$ as a set of
+Figure~\ref{fig:interp}. The function $\sem{ p
+}^{\varphi,{\mathcal{E}}}$ interprets a term $p$ as a set of
 guarded strings consistent with state constraints $\varphi$ and effect
 relations ${\mathcal{E}^\varphi}$. A bare event $e$ is interpreted as
 the set $\hat{\mathcal E}^\varphi(e)$. The constant $0$ is interpreted
@@ -563,8 +657,8 @@ constraint $\varphi$ and the boolean test $\psi$.
 The unary epistemic alternative operation $\Diamond_a$ for each agent
 $a$, is interpreted using using Kripke semantics, as pre-image
 relative to a fixed relation $\hat{R_a}$ between guarded strings,
-$\Diamond_a~p = \{u \mid \exists v. v \in \llbracket
-p\rrbracket^{\phi, \mathcal E} \wedge u \mathrel{\hat{R_a}} v\}$.  Here $u$
+$\Diamond_a~p = \{u \mid \exists v. v \in \sem{
+p}^{\phi, \mathcal E} \wedge u \mathrel{\hat{R_a}} v\}$.  Here $u$
 and $v$ are guarded strings, while $x$ is an element of $K$.
 
 
@@ -579,15 +673,15 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 \begin{figure}
   \[\begin{array}{l >{\triangleq}c l}
-  \llbracket 0 \rrbracket^{\varphi,{\mathcal{E}}} && \{\} \\  
-  \llbracket 1 \rrbracket^{\varphi,{\mathcal{E}}} && \mathcal A^\varphi_{\mathsf B}\\
-  \llbracket e \rrbracket^{\varphi,{\mathcal{E}}}&& \hat{\mathcal E}^\varphi(e) \\
-  \llbracket \psi \rrbracket^{\varphi,{\mathcal{E}}} &&  \mathcal A^{\varphi~\psi}\\
-  \llbracket{p+q}\rrbracket^{\varphi,{\mathcal{E}}} && \llbracket{p}\rrbracket^{\varphi,{\mathcal{E}}} \cup \llbracket q \rrbracket^{\varphi,{\mathcal{E}}}\\
-  \llbracket{p;q}\rrbracket^{\varphi,{\mathcal{E}}} && \llbracket p \rrbracket^{\varphi,{\mathcal{E}}} \diamond \llbracket{q}\rrbracket^{\varphi,{\mathcal{E}}}\\
-  \llbracket p^*\rrbracket^{\varphi,{\mathcal{E}}} && \displaystyle\bigcup_n {\underbrace{\llbracket p \rrbracket^{\varphi,{\mathcal{E}}}\diamond \ldots \diamond \llbracket p \rrbracket^{\varphi,{\mathcal{E}}}}_{n}} \\
-  \llbracket \neg p \rrbracket^{\varphi,{\mathcal{E}}} && \llbracket \_^*\rrbracket^{\varphi,{\mathcal{E}}} \setminus \llbracket p \rrbracket^{\varphi,{\mathcal{E}}} \\
-  \llbracket \Diamond_a~p \rrbracket && \{x \mid x \mathbin{\hat{R_a}} y, y \in \llbracket p \rrbracket^{\varphi,\mathcal E}\}
+  \sem{ 0 }^{\varphi,{\mathcal{E}}} && \{\} \\  
+  \sem{ 1 }^{\varphi,{\mathcal{E}}} && \mathcal A^\varphi_{\mathsf B}\\
+  \sem{ e }^{\varphi,{\mathcal{E}}}&& \hat{\mathcal E}^\varphi(e) \\
+  \sem{ \psi }^{\varphi,{\mathcal{E}}} &&  \mathcal A^{\varphi~\psi}\\
+  \sem{{p+q}}^{\varphi,{\mathcal{E}}} && \sem{{p}}^{\varphi,{\mathcal{E}}} \cup \sem{ q }^{\varphi,{\mathcal{E}}}\\
+  \sem{{p;q}}^{\varphi,{\mathcal{E}}} && \sem{ p }^{\varphi,{\mathcal{E}}} \diamond \sem{{q}}^{\varphi,{\mathcal{E}}}\\
+  \sem{ p^*}^{\varphi,{\mathcal{E}}} && \displaystyle\bigcup_n {\underbrace{\sem{ p }^{\varphi,{\mathcal{E}}}\diamond \ldots \diamond \sem{ p }^{\varphi,{\mathcal{E}}}}_{n}} \\
+  \sem{ \neg p }^{\varphi,{\mathcal{E}}} && \sem{ \_^*}^{\varphi,{\mathcal{E}}} \setminus \sem{ p }^{\varphi,{\mathcal{E}}} \\
+  \sem{ \Diamond_a~p } && \{x \mid x \mathbin{\hat{R_a}} y, y \in \sem{ p }^{\varphi,\mathcal E}\}
   
   \end{array}
   \]
@@ -597,14 +691,14 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 The complement operation ${p}^c$ is complement at the level of sets of
 guarded strings, defined to every set the universe $\_^*$ except those
-denoted by $p$. Note that $\llbracket 0^c
-\rrbracket^{\varphi,{\mathcal{E}}} =
-\llbracket\_^*\rrbracket^{\varphi,{\mathcal{E}}}$.
+denoted by $p$. Note that $\sem{ 0^c
+}^{\varphi,{\mathcal{E}}} =
+\sem{\_^*}^{\varphi,{\mathcal{E}}}$.
 
 Summing up, given an Epik program with $n$ agents, we construct state
 constraints $\varphi$, effect relations ${\mathcal{E}}$, and a concrete guarded
-string model for each term using $\llbracket -
-\rrbracket^{\varphi,{\mathcal{E}}}$.
+string model for each term using $\sem{ -
+}^{\varphi,{\mathcal{E}}}$.
 %% $\tuple{K,+,;,*,\bar{},0,1,{}^c,\Diamond_{a_1},...,\Diamond_{a_n}}$.
  $0^c$ is the set of worlds, and it may be countably infinite.
 $\Diamond_{a_i}$ is an epistemic modality for the $i$th agent.  Or
@@ -743,8 +837,8 @@ of $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y2}$,
 where $\pair{x_1}{y_1}$ is in relation $R$, and $\pair{x_2}{y_2}$ is
 in relation $S$.  The Kleene closure of relation $R$ is \(\cup_{n \geq
   0}R^n\), where $R^n$ is the $n$-times concatenation product of $R$
-with itself (the $0$-times concatenation product is $\llbracket 1
-\rrbracket^{\varphi,\mathcal E}$). This is an operation in the finite
+with itself (the $0$-times concatenation product is $\sem{ 1
+}^{\varphi,\mathcal E}$). This is an operation in the finite
 state calculus.  Figure \ref{relclosure} defines the corresponding
 operation in the guarded string algebra.  The epistemic alternative
 relation on worlds for an agent is then defined as the concatenation
@@ -849,7 +943,7 @@ To convert from a list of guarded strings $l$ to a set of guarded
 strings, we simply write $\lceil l\rceil$. Note that for any $p$,
 $\varphi$, $\mathcal E$, and $n$, $\left\lceil\llparenthesis p
 \rrparenthesis^{\varphi,\mathcal E}_n\right\rceil = \{g \mid g \in
-\llbracket p \rrbracket^{\varphi,\mathcal E}, |g| \leq n\}$.
+\sem{ p }^{\varphi,\mathcal E}, |g| \leq n\}$.
 
 \begin{figure}
   \[\begin{array}{r >{\triangleq}c l}
