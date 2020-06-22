@@ -522,104 +522,89 @@ events. For this, our approach is to refer the definition of well-formed guarded
 
 \begin{example}  \label{raise1}
 Let a set of guarded strings $W$ over events P and primitive tests B, and a relation $\hat{R}$ on P be given.
-The corresponding relation $R$ on $W$ holds between a guarded string
+The corresponding relation $R$ holds between a guarded string
 \[
 \alpha_0e_0 ... e_n\alpha_{n+1} 
 \]
-in $W$ and a guarded string $q$ in $W$ iff $q$ is of the form
+in $W$ and a guarded string  $q$ iff $q$ is an element of $W$ and is of the form
 
 \[
 \alpha_0'e_0' ... e_n'\alpha_{n+1}', 
 \]
 
-where for $0 \leq n$, $\element{\tuple{e_i,e'_i}}{R}$.
+where for $0 \leq n$, $\element{\tuple{e_i,e'_i}}{\hat{R}}$.
 
 \end{example}  
 
 
-This requires that in the alternative world $q$, each constituent event $e'_i$ is an alternative
-to the event $e_i$ in the base world according to $R$.  Compatibilities between events in the alternative
-world are enforced by the general definition of worlds. Consider a scenario like the one from Figure 1, with
-an additional agent Cem. The base world $T b_0 c_0$ is one where the coin is tails, and first Bob looks at tails,
-and them Cem looks at tails. The first event $b_0$ has the alternatives $b_0$ and $b_1$ for Aly,
-and the second event $c_0$ has the alternatives $c_0$ and $c_1$ for Aly.
-This results in the combinations $b_0c_0$, $b_0c_1$, $b_1c_0$, $b_1c_1$. But these
-are filtered by post- and pre-conditions of events in the alternative world, so that
-the set of alernatives for Aly in $T b_0 c_0$ is  $\{T b_0 c_0,H b_1 c_1\}$,
-with two world-alternatives instead of four.
+This requires that in the alternative world $q$, each constituent event $e'_i$ is an
+alternative to the event $e_i$ in the base world according to $\hat{R}$.
+Compatibilities between events in the alternative world are enforced by the
+requirement that the alternative $q$ is an element of $W$, so that 
+state and effect formulas are enforced. Consider a scenario like the one from
+Figure 1, with an additional agent Cem. The base world $T b_0 c_0$ is one where the
+coin is tails, and first Bob looks at tails, and them Cem looks at tails. The first
+event $b_0$ has the alternatives $b_0$ and $b_1$ for Aly, and the second event $c_0$
+has the alternatives $c_0$ and $c_1$ for Aly.  This results in the combinations
+$b_0c_0$, $b_0c_1$, $b_1c_0$, and $b_1c_1$. But these are filtered by post- and
+pre-conditions of events in the alternative world, so that the set of alernatives for
+Aly in $T b_0 c_0$ is $\{T b_0 c_0,H b_1 c_1\}$, with two world-alternatives instead
+of four.
 
 
+\section{The language of Epistemic KAT}
+In addition to a set of possible worlds and an algebra of propositions, the
+application in natural language requires a logical language for naming propositions.
+The standard language for Kleene algebra with tests has the signature
+$\tuple{K,+,\cdot,*,\bar{},0,1}$ \citep{kozen2001automata}.  In a guarded string
+model for KAT, $K$ is a set of guarded strings, $+$ is set union, $\cdot$ is fusion
+product raised to sets, $*$ is Kleene star, $\bar{}$ is complement for tests, $0$ the
+empty set (functioning as an identity for $0$, and as False for tests) and 1 is the
+set of atoms (functioning as the identity element for $\cdot$, and as True for
+tests).  To this signature we add a unary modal operation $\Diamond_a$ for each
+agent, and a unary complement operation $\not$ on elements of $K$. The latter is
+included because natural languages have sentence negation, and it should be possible
+to represent the propositional complement of a formula that captures the semantics of
+a natural language sentence.  In addition, universal box modalities are defined as
+duals of existential diamond modalities.
 
-%% \begin{example}   \label{Rhat}
-%% \hspace{-2mm} \(
-%% \hat{R} \triangleq
-%% \{\tuple{u,v} \mid \exists c \exists d. c\mathrel R d \wedge u \in \hat{c}  \wedge v \in \hat{d} \, \} \)
-%% \end{example}
+With modalities and propositional negation added, the signature of $n$-agent
+epistemic KAT is $\tuple{K,+,\cdot,*,\bar{},0,1,\neg,\Diamond_1
+  ... \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language.
+\ex{interpretation1} illustrates the application of the language with some natural
+language sentences, and their representations in the logical language.  While there
+is no constant for the set of worlds, the term $\neg 0$ (the complement of the empty
+set) can be used as one.  Where $h$ is the primitive test ``it' heads'' from the coin
+example, $(\neg 0)h$ designates the set of worlds where it is heads.  The reason is
+that $h$ corresponds to the set of atoms that evaluate $h$ to true. Then the product
+term $(\neg 0)h$ restricts the set of worlds to the set of guarded strings that end
+with and atom that evaluate $h$ to True.
 
-\begin{example}   \label{Rhathat}
-\hspace{-2mm}\(
-\hat{R} \triangleq
-\hspace{-2mm}\begin{array}[t]{l}
-\{ \tuple{x,y} \mid \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
-\hspace{6mm} u_1\mathrel{R}v_1 \wedge ... \wedge u_n\mathrel{R}v_n \wedge\\
-\hspace{6mm} x \in \sem{ u_1 ; ... ; u_n }^{\varphi,{\mathcal{E}}}\hspace{1mm} \wedge \\
-\hspace{6mm} y \in \sem{ v_1 ; ... ; v_n }^{\varphi,{\mathcal{E}}} \hspace{2mm} \}
-\end{array}
-\)
-\end{example}
-
-This defines an epistemic alternative to world $x$ to be a world of
-the same length, where each component event in the alternative is an
-event-alternative to the event in corresponding position in the base
-world. Fusion product enforces preconditions and a correspondence
-between pre-states and post-states of events on both sides of the
-epistemic alternative relation.  This provides for finitely
-specifiable construction of epistemic models that reflect intuitions
-about information exchange and epistemic consequences of perceptual
-events.  See Section 6 for linguistic examples.  Since an epistemic
-alternative has the same lenght as its base world, it follows from the
-construction that agents know how many events have transpired in their
-base worlds.
-
-
-Fortunately, Epik provides a syntax to specify the input-output
-behavior via the \texttt{event} declarations. From these we construct
-a function $\mathcal E$ from agents to relations on atoms that specify
-the effects each action can have. Notably for every declaration
-$\texttt{event}~e~\zeta$, we have $\mathcal E^\varphi(e) =
-\sem{\zeta}^\varphi$. We can lift $\mathcal E^\varphi$
-to $\hat{\mathcal E}$ which decorates the events with their permitted
-atoms, that is $\hat{\mathcal E}^\varphi(e) = \{\alpha~e~\beta \mid
-\alpha, \beta \in \mathcal E^\varphi (e) \}$. See the examples in
-\ex{events1}.
-% u (\bar{q}\bar{p}):(\bar{q}p) + (\bar{q}p):(q\bar{p}) + (q\bar{p}):(qp) 173
-% d (\bar{q}p):(\bar{q}\bar{p}) + (q\bar{p}):(\bar{q}p) + (qp):(q\bar{p})
+\begin{example}   \label{interpretation1}
+\begin{tabular}[t]{ll}
+  It's heads. & It's tails. \\
+  $(\neg 0)h$ & $(\neg 0)t$ \\ \hline
+\end{tabular}
+\end{example}  
+\vspace{-3mm}
+\hspace{2mm}\begin{tabular}{l}
+Amy doesn't know that it's heads.  \\
+$\neg {\Box}_a (\neg 0)h$\\ \hline
+Amy knows whether it's tails. \\
+$\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t$ \\ \hline
+It's heads and Bob knows that it's tails. \\
+$(\neg 0)h + \Box_a(\neg 0)\neg t$ \\  \hline
+Bob knows that Amy knows whether it's tails. \\
+$\Box_b(\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t)$ \\ \hline
+\end{tabular}
+%% (\neg 0)t
 
 
-\section{A Language for Epistemic Sets of Guarded Strings}
-
-To reason about epistemic alternatives, guarded strings are used to
-represent different possible worlds, so agents' knowledge/beliefs are
-represented by sets of guarded strings. The standard algebra for
-manipulating guarded strings is Kleene Algebra with Tests
-(\textsc{KAT}), which has the algebraic signature
-$\tuple{K,+,;,*,\bar{},0,1}$ \cite{kozen2001automata}. However, the
-KATs don't permit native reasoning about modal operators, so Epik's
-signature needs to subsume the KAT operators.
-
-Figure~\ref{fig:epik-grammar} depicts the syntax of Epik's formal term
-language. As in KAT, $0$ is the null element, $1$ is the unit element,
-$p + q$ indicates disjuction, $p;q$ (or simply $pq$) indicates
-sequence, the boolean operators for tests $\varphi$ are the standard
-ones (as in Figure~\ref{fig:effect-syntax}), and ${p}^*$ indicates
-iteration of $p$. We add some additional operations to reason about epistemic
-alternatives: the term $\Diamond_a~p$ represents epistemic possibility
-for agent $a$ in worlds $p$, and complement $\neg p$ represents the
-worlds not described by $p$. We can encode $\Box_a~p$, i.e. epistemic
-certainty for agent $a$ in worlds $p$, by $\Box_a~p =
-(\Diamond_a~p^c)^c$.
 
 \begin{figure}
+
+  {\em Consider adding the syntax of tests including $\bar{}$. Consider making product implicit,
+    in place of $\mathbin{;}$.}
 
   \[\begin{array}{l>{\hspace{-.5em}}c>{\hspace{-0.75em}}l}
   \multicolumn 2 l {\textrm{terms}} & e \in \mathsf{P} \\
@@ -1134,10 +1119,62 @@ Page breakdown
 \end{tabular}
 
 
+
+
+%% \begin{example}   \label{Rhat}
+%% \hspace{-2mm} \(
+%% \hat{R} \triangleq
+%% \{\tuple{u,v} \mid \exists c \exists d. c\mathrel R d \wedge u \in \hat{c}  \wedge v \in \hat{d} \, \} \)
+%% \end{example}
+
+{\em This stuff was at the end of Section 2, it became redundant. Also it refers to the interpretation function, which is introduced in Section 3.}
+
+\begin{example}   \label{Rhathat}
+\hspace{-2mm}\(
+\hat{R} \triangleq
+\hspace{-2mm}\begin{array}[t]{l}
+\{ \tuple{x,y} \mid \exists u_1 ... \exists u_n \exists v_1 ... \exists v_n. \\
+\hspace{6mm} u_1\mathrel{R}v_1 \wedge ... \wedge u_n\mathrel{R}v_n \wedge\\
+\hspace{6mm} x \in \sem{ u_1 ; ... ; u_n }^{\varphi,{\mathcal{E}}}\hspace{1mm} \wedge \\
+\hspace{6mm} y \in \sem{ v_1 ; ... ; v_n }^{\varphi,{\mathcal{E}}} \hspace{2mm} \}
+\end{array}
+\)
+\end{example}
+
+This defines an epistemic alternative to world $x$ to be a world of
+the same length, where each component event in the alternative is an
+event-alternative to the event in corresponding position in the base
+world. Fusion product enforces preconditions and a correspondence
+between pre-states and post-states of events on both sides of the
+epistemic alternative relation.  This provides for finitely
+specifiable construction of epistemic models that reflect intuitions
+about information exchange and epistemic consequences of perceptual
+events.  See Section 6 for linguistic examples.  Since an epistemic
+alternative has the same lenght as its base world, it follows from the
+construction that agents know how many events have transpired in their
+base worlds.
+
+
+Fortunately, Epik provides a syntax to specify the input-output
+behavior via the \texttt{event} declarations. From these we construct
+a function $\mathcal E$ from agents to relations on atoms that specify
+the effects each action can have. Notably for every declaration
+$\texttt{event}~e~\zeta$, we have $\mathcal E^\varphi(e) =
+\sem{\zeta}^\varphi$. We can lift $\mathcal E^\varphi$
+to $\hat{\mathcal E}$ which decorates the events with their permitted
+atoms, that is $\hat{\mathcal E}^\varphi(e) = \{\alpha~e~\beta \mid
+\alpha, \beta \in \mathcal E^\varphi (e) \}$. See the examples in
+\ex{events1}.
+% u (\bar{q}\bar{p}):(\bar{q}p) + (\bar{q}p):(q\bar{p}) + (q\bar{p}):(qp) 173
+% d (\bar{q}p):(\bar{q}\bar{p}) + (q\bar{p}):(\bar{q}p) + (qp):(q\bar{p})
+
 \pagebreak
 
 \bibliographystyle{chicago}
 \bibliography{fs}
+
+
+
 
 \end{document}
 
