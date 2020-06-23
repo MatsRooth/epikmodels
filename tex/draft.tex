@@ -27,6 +27,9 @@
 \input{syntax.tex}
 \usepackage{wasysym,graphicx}
 
+\newcommand{\event}{\sf{P}}
+\newcommand{\test}{\sf{B}}
+
 % This is not strictly necessary, and may be commented out,
 % but it will improve the layout of the manuscript,
 % and will typically save some space.
@@ -570,45 +573,31 @@ duals of existential diamond modalities.
 
 With modalities and propositional negation added, the signature of $n$-agent
 epistemic KAT is $\tuple{K,+,\cdot,*,\bar{},0,1,\neg,\Diamond_1
-  ... \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language.
-\ex{interpretation1} illustrates the application of the language with some natural
-language sentences, and their representations in the logical language.  While there
-is no constant for the set of worlds, the term $\neg 0$ (the complement of the empty
-set) can be used as one.  Where $h$ is the primitive test ``it' heads'' from the coin
-example, $(\neg 0)h$ designates the set of worlds where it is heads.  The reason is
-that $h$ corresponds to the set of atoms that evaluate $h$ to true. Then the product
-term $(\neg 0)h$ restricts the set of worlds to the set of guarded strings that end
-with and atom that evaluate $h$ to True.
+  ... \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language, but
+using juxtaposition in place of the product symbol $\cdot$.
+As illustrated in \ex{interpretation1}, terms in this language are used to
+represent the proposositional semantic values of English sentences.\footnote{See Sections
+6 and 7 for explanation and further examples.  }
+
 
 \begin{example}   \label{interpretation1}
 \begin{tabular}[t]{ll}
-  It's heads. & It's tails. \\
-  $(\neg 0)h$ & $(\neg 0)t$ \\ \hline
+Bob knows that Amy knows whether it's tails.  \\
+$\Box_b(\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t)$
 \end{tabular}
-\end{example}  
-\vspace{-3mm}
-\hspace{2mm}\begin{tabular}{l}
-Amy doesn't know that it's heads.  \\
-$\neg {\Box}_a (\neg 0)h$\\ \hline
-Amy knows whether it's tails. \\
-$\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t$ \\ \hline
-It's heads and Bob knows that it's tails. \\
-$(\neg 0)h + \Box_a(\neg 0)\neg t$ \\  \hline
-Bob knows that Amy knows whether it's tails. \\
-$\Box_b(\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t)$ \\ \hline
-\end{tabular}
-%% (\neg 0)t
+\end{example}
+
 
 
 
 \begin{figure}
 
-  {\em Consider adding the syntax of tests including $\bar{}$. Consider making product implicit,
-    in place of $\mathbin{;}$.}
+
 
   \[\begin{array}{l>{\hspace{-.5em}}c>{\hspace{-0.75em}}l}
-  \multicolumn 2 l {\textrm{terms}} & e \in \mathsf{P} \\
-  p,q & ::=& e~|~0~|~1~|~\phi~|~p+p~|~p;p~|~p^*~|\neg p~|\Diamond_a~p
+  \multicolumn{3}{l}{\mbox{state terms $\sigma$ as in Figure 1}} \\
+  \multicolumn 2 l {\textrm{events}} & e \in \mathsf{P} \\
+  p,q & ::=& e~|~\sigma~|~p+q~|~pq~|~p^*~|~ \neg p ~|~ \Diamond_a\,p
   \end{array}\]
 
   Derived Operators\\[.1em]
@@ -620,9 +609,15 @@ $\Box_b(\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t)$ \\ \hline
 \label{termfigure}
 \end{figure}
 
-We interpret each term in as a set of guarded strings as indicated in
-Figure~\ref{fig:interp}. The function $\sem{ p
-}^{\varphi,{\mathcal{E}}}$ interprets a term $p$ as a set of
+Each term in the language is interpreted as a set of guarded strings.  Where $p$ is
+a term, $\sem{p}^{\test,\event,\varphi,\zeta}$ is the interpretation of the term.
+The superscript captures dependence on an Epik specification.
+
+
+
+
+
+interprets a term $p$ as a set of
 guarded strings consistent with state constraints $\varphi$ and effect
 relations ${\mathcal{E}^\varphi}$. A bare event $e$ is interpreted as
 the set $\hat{\mathcal E}^\varphi(e)$. The constant $0$ is interpreted
@@ -653,6 +648,28 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
     \addtolength{\dhatheight}{-0.35ex}%
     \hat{\vphantom{\rule{1pt}{\dhatheight}}%
       \smash{\hat{#1}}}}
+
+
+\newcommand{\epikspec}{\test,\event,\varphi,\zeta}
+
+
+\begin{figure}
+  \[\begin{array}{l >{\triangleq}c l}
+  \sem{ 0 }^{\epikspec} && \emptyset \\  
+  \sem{ 1 }^{\varphi,{\mathcal{E}}} && \mathcal A^\varphi_{\mathsf B}\\
+  \sem{ e }^{\varphi,{\mathcal{E}}}&& \hat{\mathcal E}^\varphi(e) \\
+  \sem{ \psi }^{\varphi,{\mathcal{E}}} &&  \mathcal A^{\varphi~\psi}\\
+  \sem{{p+q}}^{\varphi,{\mathcal{E}}} && \sem{{p}}^{\varphi,{\mathcal{E}}} \cup \sem{ q }^{\varphi,{\mathcal{E}}}\\
+  \sem{{p;q}}^{\varphi,{\mathcal{E}}} && \sem{ p }^{\varphi,{\mathcal{E}}} \diamond \sem{{q}}^{\varphi,{\mathcal{E}}}\\
+  \sem{ p^*}^{\varphi,{\mathcal{E}}} && \displaystyle\bigcup_n {\underbrace{\sem{ p }^{\varphi,{\mathcal{E}}}\diamond \ldots \diamond \sem{ p }^{\varphi,{\mathcal{E}}}}_{n}} \\
+  \sem{ \neg p }^{\varphi,{\mathcal{E}}} && \sem{ \_^*}^{\varphi,{\mathcal{E}}} \setminus \sem{ p }^{\varphi,{\mathcal{E}}} \\
+  \sem{ \Diamond_a~p } && \{x \mid x \mathbin{\hat{R_a}} y, y \in \sem{ p }^{\varphi,\mathcal E}\}
+  
+  \end{array}
+  \]
+  \caption{Interpretation of Epik terms as sets of guarded strings}
+  \label{fig:interp2}
+\end{figure}
 
 
 
