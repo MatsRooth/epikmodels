@@ -591,9 +591,6 @@ $\Box_b(\Box_a(\neg 0)t + \Box_a(\neg 0)\neg t)$
 
 
 \begin{figure}
-
-
-
   \[\begin{array}{l>{\hspace{-.5em}}c>{\hspace{-0.75em}}l}
   \multicolumn{3}{l}{\mbox{state terms $\sigma$ as in Figure 1}} \\
   \multicolumn 2 l {\textrm{events}} & e \in \mathsf{P} \\
@@ -652,15 +649,17 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
 
 \newcommand{\epikspec}{\test,\event,\varphi,\zeta}
 
+\newcommand{\AphiB}{\mathcal A^\varphi_{\mathsf B}}
 
 \begin{figure}
   \[\begin{array}{l >{\triangleq}c l}
   \sem{ 0 }^{\epikspec} && \emptyset \\  
-  \sem{ 1 }^{\varphi,{\mathcal{E}}} && \mathcal A^\varphi_{\mathsf B}\\
-  \sem{ e }^{\varphi,{\mathcal{E}}}&& \hat{\mathcal E}^\varphi(e) \\
-  \sem{ \psi }^{\varphi,{\mathcal{E}}} &&  \mathcal A^{\varphi~\psi}\\
-  \sem{{p+q}}^{\varphi,{\mathcal{E}}} && \sem{{p}}^{\varphi,{\mathcal{E}}} \cup \sem{ q }^{\varphi,{\mathcal{E}}}\\
-  \sem{{p;q}}^{\varphi,{\mathcal{E}}} && \sem{ p }^{\varphi,{\mathcal{E}}} \diamond \sem{{q}}^{\varphi,{\mathcal{E}}}\\
+  \sem{ 1 }^{\epikspec} && \mathcal A^\varphi_{\mathsf B}\\
+  \sem{ a }^{\epikspec} && \mathcal A^{a\varphi}_{\mathsf B}\\
+  \sem{ \bar{\sigma} }^{\epikspec} && \AphiB \setminus \sem{\sigma}^{\epikspec}\\
+  \sem{ e }^{\epikspec}&&  \setabs{\alpha e \beta}{\alpha \zeta_e \beta} \\
+  \sem{{p+q}}^{\epikspec} && \sem{{p}}^{\epikspec} \cup \sem{ q }^{\epikspec}\\
+  \sem{{pq}}^{\epikspec} && \setabs{x \diamond y}{ \begin{array}{l}x \in \sem{p}^{\epikspec} \\ y \in \sem{q}^{\epikspec}\\\mbox{$x \diamond y$ is defined}\end{array}} \\
   \sem{ p^*}^{\varphi,{\mathcal{E}}} && \displaystyle\bigcup_n {\underbrace{\sem{ p }^{\varphi,{\mathcal{E}}}\diamond \ldots \diamond \sem{ p }^{\varphi,{\mathcal{E}}}}_{n}} \\
   \sem{ \neg p }^{\varphi,{\mathcal{E}}} && \sem{ \_^*}^{\varphi,{\mathcal{E}}} \setminus \sem{ p }^{\varphi,{\mathcal{E}}} \\
   \sem{ \Diamond_a~p } && \{x \mid x \mathbin{\hat{R_a}} y, y \in \sem{ p }^{\varphi,\mathcal E}\}
