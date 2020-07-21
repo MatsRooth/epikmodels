@@ -530,7 +530,7 @@ this, our approach is to refer the definition of well-formed guarded strings.
 \ex{raise1} defines a relation on worlds from a relation on bare events.
 
 \begin{example}  \label{raise1}
-  Let $W$ be a set of guarded strings over  events P and primitive tests B, a relation ${R}$ be a relation
+  Let $W$ be a set of guarded strings over  events P and primitive tests B, and ${R}$ be a relation
   on $P$. The corresponding relation $\hat{R}$ on $W$ holds between a guarded string
 \[
 \alpha_0e_0 ... e_n\alpha_{n+1} 
@@ -624,34 +624,30 @@ $\bullet$ & \( \triangleq \sum_{e \in \mathsf P}e\)
 \label{termfigure}
 \end{figure}
 
+\newcommand{\epikspec}{\test,\event,\varphi,\zeta}
+\newcommand{\AphiB}{\mathcal A^\varphi_{\mathsf B}}
+
+
 Each term in the language is interpreted as a set of guarded strings.  Where $p$ is a
-term, $\sem{p}^{\test,\event,\varphi,\zeta}$ is the interpretation of the term.  The
-superscript captures dependence on an Epik specification.
+term, $\sem{p}^{\epikspec}$ is the interpretation of the term, where superscript
+captures dependence on an Epik specification.  Figure \ref{fig:interp2} defines the
+interpretation of terms recursively.  The interpretation $\sem{ 1 }^{\epikspec}$ of
+the multiplicative identity is the set of atoms that satisfy the state constraint
+$\varphi$.  Where $b$ is a primitive Boolean, $\sem{ b }^{\epikspec}$ is the set of
+atoms that satisfy the state constraint and where $b$ is true.  Where $e$ is a
+primitive event, $\sem{ e }^{\epikspec}$ is the set of guarded strings that have the
+form of $e$ flanked by compatible atoms, as determined by the event formula
+$\zeta_e$. The product $pq$ of terms $p$ and $q$ is interpreted with fusion product
+raised to sets of guarded strings.
+Kleene star is interpreted as the union of iterated products. $p^n$ is the $n$-times product
+of $p$ with itself, with $p^0 = 1$.
+Propositional complement is complement relative to the set of worlds.
+The epistemic formula $\Diamond_a p$ is interpreted with Kripke
+semantics for epistemic modality, as the pre-image of the
+complement proposition under the relation
+$\hat{R}_a$.  Here $\hat{R}_a$ is the world-alternative for agent $a$,
+as defined in \ex{raise1}.
 
-
-interprets a term $p$ as a set of
-guarded strings consistent with state constraints $\varphi$ and effect
-relations ${\mathcal{E}^\varphi}$. A bare event $e$ is interpreted as
-the set $\hat{\mathcal E}^\varphi(e)$. The constant $0$ is interpreted
-as the empty set.  The constant $1$ is interpreted as the set
-$\mathcal A^\varphi_{\mathsf B}$, i.e. $\{h\bar t, \bar h t\}$ in the
-coin example. The operation $p + q$ is interpreted as the union of the
-interpretations of $p$ and $q$. The operation $p;q$ interpreted as the
-fusion product of the interpretations of $p$ and $q$ raised to sets:
-$X \diamond Y = \{ x \diamond y \mid x \in X, y \in Y, x\diamond
-y~\textit{defined}\}$.  The operation $p*$ is Kleene star, which is
-interpreted to be least upper bound of the iterated fusion product of
-the denotation of $p$ with itself. Subsets of $1$ indicated by
-propositions $\psi$ are also elements of $K$, and these form the
-Boolean algebra of tests, denoting all atoms admitted by the
-constraint $\varphi$ and the boolean test $\psi$.
-
-The unary epistemic alternative operation $\Diamond_a$ for each agent
-$a$, is interpreted using using Kripke semantics, as pre-image
-relative to a fixed relation $\hat{R_a}$ between guarded strings,
-$\Diamond_a~p = \{u \mid \exists v. v \in \sem{
-p}^{\phi, \mathcal E} \wedge u \mathrel{\hat{R_a}} v\}$.  Here $u$
-and $v$ are guarded strings, while $x$ is an element of $K$.
 
 
 \newlength{\dhatheight}
@@ -662,26 +658,24 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
       \smash{\hat{#1}}}}
 
 
-\newcommand{\epikspec}{\test,\event,\varphi,\zeta}
 
-\newcommand{\AphiB}{\mathcal A^\varphi_{\mathsf B}}
 
 \begin{figure}
-  \[\begin{array}{l >{\triangleq}c l}
+  \(\begin{array}{l >{\triangleq}c l}
   \sem{ 0 }^{\epikspec} && \emptyset \\  
   \sem{ 1 }^{\epikspec} && \mathcal A^\varphi_{\mathsf B}\\
-  \sem{ a }^{\epikspec} && \mathcal A^{a\varphi}_{\mathsf B}\\
+  \sem{ b }^{\epikspec} && \mathcal A^{b\varphi}_{\mathsf B}\\
   \sem{ \bar{\sigma} }^{\epikspec} && \AphiB \setminus \sem{\sigma}^{\epikspec}\\
   \sem{ e }^{\epikspec}&&  \setabs{\alpha e \beta}{\alpha \zeta_e \beta} \\
   \sem{{p+q}}^{\epikspec} && \sem{{p}}^{\epikspec} \cup \sem{ q }^{\epikspec}\\
   \sem{{pq}}^{\epikspec} && \setabs{x \diamond y}{ \begin{array}{l}x \in \sem{p}^{\epikspec} \\ y \in \sem{q}^{\epikspec}\\\mbox{$x \diamond y$ is defined}\end{array}} \\
-  \sem{ p^*}^{\varphi,{\mathcal{E}}} && \displaystyle\bigcup_n {\underbrace{\sem{ p }^{\varphi,{\mathcal{E}}}\diamond \ldots \diamond \sem{ p }^{\varphi,{\mathcal{E}}}}_{n}} \\
-  \sem{ \neg p }^{\varphi,{\mathcal{E}}} && \sem{ \_^*}^{\varphi,{\mathcal{E}}} \setminus \sem{ p }^{\varphi,{\mathcal{E}}} \\
-  \sem{ \Diamond_a~p } && \{x \mid x \mathbin{\hat{R_a}} y, y \in \sem{ p }^{\varphi,\mathcal E}\}
-  
+  \sem{p\!*\!}^{\epikspec} && \displaystyle\bigcup_{n \geq 0} {\sem{ p^n }^{\epikspec}} \\
+  \sem{ \neg p }^{\epikspec} && \sem{\bullet\!*}^{\epikspec} \setminus \sem{ p }^{\epikspec} \\
   \end{array}
-  \]
-  \caption{Interpretation of Epik terms as sets of guarded strings}
+  \)
+  
+\hspace{2mm}\(\sem{ \Diamond_a\,p } \hspace{4mm}{\triangleq} \hspace{4mm}\{x \mid \exists y . x{\hat{R}_a}y \wedge y \in \sem{ p }^{\epikspec}\} \)
+  \caption{Interpretation of Epik terms as sets of guarded strings (Version M)}
   \label{fig:interp2}
 \end{figure}
 
@@ -705,44 +699,66 @@ and $v$ are guarded strings, while $x$ is an element of $K$.
   \label{fig:interp}
 \end{figure}
 
-The complement operation ${p}^c$ is complement at the level of sets of
-guarded strings, defined to every set the universe $\_^*$ except those
-denoted by $p$. Note that $\sem{ 0^c
-}^{\varphi,{\mathcal{E}}} =
-\sem{\_^*}^{\varphi,{\mathcal{E}}}$.
 
-Summing up, given an Epik program with $n$ agents, we construct state
-constraints $\varphi$, effect relations ${\mathcal{E}}$, and a concrete guarded
-string model for each term using $\sem{ -
-}^{\varphi,{\mathcal{E}}}$.
-%% $\tuple{K,+,;,*,\bar{},0,1,{}^c,\Diamond_{a_1},...,\Diamond_{a_n}}$.
- $0^c$ is the set of worlds, and it may be countably infinite.
-$\Diamond_{a_i}$ is an epistemic modality for the $i$th agent.  Or
-referring to the Kripke relations $\hat{R}_i$, the construction
-defines a multi-agent Kripke frame
-$\tuple{0^c,\hat{R}_1,...,\hat{R}_n}$ (usually a countable one) from
-an Epik specification. The frame consists of a set of worlds, and an
-epistemic-alternative relation for each agent.  These models are used
-as a target for natural-language interpretation in Section 5 and
-Section 6, where we obtain semantic values such as \sem{Amy knows that
-  it's heads and Bob knows that Amy knows whether it is heads or
-  tails, and does not know that it's heads} as elements of
-$K$. Concretely the propositions are sets of guarded strings (usually
-countable ones), construed as sets of worlds as they figure in
-possible worlds semantics for natural language.
+Summing up, given an Epik specification, a state constraint $\varphi$, and effect
+relation $\zeta_e$ for each primitive are constructed. Given these, each term $p$ (as
+defined syntactically in Figure \ref{termfigure}) is interpreted as a set of guarded
+strings $\sem{p}^{\epikspec}$ over the Boolean primitives and event primitives in the
+specification.  Let $K^{\epikspec}$ be the sets that are interpretations of terms.
+Then
+$\tuple{K^{\epikspec},+,\cdot,*,\bar{},0,1,\neg,\Diamond_{a_1},...,\Diamond_{a_n}}$
+is a concrete guarded string interpretation for the signature of epistemic KAT, with
+operations as in Figure \ref{fig:interp2} (e.g. the binary operation $+$ is union,
+and the unary operation $\Diamond_a$ is pre-image relative to $\hat{R}_a$).  The
+construction can also be viewed as providing a concrete $n$-agent Kripke frame
+$\tuple{\sem{\bullet *}^{\epikspec}, \hat{R}_1,...,\hat{R}_n}$.\footnote{ The domain
+  of the Kripke frame differs from the domain of the guarded string model, because
+  the former is the set of worlds, while the latter is the set of propositions.  }
+The frame consists of a set of worlds, and an epistemic-alternative relation for each
+agent.  These models are used as a target for natural-language interpretation in
+Section 5 and Section 6.
 
 % $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_1,...,\Diamond_n}$
 
 \section{Translation into the finite state calculus}
 The finite state calculus is an algebra of regular sets of strings and regular
 relations between strings that was designed for use in computationonal phonology and
-morphographemics 
-\citep{kaplan1994regular,beesley2003finite}.
-Current implementations allow for the
-definition of functions with the status of defined operators on regular sets and
-relations
-\citep{hulden2009foma,karttunen2010update}.
-Such definitions are used to define an embedding of epistemic KAT in a
+morphographemics \citep{kaplan1994regular,beesley2003finite}.  Current
+implementations allow for the definition of functions that have the status of defined
+operations on regular sets and relations \citep{hulden2009foma,karttunen2010update}.
+Such definitions are used here to construct of a model for epistemic KAT inside the
+finite state calculus.  The space of worlds is a set of ordinary strings.  Bit
+sequences (sequences of 0's and 1's) are used for atoms, and these alternate with
+event symbols in the encoding of a world. \ex{gs1fst} gives the encoding of some of
+the worlds from the examples.  A string is a finite sequence of symbols, and {\tt 0},
+{\tt 1}, {\tt u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are special
+multi-character symbols that are found in implementations of the finite state
+calculus.
+
+
+\begin{example}   \label{gs1fst}
+  \renewcommand{\arraystretch}{1.2}
+Worlds coded as strings
+\vspace{1mm}
+
+ \hspace{-13mm} \begin{tabular}[t]{cl}
+{\textit{World}} & {\textit{String}} \\
+% $v_1$ & $ 0 \,u\,  1 \,u\,  2 \,d\,  1 \,u\,  2$ \\
+$v_1$ & {\tt 0 0 u 0 1 u 1 0 d  0 1 u  1 0} \\
+$v_2$ & $ 0 \,u\,  1 \,u\,  2 \,u\,  3$ \\   
+$w_1$ & $1 0$ \\
+$w_2$ & $1 0 \,a_0\, 1 0$ \\  
+$w_3$ & $0 1 \,a_0\, 0 1 \,b_0\, 0 1$ \\
+  \end{tabular}
+    \renewcommand{\arraystretch}{1}
+\end{example}
+
+Operations such as KAT product are defined operations in the finite
+state calculus.
+
+
+
+of epistemic KAT in a
 string algebra. The methodology follows Section 2 closely.  Let ${\cal K}$ be an
 epistemic algebra as described in Section 2.  A given element of ${\cal K}$ is
 represented in the the string algebra by the very same set of strings, i.e. by a set
