@@ -86,25 +86,26 @@
 Linguistic semantics in the Montague tradition proceeds by assigning
 propositional {\em semantic values} to disambiguated sentences of a
 natural language.  A proposition is a set or class of {\em possible
-  worlds}.  These are often assumed to be things with the same
-nature and complexity as the world we occupy \citep{lewis1986plurality}.  But
+  worlds}.  These are often assumed to be things with the same nature
+and complexity as the world we occupy \citep{lewis1986plurality}.  But
 alternatively, one can work with small idealized models, in order to
 illustrate and test ideas.  To build such models, spaces of worlds and
 individuals are stipulated as small finite sets, and semantic values
 of lexical items are constructed as functions or relations from these
-small sets.  Such toy or idealized models are useful in research and
-in teaching, in that it is possible to represent propositions finitely
+sets.  Such toy or idealized models are useful in research and in
+teaching, in that it is possible to represent propositions finitely
 and explicitly, and to calculate with them. The point of this paper is
 to scale up toy or idealized models to countable sets of worlds, and
 to constructive and computable modeling of epistemic alternatives for
 agents.  We describe a certain systematic way of defining such models,
-and illustrate how to apply them in natural language semantics.
-The focus is on epistemic semantics and clausal embedding. The fundamental move is to
-identify possible worlds with strings of primitive events, so that
-propositions are sets of strings. An advantage in this is that it
-allows for a mathematical description of an algebra of propositions,
-coupled with a computational representation using either lazy lists of
-strings, or finite state machines that describe sets of strings.
+and illustrate how to apply them in natural language semantics.  The
+focus is on epistemic semantics and clausal embedding. The fundamental
+move is to identify possible worlds with strings of primitive events,
+so that propositions are sets of strings. An advantage in this is that
+it allows for a mathematical description of an algebra of
+propositions, coupled with a computational representation using either
+lazy lists of strings, or finite state machines that describe sets of
+strings.
 
 The approach taken here synthesizes five antecedents in a certain way.
 John McCarthy's {\em Situation Calculus} is the source of the idea of
@@ -112,21 +113,21 @@ constructing possible worlds as event sequences
 \citep{mccarthy1963situations,reiter2001knowledge}.  The algebraic
 theory of {\em Kleene Algebra with Tests} characterizes algebras with
 elements corresponding to propositions and event types in our
-application \citep{kozen2001automata}.\marginpar{2001 or 2003?}  The
-models we propose are an epistemic extension of guarded string models
-for KAT, where a unary operation interpreted as an existential
-epistemic modality is included for each agent.  {\em Action models} in
-dynamic epistemic semantics introduce the technique of constructing
-epistemic models from primitive alternative relations on events, in
-order to capture the epistemic consequences of perceptual and
-communicative events \citep{baltag1999logic}. This is the basis for
-our construction of epistemic alternative relations.  Literature on
-finite state methods in linguistic semantics has used event strings
-and sets of event strings to theorize about tense and aspect in
-natural language semantics
+application \citep{kozen2001automata}. The models we propose are an
+epistemic extension of guarded string models for KAT, where a unary
+operation interpreted as an existential epistemic modality is included
+for each agent.  {\em Action models} in dynamic epistemic semantics
+introduce the technique of constructing epistemic models from
+primitive alternative relations on events, in order to capture the
+epistemic consequences of perceptual and communicative events
+\citep{baltag1999logic}. This is the basis for our construction of
+epistemic alternative relations.  Literature on {\em finite state
+  methods in linguistic semantics} has used event strings and sets of
+event strings to theorize about tense and aspect in natural language
+semantics
 \citep{fernando2004finite,fernando2007observing,carlson2009tense} and
-to express intensionality \cite{fernando2017intensions}.  Work on
-finite state intensiononal semantics investigates how to do the
+to express intensions \cite{fernando2017intensions}.  Work on {\em
+  finite state intensiononal semantics} has investigated how to do the
 semantics of intensional complementation, including indirect
 questions, in a setting where compositional semantics is expressed in
 a finite state calculus \citep{rooth2017finite,collard2018finite}.  We
@@ -404,8 +405,8 @@ atom such as $H$ is a guarded string of length $0$.
 $v_1$ & $\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \,u\, \hat 2$ & $4$ \\
 $v_2$ & $\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,u\, \hat 3$ & $3$ \\   
 $w_1$ & $H$ & $0$\\
-$w_2$ & $H \,a_0\, H$ & $1$ \\  
-$w_3$ & $T\,a_0\, T \,b_0\, T$ & $2$\\
+$w_2$ & $H \,a_1\, H$ & $1$ \\  
+$w_3$ & $H\,a_1\, H \,b_1\, H$ & $2$\\
   \end{tabular}
     \renewcommand{\arraystretch}{1}
 \end{example}
@@ -731,9 +732,10 @@ finite state calculus.  The space of worlds is a set of ordinary strings.  Bit
 sequences (sequences of 0's and 1's) are used for atoms, and these alternate with
 event symbols in the encoding of a world. \ex{gs1fst} gives the encoding of some of
 the worlds from the examples.  A string is a finite sequence of symbols, and {\tt 0},
-{\tt 1}, {\tt u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are special
+{\tt 1}, {\tt u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are
 multi-character symbols that are found in implementations of the finite state
-calculus.
+calculus. The multi-character symbol {\tt a0} is an element of the alphabet that has
+no connection with the element {\tt a}.
 
 
 \begin{example}   \label{gs1fst}
@@ -744,31 +746,123 @@ Worlds coded as strings
  \hspace{-13mm} \begin{tabular}[t]{cl}
 {\textit{World}} & {\textit{String}} \\
 % $v_1$ & $ 0 \,u\,  1 \,u\,  2 \,d\,  1 \,u\,  2$ \\
-$v_1$ & {\tt 0 0 u 0 1 u 1 0 d  0 1 u  1 0} \\
-$v_2$ & $ 0 \,u\,  1 \,u\,  2 \,u\,  3$ \\   
-$w_1$ & $1 0$ \\
-$w_2$ & $1 0 \,a_0\, 1 0$ \\  
-$w_3$ & $0 1 \,a_0\, 0 1 \,b_0\, 0 1$ \\
+$v_1$ & {\tt 0 0 u 0 1 u 1 0 d  0 1 u 1 0} \\
+$v_2$ & {\tt 0 0 u 0 1 u 1 0 u 1 1} \\
+$w_1$ & {\tt 1 0} \\
+$w_2$ & {\tt 1 0 a1 1 0} \\
+$w_3$ & {\tt 1 0 a1 1 0 b1 10} \\  
   \end{tabular}
     \renewcommand{\arraystretch}{1}
 \end{example}
 
-Operations such as KAT product are defined operations in the finite
-state calculus.
+Terms in the finite state calculus are interpreted as sets of strings, or for
+relational terms, as relations between strings.  Computationally, the sets and
+relations are represented by finite state acceptors.  As used here, a program in the
+Fst language of the finite state calculus is a straight-line program that defines a
+sequence of constants naming sets, constants naming relations, and functions mapping
+one or more regular relations to a regular set or relation.  The functions are
+defined as macros.  To illustrate, \ex{stex1} is part of an Epik program that
+declares states and a state constraint.  This is equivalent to the Fst program
+\ex{stex2}. The result of the sequence of definitions is that {\tt St} is the set of
+Boolean vectors or length four that are well-formed according to the state formula;
+Nst is the complement operation for tests; H1 is the set of well-formed Boolean
+vectors that have 1 in the first position; and so forth.  Translation from an Epik
+program to an Fst program is accomplished in Haskell.
+
+\begin{example}\label{stex1}
+Part of an Epik program
+\end{example}
+
+\vspace{-3mm} {\small
+\begin{verbatim}  
+   state H1 T1 H2 T2
+   constraint !(H1 T1) & (H1 + T1) 
+              !(H2 T2) & (H2 + T2) 
+\end{verbatim}}
+
+\begin{example}\label{stex2}
+Corresponding Fst program
+\end{example}
+
+\vspace{-3mm}
+{\small 
+\begin{verbatim} 
+   define Bool ["0"|"1"];
+   define St0 [Bool Bool Bool Bool];
+   define H1 [1 Bool Bool Bool];
+   define T1 [Bool 1 Bool Bool];
+   define H2 [Bool Bool 1 Bool];
+   define T2 [Bool Bool Bool 1];
+   define St St0 & ((((St0 - (H1 & T1)) 
+                 & (H1 | T1)) 
+                 & (St0 - (H2 & T2))) 
+                 & (H2 | T2));
+   define Nst(X) [St - X];
+   define H1 St & H1;
+   define T1 St & T1;
+   define H2 St & H2;
+   define T2 St & T2;
+\end{verbatim}}
+
+Event symbols are interpreted as event types, in the way discussed in connection with
+\ref{events1}.  For instance, defines an event type {\tt paT2type} of Amy peeking at the second coin
+in a scenario with two coins, and seeing that it is tails.\footnote{After the definition,
+  {\tt paT2type} is a constant symbol denoting a set of two strings. On the right hand side of the definition,
+  {\tt paT2} is the unit set of the symbol {\tt paT2}.  
+}  The first conjunct
+expresses that this event can only happen if the second coin is tails ({\tt H2}), and that the
+state of the second coin does not change.  The second conjunct expresses that the
+event does not change the state of the first coin -- either it is heads ({\tt H1}) and
+remains heads, or it is tails ({\tt T1}) and remains tails.  Such formulas are mapped from
+effect formulas in Epik programs. The state formula is imposed as well, since it
+figures in the definition of state constants such as {\tt H1}.
+
+\begin{example} \label{peek1}
+{\small 
+\begin{verbatim}
+define paT2type [[[T2 paT2] T2] & 
+  [[[H1 paT2] H1] | [[T1 paT2] T1]]];
+\end{verbatim} }
+\end{example}
+
+Semantically in Fst, {\tt paT2type} is a set of two strings, which can be displayed
+in an interpreter for the language by reading {\tt paT2type} as a regular expression
+and printing its extension, see \ex{printwords1}.
+
+\begin{example}
+\begin{verbatim}
+xfst[1]: regex paT2type;
+3.0 Kb. 16 states, 16 arcs, 2 paths.
+xfst[2]: print words
+0 1 0 1 paT2 0 1 0 1
+1 0 0 1 paT2 1 0 0 1
+\end{verbatim}
+\end{example}
 
 
 
-of epistemic KAT in a
-string algebra. The methodology follows Section 2 closely.  Let ${\cal K}$ be an
-epistemic algebra as described in Section 2.  A given element of ${\cal K}$ is
-represented in the the string algebra by the very same set of strings, i.e. by a set
-of strings that have the form of a sequence of bare event symbols, with interleaved
-Boolean vectors. Product in the KAT can not be modeled as concatenation in the string
-algebra, because this would not enforce identity of states, and would result in
-lengthening Boolean vectors at the concatenation point.  Instead, KAT product and KAT
-Kleene star are defined operations in the string algebra, see Figure \ref{fstfigure1}.  The
-operations concatenate in the string algebra, delete strings with non-matching tests,
-and then delete the second of two tests create a well-formed guarded string.
+The finite state calculus has a product operation of string concatenation raised to sets.
+Concatenation of strings with atoms (Boolean vectors) at both ends has the effect of
+doubling atoms at the juncture, and does not enforce matching of atoms at the juncture.  Therefore
+KAT product can not be identified with product in the finite state calculus. Instead,
+KAT product and KAT Kleene star are defined operations, see Figure \ref{fstfigure1}.
+The binary product operation {\tt Cn} and the unary Kleene star operation
+{\tt Kst} combine strings in the string algebra, remove strings with
+non-matching atoms, and then delete the second of two tests to create well-formed
+guarded strings.  Matching of atoms is enforced with the set {\tt Wf0}, which is
+the set of strings that do not contain non-matching Boolean vectors.  The containment
+operator (expressed by the dollar sign) and complement (expressed by tilde) are operators of the finite
+state calculus.  The set of non-matching sequences of atoms {\tt UnequalStPair} is defined by a finite disjunction.
+Deletion is accomplished by a re-write rule in the finite state calculus, which is a
+notation for defining regular relations by contextually constrained substitutions
+(REFS).  In this case, is {\tt Squash} us a regular relation that deletes an atom
+(a sequence of 0's and 1's of a certain length) when it follows an atom.\footnote{
+  This is a non-equal length regular relation. The finite state calculus includes such
+  relations, and they can be used with relation composition and relation domain and co-domain.
+  They are restricted in that the complement and set difference for non-equal length relations is not defined.
+The epistemic alterative relations that are defined in Figure -- are equal-length relations.
+  }
+
 
 \begin{figure}
 \begin{hangingpar}
@@ -799,8 +893,7 @@ Rewrite relation deleting the second of two tests.
 define Cn(X,Y) 
  [[[X Y] & Wf0] .o. Squash].l;
 \end{verbatim}
-KAT product in Fst, where {\tt \&} is intersection, {\tt .o.} is relation composition,
-and {\tt .l} is relation image.
+KAT product.
 \end{hangingpar}
 
 \begin{hangingpar}
@@ -814,10 +907,19 @@ define Kpl(X)
 \begin{verbatim}
 define Kst(X) St |  Kpl(X);
 \end{verbatim}
-KAT Kleene plus and Kleene star in Fst. The Fst operation {\tt |} is union.
+KAT Kleene plus and Kleene star. The Fst operation {\tt |} is union.
 \end{hangingpar}
 
-\caption{Translation into Fst of KAT product and KAT Kleene star.}
+\caption{\raggedright Definition in Fst of KAT product and KAT Kleene star.
+  Where {\tt X} and {\tt Y} are regular sets and
+  {\tt R} and {\tt S} are regular relatiions,
+  {\tt X{\&}Y} is the intersection of {\tt X} and {\tt Y},
+  {\tt X|Y} is the union of {\tt X} and {\tt Y},
+  {\tt \~{}X} is the complement of {\tt X},
+  {\tt R{.o.}S} is the composition of {\tt R} and {\tt S},
+  {\tt R{.}l} is the co-domain of {\tt R}, and
+  {\tt {\$}X} is the set of strings that have a substring in $X$.   
+}
 \label{fstfigure1}
 \end{figure}
 
@@ -896,13 +998,13 @@ $\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
       & no unmatched tests. \\
   $c$ & Reduce doubled tests to a single \\
       & test in the domain and co-domain. \\
-      & {\tt{Squash.i}} is the inverse \\
-      & of {\tt{Squash}}.
 \end{tabular}
 
 \begin{hangingpar}
-{\tt{define Kst(R) [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}}
-The Fst operation {\tt{.x.}} is Cartesian product.
+{\tt{define Kst(R)
+    [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}} The Fst
+operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relation
+{\tt{R}}.
 \end{hangingpar}
 
 \caption{Definition in Fst of the Kleene concatenation closure of
@@ -1024,15 +1126,20 @@ computation of the fixpoint.
 
 \section{Syntax-semantics interface}
 
-An architecture of interpretation by transtlation is employed, where English
-sentences are mapped to terms in the logical language (--) via an interpreted
-grammar, and these terms are in turn interpreted as propositions (sets of possible
-worlds). For the latter, there are options of translation into the finite state
-calculus in order to represent propositions as finite state machines (Section 3), and
-representation in Haskell via lazy lists of guarded strings (Section 4).  The grammar
-is a semantically interpreted multi-modal categorial grammar, consisting of a lexicon
-of words, their categorial types, and interpretations in a logical lambda language.
-Figure \ref{phenomenafigure} lists phenomena that are covered.
+An architecture of interpretation by transtlation is employed, where
+English sentences are mapped to terms in the logical language via an
+interpreted grammar, and these terms are in turn interpreted as
+propositions (sets of possible worlds). For the latter, there are
+options of translation into the finite state calculus in order to
+represent propositions as finite state machines (Section 4), and
+representation in Haskell via lazy lists of guarded strings (Section
+5).  The grammar is a semantically interpreted multi-modal categorial
+grammar, consisting of a lexicon of words, their categorial types, and
+interpretations in a logical lambda language.  Figure
+\ref{phenomenafigure} lists phenomena that are covered.  There is
+recursion through conjuction and verbal complementation, so that the
+language is infinite. It includes talk of beliefs about beliefs, or in
+general, talk of arbitrarily iterated belief.
 
 \begin{figure}  
 \begin{tabular}[t]{l|l}
@@ -1052,26 +1159,25 @@ Predicate conjunction & Bob knows that \\ & Amy knows whether \\ & it's heads an
 \label{phenomenafigure}
 \end{figure}  
 
-As illustrated towards the end, there is recursion through conjuction and verbal complementation,
-so that the language is infinite, and includes talk of beliefs about beliefs, or in general, talk
-of arbitrarily iterated belief.
-
-
-
-
-Figure \ref{lexiconfigure} gives illustrative lexical entries. The grammar and semantics are in
-certain way optimized for a simple fragment of English concerned with clausal
-complementation.  The agent names {\em Amy} and {\em Bob} contribute the epistemic
-alternative relations for those agents, rather than individuals.  This is possible
-because the agents are never arguments of extensional predicates, so what matters
-about the agents is their epistemic alternative relations.  The root verb {\em know}
-contributes existential modal force.  The complementizers {\em that} and {\em
-  whether} are the heads of their dominating clauses, and assemble an alternative
-relation, modal force, and proposition contributed by the complement.  These
-complementizers introduce the dual via two negations, in order to arrive universal
-modal force.  These moves are offered here as a way of constructing a compact
-interpreted grammar. They can easily be reformulated in a more comprehensive
-interpreted grammar of English.
+Figure \ref{lexiconfigure} gives illustrative lexical
+entries.\footnote{Category symbols use Lambek/Bar-Hillel notation for
+  slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
+  with $d \backslash_D t$ on the right to give a value that combines
+  with $d$ on the left to give $t$.} The grammar and semantics are
+optimized for a simple fragment of English concerned with
+clausal complementation.  The agent names {\em Amy} and {\em Bob}
+contribute the epistemic alternative relations for those agents,
+rather than individuals.  This is possible because the agents are
+never arguments of extensional predicates, so what matters about the
+agents is their epistemic alternative relations.  The root verb {\em
+  know} contributes existential modal force.  The complementizers {\em
+  that} and {\em whether} are the heads of their dominating clauses,
+and assemble an alternative relation, modal force, and proposition
+contributed by the complement.  These complementizers introduce the
+dual via two negations, in order to express universal modal force.
+These moves are offered here as a way of constructing a compact
+interpreted grammar. They can easily be reformulated in a more
+comprehensive interpreted grammar of English.
 
 \begin{figure}  
 \begin{tabular}[t]{l|c|c}
@@ -1082,9 +1188,9 @@ heads & $d \backslash_D t$ & $\lambda x.0^c{\cdot}h$ \\
 tails & $d \backslash_D t$ & $\lambda x.0^c{\cdot}!h$ \\
 is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P.\lambda x.P x$ \\
 knows & $(e \backslash t)\slash_M t$ &  $\lambda p.\lambda R. {\Diamond}R p$\\
-that  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \backslash t)) \slash t$} \\
+that  & \multicolumn{2}{l}{$(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$} \\
 & \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
-whether  & \multicolumn{2}{l}{$(((e \backslash t)\slash_M t) \backslash (e \backslash t)) \slash t$} \\
+whether  & \multicolumn{2}{l}{$(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$} \\
 & \multicolumn{2}{l}{$\lambda p.\lambda m.\lambda R.{\sim}(m ({\sim}p) R)$} \\
 & \multicolumn{2}{r}{$+ {\sim}(m p R)$} \\
 \end{tabular}
@@ -1094,46 +1200,54 @@ a logical language that extends the Epik term language with lambda.}
 \label{lexiconfigure}
 \end{figure}  
 
-Multimodal categories such as $\backslash_D$ and $\backslash_M$ are used to control
-the derivation.  For instance the category of {\em heads} $d \backslash_D t$.  The
-dummy expletive subject {\em it} has category $d$, but the phrase {\em it heads} of
-category $t$ can not be formed, because $\backslash_D$ is not syntactically active as
-a function.  Instead {\em it is heads} can be formed with a predicator {\em is} of
-category $(d \backslash t)\slash(d \backslash_D t)$.  (This uses Lambek/Bar-Hillel
-notation for slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
-with $d \backslash_D t$ on the right to give a value that combines with $d$ on the
-left to give $t$.)  Similarly {\em knows} has a category with the top-level slash
-$\slash_M$, and combines to form a sentence as an argument of {\em that} or {\em
-  whether}, which has a category that looks for the category of {\em know} on the
-left, after combining with a complement sentence on the right.
+Multimodal categories such as $\backslash_D$ and $\backslash_M$ are
+used to control the derivation.  For instance the category of {\em
+  heads} is $d \backslash_D t$.  The dummy expletive subject {\em it}
+has category $d$.  However the phrase {\em it heads} of category $t$
+can not be formed, because $\backslash_D$ is not syntactically active
+as a function.  Instead {\em it is heads} is formed with a predicator
+{\em is} of category $(d \backslash t)\slash(d \backslash_D t)$.
+Similarly {\em knows} has a category with the top-level slash
+$\slash\!_M$, and combines to form a sentence as an argument of {\em
+  that} or {\em whether}. These complementizers have a category that
+looks for the category of {\em know} on the left, after combining with
+a complement sentence on the right.
 
-The semantic translations in the third column of Figure \ref{lexiconfigure} use the Epik term
-language, incremented with lambda.  The body of $\lambda x.0^c{\cdot}h$, which is the
-semantic lexical entry for {\em heads}, is a term denoting the set of all worlds
-where the coin is heads, represented as the set of all guarded strings that end with
-a Boolean valuation where the primitive proposition $h$ (it's heads) is true.  There
-is $\lambda x$ at the front because of a correspondence the grammar formalism uses a
-correspondence between syntactic and semantic types. However, it does not bind
-anything, because sentences such as {\em it isn't heads} have an expletive subject.
-The body ${\Diamond}R p$ of $\lambda p.\lambda R. {\Diamond}R p$, which is the
-semantic lexical entry of {\em knows}, is an Epik term denoting the pre-image of the
-set of worlds $p$ according to the relation $\doublehat{R}$ between guarded strings
-that is determined by the event-level relation $R$.  This is not the right semantics
-for {\em Amy knows that it's heads}, because it is an existential modality ${\Diamond_R}p$,
-rather than an universal modality ${\Box_R}p$.  This is corrected by the complementizer
-{\em that} or {\em whether}, which introduces the dual.
+The semantic translations in the third column of Figure
+\ref{lexiconfigure} use the Epik term language, incremented with
+lambda.  The body of $\lambda x.0^c{\cdot}h$, which is the semantic
+lexical entry for {\em heads}, is a term denoting the set of all
+worlds where the coin is heads, expressed as the set of all guarded
+strings that end with a Boolean valuation where the primitive
+proposition $h$ (it's heads) is true.  There is $\lambda x$ at the
+front because the grammar formalism enforces a strict correspondence
+between syntactic and semantic types. However, the lambda does not
+bind anything, because sentences such as {\em it isn't heads} have an
+expletive subject.  The body ${\Diamond}R p$ of $\lambda p.\lambda
+R. {\Diamond}R p$, which is the semantic lexical entry of {\em knows},
+is an Epik term denoting the pre-image of the world-alternative
+relation contributed by the subject.  This is not the right semantics
+for {\em Amy knows that it's heads}, because it is an existential
+modality ${\Diamond_R}p$, rather than an universal modality
+${\Box_R}p$.  This is corrected by the complementizer {\em that} or
+{\em whether}, which introduces the dual.
 
-Sentences are parsed with a chart parser for categorial grammar.  The semantics for
-complex phrases are obtained by syntactic application of semantic translations,
-accompanied by beta reduction.  Semantic terms in the parsing formalism are
-expressions of untyped lambda calculus.  The grammar is set up so that lambda is
-eliminated by beta reduction in the semantic term corresponding to a sentence. In
-consequence, the semantic term translating a sentence is a term of the Epik language
-(--).  Such a term designates a set of possible words (guarded strings) in the
-possible worlds model deterimened by an Epik specification such as the one in Figure
-1.  \exi{three}{a} is an English sentence with predicate conjunction and three levels
+Sentences are parsed with a chart parser for categorial grammar.  The
+semantics for complex phrases are obtained by syntactic application of
+semantic translations, accompanied by beta reduction.  Semantic terms
+in the parsing formalism are expressions of untyped lambda calculus.
+The grammar is set up so that lambda is eliminated by beta reduction
+in the semantic term corresponding to a sentence. In consequence, the
+semantic term translating a sentence is a term of the Epik term
+language.  Such a term designates a set of possible words (guarded
+strings) in the possible worlds model deterimened by an Epik
+specification.
+By way of example, 
+\exi{three}{a} is an English sentence with predicate conjunction and three levels
 of clausal embedding.  Using the grammar and parser, the sentence is mapped to the
-Epik term \exi{b}.  Using the result from Section 3, this term can be mapped in an
+Epik term \exi{b}, which here takes the form of a Scheme s-expression.
+
+Using the result from Section 3, this term can be mapped in an
 implementation of the finite state calculus to a finite state machine that represents
 a countably infinite set of possible worlds, represented as guarded strings.  Using
 the result from Section 4, it can be mapped to an infinite lazy list of guarded
@@ -1143,16 +1257,37 @@ computational representation of the propositional semantic value \semval{Amy kno
   that Amy knows that it is tails}, in the familiar sense of Montague semantics for
 natural language.
 
-\begin{examples}  \label{three}
-\itema  Amy knows that Bob knows that Amy knows whether it is heads and
-knows that Bob does not know that Amy knows that it is tails.
-\itemb
-\end{examples}  
-
+\begin{example}  \label{three}
+Amy knows that Bob knows that Amy knows whether it is heads and
+knows that Bob doesnt know that Amy knows that it is tails.
+\end{example}  
 
 
 
 \section{Examples and discussion}
+
+
+\begin{examples}
+\itema Amy knows that it is tails
+\itemb {\tt (Not (Diamond amy (Not tails)))}
+\end{examples}
+
+\begin{examples}
+\itema Bob doesnt know that Amy knows that it is tails
+\itemb {\tt (Not (Not (Diamond bob (Not (Not (Diamond amy (Not tails)))))))}
+\end{examples}
+
+
+\begin{examples}
+\itema Bob knows that Amy knows whether it is heads.
+\itemb {\tt (Not (Diamond bob (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))))}
+\end{examples}
+
+\begin{examples}
+\itema Amy knows that Bob knows that Amy knows whether it is heads and knows that Bob doesnt know that Amy knows that it is tails.
+\itemb {\tt (And (Not (Diamond amy (Not (Not (Diamond bob (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))))))) (Not (Diamond amy (Not (Not (Not (Diamond bob (Not (Not (Diamond amy (Not tails))))))))))) }
+\end{examples}
+
 
 
 Page breakdown
