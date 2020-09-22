@@ -557,6 +557,7 @@ proposition under the world-alternative relation ${R}_a$.
 
 
 \begin{figure}
+  \centering
   \(\begin{array}{l >{\triangleq}c l}
   \sem{ 0 }^{\epikspec} && \emptyset \\  
   \sem{ 1 }^{\epikspec} && \mathcal A^\varphi_{\mathsf B}\\
@@ -864,7 +865,8 @@ $p$, making sure to filter out guarded strings that are too long.
 %% \sem{ p }^{\varphi,\mathcal E}, |g| \leq n\}$.
 
 \begin{figure}
-  \[\begin{array}{r >{\triangleq}c l}
+  \centering
+  \(\begin{array}{r >{\triangleq}c l}
   \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_0 && [] \\
   \llparenthesis 0 \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [] \\
   \llparenthesis 1 \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \mathcal A_{\mathsf B}^\varphi \rfloor \\
@@ -883,7 +885,7 @@ $p$, making sure to filter out guarded strings that are too long.
   \llparenthesis \Diamond_a~p \rrparenthesis^{\varphi,{\mathcal{E}}}_n &&
   [g' \mid g'~\hat{R_a}~g,~\texttt{for}~g~\texttt{in}~\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n]
   \end{array}
-  \]
+  \)
   \caption{Bounded interpretation using lazy lists}
   \label{fig:bound-interp}
 \end{figure}
