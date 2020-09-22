@@ -69,6 +69,7 @@
 \newcommand{\dom}{\ensuremath{\mathrm{dom}}}
 \input{syntax.tex}
 \usepackage{wasysym,graphicx}
+\usepackage{tcolorbox}
 
 \newcommand{\event}{\sf{P}}
 \newcommand{\test}{\sf{B}}
@@ -612,6 +613,7 @@ calculus. The multi-character symbol {\tt a0} is an element of the alphabet that
 no connection with the element {\tt a}.
 
 \begin{figure}
+\footnotesize
 \begin{hangingpar}
 {\tt St} \hspace{2mm} Tests such as 0 1 1 0. The length is the number of generators.
 \end{hangingpar}
@@ -722,9 +724,10 @@ relations by contextually constrained substitutions.  In this case, is
   are defined in Figure -- are equal-length relations.  }
 
 \begin{figure} \label{relclosure}
+  \footnotesize
 {\raggedright
-\begin{hangingpar}
-{\tt{define RelKpl(R)}}
+  \begin{hangingpar}
+{\tt{define RelKpl(R)}}\\
 $\underbrace{\mbox{\tt{Squash.i\hspace{1pt}.o.}}}_c$
 $\underbrace{\mbox{\tt Wf0\hspace{1pt}.o.}}_b$
 $\underbrace{\mbox{\tt{[R+]}}}_a$
@@ -742,7 +745,7 @@ $\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
 
 \begin{hangingpar}
 {\tt{define Kst(R)
-    [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}} The Fst
+    [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}}\\ The Fst
 operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relation
 {\tt{R}}.
 \end{hangingpar}
@@ -819,7 +822,7 @@ We also implement the semantics of Epik terms using lazy
 lists~\cite{LazyLists} in Haskell, rather than the direct
 interpretation as sets. Unfortunately, regular expressions, and hence
 also Epik, can denote infinite sets of strings, for example the term
-$\_^*$. Normally regular languages are represented using a finite
+$\bullet^*$. Normally regular languages are represented using a finite
 coalgebra~\cite{}. However the non-distributivity of $\diamond$
 accross $;$ complicates this construction\footnote{Axiomatic and
   Coalgebraic models for Epik are open questions}. To sidestep this,
@@ -828,8 +831,7 @@ and only produce guarded strings of length $n$ or less.
 
 We translate the Epik terms into a Haskell algebraic datatype that
 represents terms with the same signature as described in Section 2. We
-then paramaterize the interpretation function, $\llparenthesis p
-\rrparenthesis^{\varphi,{\mathcal{E}}}_n$ on an integer $n$ that
+then paramaterize the interpretation function on an integer $n$ that
 describes the maximum length of a string we will produce.
 
 The bounded interpretation into lists of strings is very similar to the
@@ -841,16 +843,18 @@ into a list (for a set $X$, $\lfloor X \rfloor$ is a list with the same elements
 as $X$ arbitrarily ordered). We compute these lists using BBDs, a standard
 technique for concisely and cannoncially representing boolean functions~\cite{BBDS}.
 
-We lift the remaining operators (except Kleene star) to their list equivalents:
-union becomes list append (written $\texttt{+\!+}$); concatenation becomes the
-fusion product (lifted to lists this time), negation is implemented using list
-difference ($\setminus$), and the modal operator lifts the alternative relation
-over lists of strings\footnote{Figure~\ref{fig:list-interp} depicts this using
-  the list comprehension notation, which is analogous to set builder notation,
-  except that it is written using square brackets. The order of elements is
-  preserved indicated by the keyword \texttt{for}}. The only caveat to these
-direct interpretations is that we restrict the operators to have size $\leq n$,
-denoted as $l|_n$ for a list of guarded strings $l$.
+We lift the remaining operators (except Kleene star) to their list
+equivalents: union becomes list append (written $\texttt{+\!+}$);
+concatenation becomes the fusion product (lifted to lists this time),
+negation is implemented using list difference ($\setminus$), and the
+modal operator lifts the alternative relation over lists of
+strings\footnote{Figure~\ref{fig:list-interp} depicts this using the
+  list comprehension notation, which is analogous to set builder
+  notation, except that it is written using square brackets. Element
+  order is evoked by the keyword \texttt{for}, rather than using the
+  unordered $\forall$.}. The only caveat to these direct
+interpretations is that we restrict the operators to have size $\leq
+n$, denoted as $l|_n$ for a list of guarded strings $l$.
 
 The denotation of $p^*$ uses the fact that $p^*$ and $1 + p;p^*$ are equivalent,
 and decrements the size threshold on the recursive denotation of $p^*$ by $i$,
@@ -864,26 +868,28 @@ $p$, making sure to filter out guarded strings that are too long.
 %% \rrparenthesis^{\varphi,\mathcal E}_n\right\rceil = \{g \mid g \in
 %% \sem{ p }^{\varphi,\mathcal E}, |g| \leq n\}$.
 
+\newcommand{\semlst}[2]{\llparenthesis#1\rrparenthesis^{\mathsf B, \mathsf P, \phi, \zeta}_{#2}}
+\newcommand{\setToList}[1]{\lfloor#1\rfloor}
+
 \begin{figure}
   \centering
   \(\begin{array}{r >{\triangleq}c l}
-  \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_0 && [] \\
-  \llparenthesis 0 \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [] \\
-  \llparenthesis 1 \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \mathcal A_{\mathsf B}^\varphi \rfloor \\
-  \llparenthesis e \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \hat{\mathcal E}^\varphi(e)\rfloor \\
-  \llparenthesis \psi \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \lfloor \mathcal A_{\mathsf B}^{\varphi~\psi} \rfloor \\
-  \llparenthesis p + q \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \mathbin{\texttt{+\!+}} \llparenthesis q \rrparenthesis^{\varphi,{\mathcal{E}}}_n \\
-  \llparenthesis p;q \rrparenthesis^{\varphi,{\mathcal{E}}}_n &&
-  \left(\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \diamond \llparenthesis q\rrparenthesis^{\varphi,{\mathcal{E}}}_n\right)|_n\\
-  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_n && [] + \left(\llparenthesis p\rrparenthesis^{\varphi,{\mathcal{E}}}_n \diamond  \llparenthesis p^* \rrparenthesis^{\varphi,{\mathcal{E}}}_{m}\right)|_n \\
+  \semlst p 0 && [] \\
+  \semlst 0 n && [] \\
+  \semlst 1 n && \setToList \AphiB \\
+  \semlst e n && [ \alpha e \beta \mid \alpha \mathrel{\zeta_e} \beta ] \\
+  \semlst b n && \setToList{ \mathcal A_{\mathsf B}^{b\psi}} \\
+  \semlst{p + q} n && \semlst p n \mathbin{\texttt{+\!+}} \semlst q n \\
+  \semlst{p;q} n &&
+  \left(\semlst p n \diamond \semlst q n \right)|_n\\
+  \semlst{p^*} n && [] + \left(\semlst p n \diamond \semlst{p^*} {n-i}\right) |_n \\
   \multicolumn 3 r {\text{where}~
     \begin{array}[t]{r >{\hspace{-.7em}}l}
-      i &= \max\{1,\min\{|g|\mid g \in \llparenthesis p \rrparenthesis_n^{\varphi,{\mathcal{E}}}\}\}\\
-      m &= \max\{0, n - i\}
+      i &= \max\{1,\min\{|g|\mid g \in \semlst p n \}\} \\
     \end{array}}\\
-  \llparenthesis \neg p \rrparenthesis^{\varphi,{\mathcal{E}}}_n && \llparenthesis \_^* \rrparenthesis^{\varphi,{\mathcal{E}}}_n \setminus \llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n \\
-  \llparenthesis \Diamond_a~p \rrparenthesis^{\varphi,{\mathcal{E}}}_n &&
-  [g' \mid g'~\hat{R_a}~g,~\texttt{for}~g~\texttt{in}~\llparenthesis p \rrparenthesis^{\varphi,{\mathcal{E}}}_n]
+  \semlst{\neg p} n && \semlst {\bullet^*} n \setminus \semlst p n \\
+  \semlst{\Diamond_a~p } n &&
+         [g' \mid g'~\hat{R_a}~g,~\texttt{for}~g~\texttt{in}~\semlst p n]
   \end{array}
   \)
   \caption{Bounded interpretation using lazy lists}
@@ -1006,6 +1012,9 @@ representations can be used to check entailment between sentences (via a subset
 check), print random worlds that satisfy the sentence (Fst only), print all
 worlds shorter than some bound, and the like.
 
+\section{Conclusion}
+
+\ehc{Insert happy words!}
 
 \pagebreak
 
