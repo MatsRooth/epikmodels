@@ -70,6 +70,7 @@
 \input{syntax.tex}
 \usepackage{wasysym,graphicx}
 \usepackage{tcolorbox}
+\usepackage{booktabs}
 
 \newcommand{\event}{\sf{P}}
 \newcommand{\test}{\sf{B}}
@@ -237,28 +238,26 @@ the bottom in \ex{effect}.
 
 
 \begin{figure}
-  \[\begin{array}{lcl}
+  \fbox{
+    \begin{minipage}{\columnwidth}
+  \(\begin{array}{lcl}
   \multicolumn 3 l {\textrm{state formulas}\hfill (a \in \mathsf{B}) \hfill \mbox{}}\\
-  \rho,\sigma,\varphi &::=& a \mid0 \mid 1 \mid\rho+\sigma \mid \rho\,\sigma \mid \bar{\rho} \\ \\
+  \rho,\sigma,\varphi &::=& a \mid0 \mid 1 \mid\rho+\sigma \mid \rho\,\sigma \mid \bar{\rho} \\
   \multicolumn {3} l {\textrm{effect formulas}}\\
   \zeta,\eta & ::= & \rho \mathbin{:} \sigma \mid \zeta+\eta
     \mid \zeta \mathbin{\&} \eta \mid \bar{\zeta}
-  \end{array}\]
+  \end{array}\)
   
-\[
-\begin{array}{lll}
-  \sem{\rho\mathbin{:}\sigma}^\varphi & = &
-  {\mathcal A}^{\rho\varphi}_{\mathsf{B}}\times{\mathcal A}^{\sigma\varphi}_{\mathsf{B}}\\[.1em]
-\sem{\zeta +\eta}^\varphi & = & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
-\sem{\zeta \mathbin{\&}  \eta}^\varphi & = & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
-\sem{\bar{\zeta}}^\varphi & = & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
-\end{array}  
-\]
-
-
-
-\vspace{-2mm}
-
+  \(
+  \begin{array}{lll}
+    \sem{\rho\mathbin{:}\sigma}^\varphi & = &
+        {\mathcal A}^{\rho\varphi}_{\mathsf{B}}\times{\mathcal A}^{\sigma\varphi}_{\mathsf{B}}\\[.1em]
+        \sem{\zeta +\eta}^\varphi & = & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
+        \sem{\zeta \mathbin{\&}  \eta}^\varphi & = & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
+        \sem{\bar{\zeta}}^\varphi & = & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
+  \end{array}  
+  \)
+  \end{minipage}}
 \caption{Syntax of state formulas and syntax and semantics of effect formulas. Effect formulas
   denote relations between atoms. In a state formula, juxtaposition $\rho\,\sigma$ is conjunction.}
 \label{effectfigure}
@@ -273,7 +272,7 @@ an Epik program that describes a possible worlds model for two agents
 with information about one coin, and events of the agents
 semi-privately looking at the coin. The line beginning with {\tt
   state} enumerates ${\sf{B}}$. The line beginning with {\tt
-  constraint} gives the state formula.  The lines beginning with {\tt
+  restrict} gives the state formula.  The lines beginning with {\tt
   event} declare events and their effect formulas.  Finally the lines
 beginning with {\tt agent} define {\em event alternative} relations
 for agents.  Each clause with an arrow has a single event symbol on
@@ -283,29 +282,40 @@ at heads), is that when $b_1$ happens, for Amy either $b_1$ or $b_0$
 (Bill peeks at tails) could be happening.
 
 \begin{figure}
-  \footnotesize
-\begin{center}
-{\tt
-\begin{tabular}{l}
-state h t \\
-constraint h!t + t!h \\
-event a1 h:h \\
-event a0 t:t \\
-event b1 h:h \\
-event b0 t:t \\
-agent aly \\
-\hspace{3mm} a1 -> a1 \\
-\hspace{3mm} a0 -> a0 \\
-\hspace{3mm} b1 -> b1 + b0\\
-\hspace{3mm} b0 -> b1 + b0\\
-agent bob \\
-\hspace{3mm} b1 -> b1 \\
-\hspace{3mm} b0 -> b0 \\
-\hspace{3mm} a1 -> a1 + a0\\
-\hspace{3mm} a0 -> a1 + a0\\
-\end{tabular} }
-\end{center}
-
+  \begin{tcolorbox}
+    \footnotesize
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}    
+        {\tt
+          \begin{tabular}{l}
+            state h t \\
+            restrict h!t + t!h \\
+            event a1 h:h \\
+            event a0 t:t \\
+            event b1 h:h \\
+            event b0 t:t \\
+      \end{tabular}}
+      \end{center}
+    \end{minipage} \hfill 
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}
+        {\tt
+          \begin{tabular}{l}
+            agent aly \\
+            \hspace{3mm} a1 -> a1 \\
+            \hspace{3mm} a0 -> a0 \\
+            \hspace{3mm} b1 -> b1 + b0\\
+            \hspace{3mm} b0 -> b1 + b0\\
+            agent bob \\
+            \hspace{3mm} b1 -> b1 \\
+            \hspace{3mm} b0 -> b0 \\
+            \hspace{3mm} a1 -> a1 + a0\\
+            \hspace{3mm} a0 -> a1 + a0\\
+        \end{tabular} }
+      \end{center}
+    \end{minipage}
+  \end{tcolorbox}
+  
 \caption{Epik program describing a possible-worlds event sequence model for two agents
   with information about one coin, and events of the agents semi-privately looking
   at the coin.}
@@ -461,19 +471,22 @@ b_0 T c_0 T,H b_1 H c_1 H\}$, with two world-alternatives instead of four.
 
 
 \begin{figure}
-\begin{tabular}{ll}
-events & $e \in \mathsf{P}$ \\
-states & $\sigma$ as in Figure 1 \\    
-$p,q$ & $::= e~|~\sigma~|~p+q~|~pq~|~p^*~|~ \neg p ~|~ \Diamond_a\,p$\\
-\end{tabular}
+  \fbox{
+    \begin{minipage}{\columnwidth}
+      \(\begin{array}{ll}
+      \text{events} & e \in \mathsf{P} \\
+      \text{states} & \sigma~\text{as in Figure 1} \\    
+      p,q & ::= e\,|\,\sigma\,|\,p+q\,|\,pq\,|\,p^*\,|\,\neg p\,|\, \Diamond_ap \\
+      \end{array}\)
+      
+      \vspace{1mm}
+      \begin{tabular}{cl}
+        $\Box_a p$ & $\triangleq \neg\Diamond_a\neg p$ \\
+        \(p \wedge q\) &  \(\triangleq \neg(\neg p + \neg q)\) \\
+        $\bullet$ & \( \triangleq \sum_{e \in \mathsf P}e\)
+      \end{tabular}
+  \end{minipage}}
 
-\vspace{1mm}
-\begin{tabular}{cl}
-$\Box_a p$ & $\triangleq \neg\Diamond_a\neg p$ \\
-\(p \wedge q\) &  \(\triangleq \neg(\neg p + \neg q)\) \\
-$\bullet$ & \( \triangleq \sum_{e \in \mathsf P}e\)
-\end{tabular}
- 
 \caption{The language of Epik terms and key derived
   operators.}
 \label{fig:epik-grammar}
@@ -558,6 +571,7 @@ proposition under the world-alternative relation ${R}_a$.
 
 
 \begin{figure}
+  \fbox{\begin{minipage}{\columnwidth}
   \centering
   \(\begin{array}{l >{\triangleq}c l}
   \sem{ 0 }^{\epikspec} && \emptyset \\  
@@ -572,7 +586,8 @@ proposition under the world-alternative relation ${R}_a$.
   \end{array}
   \)
   
-\hspace{2mm}\(\sem{ \Diamond_a\,p } \hspace{4mm}{\triangleq} \hspace{4mm}\{x \mid \exists y . x{\hat{R}_a}y \wedge y \in \sem{ p }^{\epikspec}\} \)
+  \hspace{2mm}\(\sem{ \Diamond_a\,p } \hspace{4mm}{\triangleq} \hspace{4mm}\{x \mid \exists y . x{\hat{R}_a}y \wedge y \in \sem{ p }^{\epikspec}\} \)
+  \end{minipage}}
   \caption{Interpretation of Epik terms as sets of guarded strings}
   \label{fig:interp2}
 \end{figure}
@@ -613,14 +628,16 @@ calculus. The multi-character symbol {\tt a0} is an element of the alphabet that
 no connection with the element {\tt a}.
 
 \begin{figure}
+  \begin{tcolorbox}[size=fbox]
 \footnotesize
 \begin{hangingpar}
-{\tt St} \hspace{2mm} Tests such as 0 1 1 0. The length is the number of generators.
+  {\tt St} \hspace{2mm} \\
+  Atomic Tests such as $0110$.% The length is the number of generators.
 \end{hangingpar}
   
 \begin{hangingpar}
-{\tt UnequalStPair} \hspace{2mm} Sequence of two unequal tests such as 0 1 1 0 0 1 1 1,
-    differing in one or more positions.
+  {\tt UnequalStPair} \hspace{2mm} \\
+  Sequence of two unequal tests such as $0110~0111$.
 \end{hangingpar}
 
 \begin{hangingpar}
@@ -640,7 +657,7 @@ Rewrite relation deleting the second of two tests.
 \begin{hangingpar}
 \begin{verbatim}
 define Cn(X,Y) 
- [[[X Y] & Wf0] .o. Squash].l;
+  [[[X Y] & Wf0] .o. Squash].l;
 \end{verbatim}
 KAT product.
 \end{hangingpar}
@@ -648,17 +665,17 @@ KAT product.
 \begin{hangingpar}
 \begin{verbatim}
 define Kpl(X) 
- [[[X+] & Wf0] .o. Squash].l;
+  [[[X+] & Wf0] .o. Squash].l;
 \end{verbatim}
 \end{hangingpar}
 
 \begin{hangingpar}
 \begin{verbatim}
-define Kst(X) St |  Kpl(X);
+define Kst(X) St | Kpl(X);
 \end{verbatim}
 KAT Kleene plus and Kleene star. The Fst operation {\tt |} is union.
 \end{hangingpar}
-
+\end{tcolorbox}
 \caption{\raggedright Definition in Fst of KAT product and KAT Kleene star.
   Where {\tt X} and {\tt Y} are regular sets and
   {\tt R} and {\tt S} are regular relatiions,
@@ -724,15 +741,23 @@ relations by contextually constrained substitutions.  In this case, is
   are defined in Figure -- are equal-length relations.  }
 
 \begin{figure} \label{relclosure}
-  \footnotesize
+  \begin{tcolorbox}[size=fbox]
+  \footnotesize  
 {\raggedright
   \begin{hangingpar}
+%% {\tt{define RelKpl(R)}}\\
+%% $\underbrace{\mbox{\tt{Squash.i\hspace{1pt}.o.}}}_c$
+%% $\underbrace{\mbox{\tt Wf0\hspace{1pt}.o.}}_b$
+%% $\underbrace{\mbox{\tt{[R+]}}}_a$
+%% $\underbrace{\mbox{\tt .o.\hspace{1pt}Wf0}}_b$
+%% $\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
 {\tt{define RelKpl(R)}}\\
-$\underbrace{\mbox{\tt{Squash.i\hspace{1pt}.o.}}}_c$
-$\underbrace{\mbox{\tt Wf0\hspace{1pt}.o.}}_b$
-$\underbrace{\mbox{\tt{[R+]}}}_a$
-$\underbrace{\mbox{\tt .o.\hspace{1pt}Wf0}}_b$
-$\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
+$\!\underbrace{\texttt{Squash.i}\,\texttt{.o.}}_c
+\underbrace{\mbox{\tt Wf0\,.o.}}_b
+\underbrace{\mbox{\tt{[R+]}}}_a
+\underbrace{\mbox{\tt .o.\,Wf0}}_b
+\underbrace{\mbox{\tt{.o.\,Squash}}}_c$
+
 \end{hangingpar}}
 
 \begin{tabular}{ll}
@@ -749,7 +774,7 @@ $\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
 operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relation
 {\tt{R}}.
 \end{hangingpar}
-
+\end{tcolorbox}
 \caption{Definition in Fst of the Kleene concatenation closure of
   a relation between guarded strings.}
 \label{fstfigure2}
@@ -871,27 +896,29 @@ $p$, making sure to filter out guarded strings that are too long.
 \newcommand{\semlst}[2]{\llparenthesis#1\rrparenthesis^{\mathsf B, \mathsf P, \phi, \zeta}_{#2}}
 \newcommand{\setToList}[1]{\lfloor#1\rfloor}
 
-\begin{figure}
-  \centering
-  \(\begin{array}{r >{\triangleq}c l}
-  \semlst p 0 && [] \\
-  \semlst 0 n && [] \\
-  \semlst 1 n && \setToList \AphiB \\
-  \semlst e n && [ \alpha e \beta \mid \alpha \mathrel{\zeta_e} \beta ] \\
-  \semlst b n && \setToList{ \mathcal A_{\mathsf B}^{b\psi}} \\
-  \semlst{p + q} n && \semlst p n \mathbin{\texttt{+\!+}} \semlst q n \\
-  \semlst{p;q} n &&
-  \left(\semlst p n \diamond \semlst q n \right)|_n\\
-  \semlst{p^*} n && [] + \left(\semlst p n \diamond \semlst{p^*} {n-i}\right) |_n \\
-  \multicolumn 3 r {\text{where}~
-    \begin{array}[t]{r >{\hspace{-.7em}}l}
-      i &= \max\{1,\min\{|g|\mid g \in \semlst p n \}\} \\
-    \end{array}}\\
-  \semlst{\neg p} n && \semlst {\bullet^*} n \setminus \semlst p n \\
-  \semlst{\Diamond_a~p } n &&
-         [g' \mid g'~\hat{R_a}~g,~\texttt{for}~g~\texttt{in}~\semlst p n]
-  \end{array}
-  \)
+\begin{figure}[!t]
+  \fbox{
+    \begin{minipage}{\columnwidth}
+      \hspace{-0.9em}\(\begin{array}{r >{\triangleq}c l}
+      \semlst p 0 && [] \\
+      \semlst 0 n && [] \\
+      \semlst 1 n && \setToList \AphiB \\
+      \semlst e n && [ \alpha e \beta \mid \alpha \mathrel{\zeta_e} \beta ] \\
+      \semlst b n && \setToList{ \mathcal A_{\mathsf B}^{b\psi}} \\
+      \semlst{p\! + \!q} n && \semlst p n \mathbin{\texttt{+\!+}} \semlst q n \\
+      \semlst{p;q} n &&
+      (\semlst p n \diamond \semlst q n)|_n\\
+      \semlst{p^*} n && [] + (\semlst p n \diamond \semlst{p^*} {n-i}) |_n \\
+      \multicolumn 3 r {\footnotesize \text{where}~
+        \begin{array}[t]{r >{\hspace{-.7em}}l}
+          i &= \max\{1,\min\{|g|\mid g \in \semlst p n \}\} \\
+      \end{array}}\\
+      \semlst{\neg p} n && \semlst {\bullet^*} n \setminus \semlst p n \\
+      \semlst{\Diamond_ap } n &&
+             [g' \mid g'\,\hat{R_a}\,g,\texttt{\footnotesize for}\,g\,\texttt{\footnotesize in}\,\semlst p n]
+      \end{array}
+      \)
+    \end{minipage}}
   \caption{Bounded interpretation using lazy lists}
   \label{fig:bound-interp}
 \end{figure}
@@ -925,27 +952,31 @@ modal force, and proposition contributed by the complement.  These
 complementizers introduce the dual via two negations, in order to express
 universal modal force.
 
-\begin{figure}
+\begin{figure}[!t]
+  \vspace{1em}
+  \centering
   \footnotesize
-\begin{tabular}[t]{l|c|l}
-Amy & $e$ & ${R}_a$\\
-Bob & $e$ & ${R}_b$\\
-it & $d$ & $d$ \\
-heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
-tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
-is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
-knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
-that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
-& $\lambda p~m~R.{\neg}(m\;({\neg}p)\;R)$ \\
-whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
-& $\lambda p~m~R.{\neg}(m\;({\neg}p)\;R)$ \\
-&& \multicolumn{1}{r}{$+ {\neg}(m\;p\;R)$} \\
-\end{tabular}
-\caption{Partial categorial grammar lexicon. The first column has a word form.
-  the second column a categorial type, and third column a semantic translation
-  in a logical language that extends the Epik term language with lambda. }
-\label{lexiconfigure}
-\end{figure}  
+  \begin{tabular}[t]{lcc}
+    \toprule
+        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
+        Amy & $e$ & ${R}_a$\\
+        Bob & $e$ & ${R}_b$\\
+        it & $d$ & $d$ \\
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+      \end{tabular}
+  \caption{Partial categorial grammar lexicon. The first column has a word form.
+    the second column a categorial type, and third column a semantic translation
+    in a logical language that extends the Epik term language with lambda. }
+  \label{lexiconfigure}
+\end{figure} 
 
 Multimodal categories such as $\backslash_D$ and $\backslash_M$ are
 used to control the derivation.
@@ -1470,7 +1501,7 @@ The acknowledgments should go immediately before the references. Do not number t
 Do not include this section when submitting your paper for review.
 
 \bibliography{anthology,acl2020}
-\bibliographystyle{acl_natbib}
+\bibliographystyle{chicago}%{acl_natbib}
 
 \appendix
 
