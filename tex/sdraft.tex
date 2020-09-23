@@ -16,6 +16,7 @@
 \usepackage[hyperref]{acl2020}
 \usepackage{times}
 \usepackage{latexsym}
+\usepackage{enumitem}
 %\usepackage{caption}
 \renewcommand{\UrlFont}{\ttfamily\small}
 
@@ -137,81 +138,98 @@ compositional semantics is expressed in a finite state calculus
 
 A running example of an event-sequence model is {\em The Concealed
   Coin}.  Amy and Bob are seated at a table.  There is a coin on the
-table under a cup, heads up.  The coin could be heads or tails, and
-neither agent knows which it is.  This initial situation is possible
-world $w_1$.  Two additional worlds $w_2$ and $w_3$ are defined by
-sequencing events after the initial state, with events interpreted as
-in \ex{coin1}. The truth values for English sentences shown in
-\ex{coin3} are observed.
+table under a cup, heads up.  The coin could be heads-up $H$ or
+tails-up $T$, and neither agent knows which it is.  This initial
+situation is possible world $w_1$.  Two additional worlds $w_2$ and
+$w_3$ are defined by sequencing events after the initial state, with
+events interpreted as in \ex{coin1}. The truth values for English
+sentences shown in \ex{coin3} are observed, where $0$ stands for
+falsity and $1$ for truth.
 
-\begin{example}  \label{coin1}
-\hspace{-4mm} \begin{tabular}[t]{ll}
-  $a_1$  & Amy peeks at heads, by tipping the
-  \\ & cup. Bob sees she's peeking, but not\\
-  & what she sees. \\
-  $b_1$  & Bob peeks at heads. \\
-  $a_0$  & Amy peeks at tails. \\
-  $b_0$  & Bob peeks at tails. \\     
-\end{tabular}
+\newcommand{\apH}{\ensuremath{a_1}}
+\newcommand{\apT}{\ensuremath{a_0}}
+\newcommand{\bpH}{\ensuremath{b_1}}
+\newcommand{\bpT}{\ensuremath{b_0}}
+
+\newcommand{\atTH}{\ensuremath{a_{01}}}
+\newcommand{\atHT}{\ensuremath{a_{10}}}
+\newcommand{\btTH}{\ensuremath{b_{01}}}
+\newcommand{\btHT}{\ensuremath{b_{10}}}
+
+
+\begin{example}  \label{coin1} \begin{enumerate}[align=left,leftmargin=0.75em]
+  \item[\apH] Amy peeks at $H$, by tipping the cup. Bob sees she's peeking, but not what she sees.
+  \item[\bpH] Bob peeks at $H$.
+  \item[\apT] Amy peeks at $T$.
+  \item[\bpT] Bob peeks at $T$. 
+  \item[\atTH] Amy secretly turns the coin from $T$ to $H$.
+    She knows she turned the coin over, but not which side was face up. Bob thinks nothing happened.
+  \item[\atHT] Amy secretly turns the coin from $H$ to $T$.
+  \item[\atTH] Bob secretly turns the coin from $T$ to $H$.
+  \item[\btHT] Bob secretly turns the coin from $H$ to $T$.
+\end{enumerate}
 \end{example}
 
 \begin{example} \label{coin2}
-   $w_2 = w_1 \hspace{2pt} a_1 $ \hspace{2mm}
-   $w_3 = w_1 \hspace{2pt} a_1 \hspace{2pt} b_1 $ 
+  \(w_2 = w_1\apH \hfill
+  w_3 = w_2\bpH \hfill
+  w_4 = w_3\atHT\btTH\bpH\)
 \end{example}
 
 \begin{example} \label{coin3}
-\hspace{-9mm} \begin{tabular}[t]{cccl}
-  $w_1$ & $w_2$  & $w_3$ & Sentence\\
-  false & true & true& Amy knows that it's \\ &&& heads. \\
-  false & false & true& Bob knows thats it's \\&&&heads. \\
-  false & false & true& Bob knows Amy \\ &&& knows it's heads. \\
-  false & true & true& Bob knows Amy \\ &&& knows  whether it's \\ &&& heads or tails. \\
+\hspace{-7mm} \begin{tabular}[t]{ccccl}
+  $w_1$ & $w_2$  & $w_3$ & $w_4$ & Sentence\\
+  $0$ & $1$ & $1$& $0$ & Amy knows it's heads. \\
+  $0$ & $0$ & $1$& $1$ & Bob knows it's heads. \\
+  $0$ & $0$ & $1$& $0$ & Bob knows Amy \\ &&&& knows it's heads. \\
+  $0$ & $1$ & $1$& $0$ & Bob knows Amy \\ &&&& knows  whether it's \\ &&&& heads or tails. \\
 \end{tabular}
 \end{example}
 
+\ehc{I'm not sure if these sentences are the most interesting anymore!}
 
-\newcommand{\ev}[2]{#1 \!\! : \!\! #2}
-\newcommand{\evr}[2]{#2 \!\! : \!\! #1}
+\newcommand{\ev}[2]{#1 \mathbin{:} #2}
+\newcommand{\evr}[2]{\ev{#2}{#1}}
 
-The events come with pre-conditions.
-Amy can peek at heads only if the coin is heads up, so $a_1$ has the precondition of
-the coin being heads up.  Let $h$ be the Boolean proposition that the
-coin is heads up.
-Then preconditions
-can be described by Boolean formulas, with $h$ being the precondition
-of $a_1$
-$u$. Events come as well with a relation between
-prior and following state, for instance with $u$ incrementing the
-floor.  This is expressed using an operator ``$:$'' (read ``and
-next'') that pairs Boolean formulas. The formula $h:h$
-describes $a_1$ (Amy looking at heads) as happening only in an $h$
-state, and as not changing the state.  Symmetrically, $a_0$ (Amy
-looking at tails) can happen only in a not-$h$ state, and does not
-change the state ($\ev{\bar{h}}{\bar{h}}$).
+The events come with pre-conditions and post-conditions.  Amy can turn
+the coin from heads to tails only if the coin is heads-up, so $\atHT$
+has the pre-condition of the coin being heads up. Once she turns the
+coin over, tails must be face-up, so $a_{10}$ has the post-condition
+of the coin being tails-up. Let $h$ be the Boolean proposition that
+the coin is heads up and $t$ be the Boolean proposition that the coin
+is tails-up.  Then pre- and post-conditions can be described by
+Boolean formulas, with $h$ being the pre-condition of $\atHT$ and
+$a_{01}$ being the post-condition. This is expressed using an operator
+``$:$'' (read ``and next'') that pairs Boolean formulas. The formula
+$\ev h t$ describes $\atHT$ (Amy turning the coin from heads
+to tails) as happening only in an $h$ state, and concluding in a
+not-$h$ state.  Events don't have to change state: the event $\apT$
+(Amy peeking at tails) can happen only in a $t$ state, and does
+not change the state ($\ev{t}{t}$).
 
 
 %\renewcommand{\arraystretch}{1.0}
 
+However a coin cannot be showing both heads and tails! Currently the
+precondition $h$ of $\atHT$ only says that heads must be showing, and
+says nothing about the fact that tails must be face-down, indicated by
+the formula $\bar t$. We will further restrict the feasible conditions
+for our actions by restricting the space of valuations for our formulae.
 
-\section{Epistemic guarded string models}
-
-
-Suppose that in the coin example, we have an additional primitive
-stative proposition (or atomic test) $t$, interpreted as tails.  A
-sequence such as $\bar{h}{t}$ can be viewed as a valuation of
-primitive propositions, which is used to describe world state. The
-primitives are listed in fixed order, and left unmarked (indicating
-true) or marked with the overbar (indicating false).  Since a coin is
-heads or tails but not both, we want to allow the valuations
-$h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and $\bar{h}\bar{t}$.
-This is enforced by a {\em state formula}, which is a Boolean formula,
-in this case the one given on the second line of \ex{effect}.  Where
-{\sf{B}} is a set of atomic tests and $\phi$ is a state constraint
-over {\sf{B}}, ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\phi}$ is the set of
-valuations of {\sf{B}} that make formula $\phi$ true. Valuations are
-called atoms, because they correspond to the atoms of a Boolean
-algebra of tests \citep{kozen2001automata}.
+A sequence such as $\bar{h}{t}$ can be viewed both as a formula and as
+a valuation of primitive propositions, which we use to describe world
+state. The primitives are listed in fixed order, and left unmarked
+(indicating true) or marked with the overbar (indicating false).
+Since a coin is heads or tails but not both, we want to allow the
+valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
+$\bar{h}\bar{t}$.  This is enforced by a {\em state formula}, which is
+a Boolean formula, in this case the one given on the second line of
+\ex{effect}.  Where {\sf{B}} is a set of atomic tests and $\phi$ is a
+state constraint over {\sf{B}},
+${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\phi}$ is the set of valuations of
+{\sf{B}} that make formula $\phi$ true. Valuations are called atoms,
+because they correspond to the atoms of a Boolean algebra of tests
+\citep{kozen2001automata}.
 
 
 Formulas like the ones in \ex{event1} that describe pre- and
@@ -265,60 +283,86 @@ the bottom in \ex{effect}.
 
 \vspace{1mm}
 
+
+\section{Epistemic guarded string models}
+
+
 Epik is a specification language for possible worlds models that
 includes declarations of events and states, state formulas, effect
 formulas, and additional information.  Figure \ref{epikfigure} shows
 an Epik program that describes a possible worlds model for two agents
 with information about one coin, and events of the agents
 semi-privately looking at the coin. The line beginning with {\tt
-  state} enumerates ${\sf{B}}$. The line beginning with {\tt
-  restrict} gives the state formula.  The lines beginning with {\tt
-  event} declare events and their effect formulas.  Finally the lines
-beginning with {\tt agent} define {\em event alternative} relations
-for agents.  Each clause with an arrow has a single event symbol on
-the left, and a disjunction of alternative events on the right of the
-arrow. The interpretation of Amy's alternatives for $b_1$ (Bill peeks
-at heads), is that when $b_1$ happens, for Amy either $b_1$ or $b_0$
-(Bill peeks at tails) could be happening.
+  state} enumerates ${\sf{B}}$. The line beginning with {\tt restrict}
+gives the state formula.  The lines beginning with {\tt event} declare
+events and their effect formulas.  Finally the lines beginning with
+{\tt agent} define {\em event alternative} relations for agents.  Each
+clause with an arrow has a single event symbol on the left, and a
+disjunction of alternative events on the right of the arrow. The
+interpretation of Amy's alternatives for $b_1$ (Bob peeks at heads),
+is that when $b_1$ happens, for Amy either $b_1$ or $b_0$ (Bob peeks
+at tails) could be happening. Her alternatives for $a_{01}$ and
+$a_{10}$ (she turns the coin over) are $a_{10}$ and $a_{01}$,
+indicating that she doesn't know, \emph{a priori}, whether she's
+turning the coin from $H$ to $T$ or from $T$ to $H$. Similarly, Bob
+secretly turns the coin over, in $b_{10}$ or $b_{01}$, she doesn't
+know anything has happened, so her alternatives are the no-operation
+events $o_1$ and $o_0$ for heads-worlds and tails-worlds
+respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
 
 \begin{figure}
   \begin{tcolorbox}
     \footnotesize
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.48\textwidth}
       \begin{center}    
         {\tt
           \begin{tabular}{l}
             state h t \\
-            restrict h!t + t!h \\
-            event a1 h:h \\
-            event a0 t:t \\
-            event b1 h:h \\
-            event b0 t:t \\
+            restrict  h!t \\
+            \phantom{restrict }+ t!h \\
+            event o1  h:h \\
+            event o0  t:t \\
+            event a1  h:h \\
+            event a0  t:t \\
+            event b1  h:h \\
+            event b0  t:t \\
+            event a10 h:t \\
+            event a01 t:h \\
+            event b10 h:t \\
+            event b01 t:h \\
       \end{tabular}}
       \end{center}
     \end{minipage} \hfill 
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.51\textwidth}
       \begin{center}
         {\tt
           \begin{tabular}{l}
             agent aly \\
-            \hspace{3mm} a1 -> a1 \\
-            \hspace{3mm} a0 -> a0 \\
-            \hspace{3mm} b1 -> b1 + b0\\
-            \hspace{3mm} b0 -> b1 + b0\\
+            \hspace{3mm} o1  -> o1 \\
+            \hspace{3mm} o0  -> o0 \\
+            \hspace{3mm} a1  -> a1 \\
+            \hspace{3mm} a0  -> a0 \\
+            \hspace{3mm} b1  -> b1 + b0\\
+            \hspace{3mm} b0  -> b1 + b0\\
+            \hspace{3mm} a10 -> a10 + a01 \\
+            \hspace{3mm} a01 -> a10 + a01 \\
+            \hspace{3mm} b10 -> o0 + o1 \\
+            \hspace{3mm} b01 -> o0 + o1 \\
             agent bob \\
-            \hspace{3mm} b1 -> b1 \\
-            \hspace{3mm} b0 -> b0 \\
-            \hspace{3mm} a1 -> a1 + a0\\
-            \hspace{3mm} a0 -> a1 + a0\\
+            \hspace{3mm} <\textrm{\textit{sim.} swap }a\textrm{ and }b>
+            %% agent bob \\
+            %% \hspace{3mm} b1 -> b1 \\
+            %% \hspace{3mm} b0 -> b0 \\
+            %% \hspace{3mm} a1 -> a1 + a0\\
+            %% \hspace{3mm} a0 -> a1 + a0\\
         \end{tabular} }
       \end{center}
     \end{minipage}
   \end{tcolorbox}
   
-\caption{Epik program describing a possible-worlds event sequence model for two agents
-  with information about one coin, and events of the agents semi-privately looking
-  at the coin.}
+\caption{Epik program describing a possible-worlds event sequence
+  model for two agents with information about one coin, and events of
+  the agents semi-privately looking at the coin. }
 \label{fig:epik-example}
 \label{epikfigure}
 \end{figure}
@@ -336,7 +380,7 @@ Guarded strings over a finite alphabet ${\sf{P}}$
 are like ordinary strings, but with atoms over a set ${\sf{B}}$  
 alternating with the symbols
 from ${\sf{P}}$.  In the algebra described by Figure \ref{epikfigure}, 
-${\sf{P}}$ is the set of events $\{a_1,a_0,b_1,b_0\}$, and
+${\sf{P}}$ is the set of events $\{a_1,a_0,b_1,b_0,a_{10},a_{01},b_{10},b_{01}\}$, and
 ${\sf{B}}$ is $\{h,t\}$.
 
 In the coin example, as we already saw in \ex{effect},
@@ -365,7 +409,7 @@ second one.  \ex{fusion1} gives some examples.
 
 \hspace{-2mm}\(H\,b_1\,H \; \diamond \; H \,a_1\, H = H\, b_1\, H \,a_1\, H \)
 
-\hspace{-2mm}\(H \; \diamond \; T \,a_1\, T = \textit{undefined} \)
+\hspace{-2mm}\(T\,b_{01}\,H \; \diamond \; T \,a_1\, T = \textit{undefined} \)
 \end{example}
 
 Rather than individual guarded strings, elements of a guarded string
@@ -520,7 +564,7 @@ defined in Figure \ref{fig:epik-grammar} is the disjunction of the primitive eve
 Since a world is a well-formed sequence of events, $\bullet^*$ is the set of worlds.
 Multiplying by the state symbol $h$ in the term $\bullet^* h$ has the effect of
 conjoining $h$ with the atom at the end of the world.  So $\bullet^* h$ is the set
-of worlds where the coin is heads.\footnote{A mapping from English sentences to logical
+of worlds where the coin ends heads-up\footnote{A mapping from English sentences to logical
   terms in epistemic KAT is presented in Section 6}.
 
 \begin{example}   \label{interpretation1}
@@ -532,7 +576,7 @@ $\Box_a \bullet^* h$  & Amy knows that it's heads. \\
 \vspace{1mm}
 
 \begin{tabular}[t]{l}
-  $\Box_b(\Box_a\bullet^*t + \Box_a\bullet^*\neg t)$\\
+  $\Box_b(\Box_a\bullet^*t + \Box_a\neg\bullet^*t)$\\
  Bob knows that Amy knows whether \\ \hspace{3mm} it's tails.  \\
 \end{tabular}
 \end{example}
@@ -1028,7 +1072,7 @@ term in \exi{three}{b}.
 %% \itemc
 %% \(\neg \Diamond_{\text{Amy}} \neg \neg \Diamond_{\text{Bob}} \neg \neg (\Diamond_{\text{Amy}}\bar h + \neg \Diamond_{\text{amy}} h) \cdot
 %% \neg \Diamond_{\text{Amy}} \neg \neg \neg \Diamond_{\text{Bob}} \neg \neg \Diamond_{\text{Amy}} \bar t\)
-\itemb \(\displaystyle \Box_{\text{Amy}}\Box_{\text{Bob}}(\Box_{\text{Amy}} \bar h + \Box_{\text{Amy}}\bar t)\) \hfill \mbox{} \(\cdot~~\Box_{\text{Amy}}\neg\Box_{\text{Bob}}\Box_{\text{Amy}}\bar t\)
+\itemb \(\displaystyle \Box_{\text{Amy}}\Box_{\text{Bob}}(\Box_{\text{Amy}} \neg \bullet^* h + \Box_{\text{Amy}}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{\text{Amy}}\neg\Box_{\text{Bob}}\Box_{\text{Amy}}\neg \bullet^* t\)
 
 \end{examples}
 
@@ -1501,7 +1545,7 @@ The acknowledgments should go immediately before the references. Do not number t
 Do not include this section when submitting your paper for review.
 
 \bibliography{anthology,acl2020}
-\bibliographystyle{chicago}%{acl_natbib}
+\bibliographystyle{acl_natbib}
 
 \appendix
 
