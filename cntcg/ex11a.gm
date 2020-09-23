@@ -1,0 +1,94 @@
+; Basic continuation categorial grammar
+
+; Uncomment Z to get right-to-left parsing (see section 7).
+
+(set! grammar
+  `(
+    ;; Raise an argument on the left to take a function on the right
+    ((L ((2 / (1 \ 2)) / 1)) (^ x (^ f (f x))))
+    ;; Raise to the continuation type
+    ;;   local type 1
+    ;;   lakes scope at 2
+    ;;   result is 2
+    ((U ((2 // (1 \\ 2)) / 1)) (^ x (^ f (f x))))
+
+    ;; Lower from continuation type by applying to the identity function
+    ;;   local type t
+    ;;   takes scope at t
+    ;;   result type 1
+    ((D (1 / (1 // (t \\ t)))) (^ k (k (^ x x))))
+
+    ;; Local rightward function application, while stacking scopes of both
+    ;; parts at the continuation level.
+    ((S (((4 // (2 \\ 5)) / (3 // (1 \\ 5))) / (4 // ((2 / 1) \\ 3))))
+     (^ L (^ R (^ c (L (^ l (R (^ r (c (l r))))))))))
+     ;;   local function (2 / 1)
+     ;;   local argument 1
+     ;;   local result 2
+     ;;   continuation shell    fn    (4 // (... \\ 3))
+     ;;   continuation shell of arg       (3 // (... \\ 5))
+     ;;   continuation shell of result   (4 // (... \\ 5))
+
+     ;; States taking dummy subject
+    (("heads" (d \D t)) (^ d heads))
+    (("tails" (d \D t)) (^ d tails))
+
+    ;; Dummies and predicators
+    (("its" (t / (d \D t))) (^ P (P d)))     
+    (("it" d) dummy)
+    (("is" ( (d \ t) / (d \D t))) (^ P (^ d (P d))))
+    (("isnt" ( (d \ t) / (d \D t))) (^ P (^ d (Not (P d)))))     
+
+    ;; Agents. They are treated as contributing their alternative relations.
+    (("Amy" e) amy)
+    (("Bob" e) bob)
+
+    ;; Know contributes the diamond force
+    ;; This is the tensed version.
+    (("knows" ((e \ t)/M t)) (^ p (^ R (Diamond R p))))
+    ;; Bare version is distinguished with \V
+    (("know" ((e \V t)/M t)) (^ p (^ R (Diamond R p))))
+
+    ;; "that" is the main function!
+    ;; ((((e \ t)/M t) \ (e \ t)) / t)
+    ;;      knows        Bob       complement
+    ;; The semantics uses a dual.
+    ;; Slash /M is used to block use as a syntactic function.
+    (("that" ((((e \ t)/M t) \ (e \ t)) / t)) (^ p (^ m (^ R (Not ((m (Not p)) R))))))
+
+    ;; "whether" along similar lines.
+    (("whether" ((((e \ t)/M t) \ (e \ t)) / t)) (^ p (^ m (^ R (Or (Not ((m (Not p)) R)) (Not ((m p) R)))))))
+
+    ;; Versions of "that" and "whether" for use with bare "know".
+    ;; They copy the \V up. The semantics is the same as a tensed verbal argument.
+    (("that" ((((e \V t)/M t) \ (e \V t)) / t)) (^ p (^ m (^ R (Not ((m (Not p)) R))))))
+    (("whether" ((((e \V t)/M t) \ (e \V t)) / t)) (^ p (^ m (^ R (Or (Not ((m (Not p)) R)) (Not ((m p) R)))))))
+
+    ;; Negative predicator for "know".
+    (("doesnt" ( (e \ t) / (e \V t))) (^ P (^ x (Not (P x)))))
+
+    ;; tensed VP conjunction
+    (("and" ( ((e \ t) \ (e \ t)) / (e \ t))) (^ Q (^ P (^ x (And (P x) (Q x))))))
+))    
+
+(set! filter-cats '(t))
+
+
+(set! display-derivation? #f)
+;; (set! max-edges 1000000)
+;; (set! max-depth 7)
+
+;; First conjunct.
+;; (parse '(Amy knows that Bob knows that Amy knows whether it is heads))
+;; Second conjunct
+;; (parse '(Amy knows that Bob doesnt know that Amy knows that it is tails))
+
+(parse '(Amy knows that Bob knows that Amy knows whether it is heads and knows that Bob doesnt know that Amy knows that it is tails))
+
+
+
+
+
+
+
+
