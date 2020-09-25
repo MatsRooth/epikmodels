@@ -973,28 +973,28 @@ us to avoid computing large, unnecessary iterations.
 
 \section{Syntax-semantics interface}
 
-English sentences are mapped to terms in the logical language via an interpreted
-grammar, and these terms are in turn interpreted as propositions (sets of
-possible worlds).  The grammar is a semantically interpreted multi-modal
-categorial grammar, consisting of a lexicon of words, their categorial types,
-and interpretations in a logical lambda language.  The grammar covers basic
-statives (it's heads), that- and whether-complements of {\em know}, sentence
-negation, and predicate and sentence conjunction.  Figure \ref{lexiconfigure}
-gives illustrative lexical entries.\footnote{Category symbols use
-  Lambek/Bar-Hillel notation for slashes, so that $(d \backslash t)\slash(d
-  \backslash_D t)$ combines with $d \backslash_D t$ on the right to give a value
-  that combines with $d$ on the left to give $t$.}\footnote{Lambda abstractions
-  with multiple parameters are written $\lambda x~y.~e$ rather than the more verbose
-  $\lambda x.\lambda y.e$.} The grammar and semantics are optimized for a simple
-fragment of English concerned with clausal complementation.  The agent names
-{\em Amy} and {\em Bob} contribute the epistemic alternative relations for those
-agents, rather than individuals.  This is possible because the agents are never
-arguments of extensional predicates.  The root verb {\em know} contributes
-existential modal force.  The complementizers {\em that} and {\em whether} are
-the heads of their dominating clauses, and assemble an alternative relation,
+English sentences are mapped to terms in the logical language via a
+semantically interpreted multi-modal categorial grammar, consisting of
+a lexicon of words, their categorial types, and interpretations in a
+logical lambda language.  The grammar covers basic statives ({\em it's
+  heads}), {\em that-} and {\em whether}-complements of {\em know}, predicate and
+sentence negation, and predicate and sentence conjunction.  Figure
+\ref{lexiconfigure} gives illustrative lexical
+entries.\footnote{Category symbols use Lambek/Bar-Hillel notation for
+  slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
+  with $d \backslash_D t$ on the right to give a value that combines
+  with $d$ on the left to give $t$.}\footnote{Lambda abstractions with
+  multiple parameters are written $\lambda x~y.~e$ rather than the
+  more verbose $\lambda x.\lambda y.e$.} The grammar and semantics are
+optimized for a simple fragment of English concerned with clausal
+complementation.  The agent names {\em Amy} and {\em Bob} contribute
+the epistemic alternative relations for those agents, rather than
+individuals.  The root verb {\em know} contributes existential modal
+force.  The complementizers {\em that} and {\em whether} are the heads
+of their dominating clauses, and assemble an alternative relation,
 modal force, and proposition contributed by the complement.  These
-complementizers introduce the dual via two negations, in order to express
-universal modal force.
+complementizers introduce the dual via two negations, in order to
+express universal modal force.
 
 \begin{figure}[!t]
   \vspace{1em}
@@ -1037,7 +1037,7 @@ used to control the derivation.
 %looks for the category of {\em know} on the left, after combining with
 %a complement sentence on the right.
 The semantic translations in the third column of Figure \ref{lexiconfigure} use
-the Epik term language, incremented with lambda.  The body of $\lambda
+the logical language, incremented with lambda.  The body of $\lambda
 x.\bullet^*h$, which is the semantic lexical entry for {\em heads}, is a
 term denoting the set of all worlds where the coin is heads, expressed as the
 set of all guarded strings that end with a Boolean valuation where the primitive
@@ -1048,50 +1048,79 @@ proposition $h$ (it's heads) is true.
 %bind anything, because sentences such as {\em it isn't heads} have an
 %expletive subject.
 The body of $\lambda p.\lambda R. {\Diamond}_R p$, which is the semantic lexical
-entry of {\em knows}, is an Epik term denoting the pre-image of the
+entry of {\em knows}, is an term denoting the pre-image of the
 world-alternative relation contributed by the subject.  This is not the right
 semantics for {\em Amy knows that it's heads}, because it is an existential
 modality ${\Diamond_R}p$, rather than an universal modality ${\Box_R}p$.  This
 is corrected by the complementizer {\em that} or {\em whether}, which introduces
 the dual.
 
-Sentences are parsed with a chart parser for categorial grammar.  The semantics
-for complex phrases are obtained by syntactic application of semantic
-translations, accompanied by beta reduction.  In consequence, the semantic term
-translating a sentence is a term of the logical language language.  Such a term
-designates a set of possible words (guarded strings) in the possible worlds
-model deterimened by an Epik specification.  By way of example, \exi{three}{a}
-is an English sentence with predicate conjunction and three levels of clausal
-embedding.  Using the grammar and parser, the sentence is mapped to the Epik
-term in \exi{three}{b}.
-
+Sentences are parsed with a chart parser for categorial grammar.  The
+semantics for complex phrases are obtained by application of semantic
+translations, accompanied by beta reductions that eliminate all
+lambdas in logical forms for clauses.  In consequence, the semantic
+term translating a sentence is a term of the logical language.  Such a
+term designates a set of possible words (guarded strings) in the
+possible worlds model determined by an Epik specification.  By way of
+example, \exi{three}{a} is an English sentence with 
+conjunction and several levels of clausal embedding.  Using the
+grammar and parser, the sentence is mapped to the term in
+\exi{three}{b}. The negations are propositional. The double
+negation, while logically redundant, comes syntactically from the grammar. This term
+is compiled in an implementation of the finite state calculus to a
+finite state machine with six states and eight arcs, which accepts a
+countably infinite set of worlds.  In this way the methodology
+``directly'' represents the set of worlds denoted by \exi{three}{a}.
 
 \begin{examples} \label{three}
-\itema Amy knows that Bob knows that Amy knows whether it is heads and knows that Bob doesnt know that Amy knows that it is tails.
-%% \itemb {\tt (And (Not (Diamond amy (Not (Not (Diamond bob (Not (Or (Not (Diamond amy (Not heads))) (Not (Diamond amy heads))))))))) (Not (Diamond amy (Not (Not (Not (Diamond bob (Not (Not (Diamond amy (Not tails))))))))))) }
-%% \itemc
-%% \(\neg \Diamond_{\text{Amy}} \neg \neg \Diamond_{\text{Bob}} \neg \neg (\Diamond_{\text{Amy}}\bar h + \neg \Diamond_{\text{amy}} h) \cdot
-%% \neg \Diamond_{\text{Amy}} \neg \neg \neg \Diamond_{\text{Bob}} \neg \neg \Diamond_{\text{Amy}} \bar t\)
-\itemb \(\displaystyle \Box_{\text{Amy}}\Box_{\text{Bob}}(\Box_{\text{Amy}} \neg \bullet^* h + \Box_{\text{Amy}}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{\text{Amy}}\neg\Box_{\text{Bob}}\Box_{\text{Amy}}\neg \bullet^* t\)
+\itema Its tails and Amy knows that Bob knows that Amy knows whether its heads.
+% (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
+\itemb \( \displaystyle
+\bullet^*t \wedge \neg \Diamond_{\text{Amy}} \neg \neg \Diamond_{\text{Bob}} \neg(
+\neg \Diamond_{\text{Amy}} \neg \bullet^*h 
++
+\neg \Diamond_{\text{Amy}} \bullet^*h 
+)
+\)
+\end{examples}
+Sentence \exi{entail}{a} is assigned the logical form \exi{entail}{b} by the grammar.
+Logical relations between propositions are checked in the finite state calculus
+by checking set-theoretic relations between sets of worlds.
+In this case, the propositions $p_{11}$ (from \ex{three}) and
+$p_{12}$ (from \ex{entail}) have an empty
+symmetric difference 
+$(p_{11} - p_{12}) + (p_{12} - p_{11})$, and so sentences
+\exi{three}{a} and \exi{entail}{b} are equivalent, in the sense that they
+denote the same set of worlds.  This relation is assessed computationally
+in the possible worlds model.
 
+\begin{examples} \label{entail}
+\itema Amy knows that its tails.
+\itemb \( \displaystyle
+\neg \Diamond_{\text{Amy}} \neg \bullet^*t
+)
+\)
+% \itemc \(\displaystyle \Box_{\text{Amy}}\Box_{\text{Bob}}(\Box_{\text{Amy}} \neg \bullet^* h + \Box_{\text{Amy}}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{\text{Amy}}\neg\Box_{\text{Bob}}\Box_{\text{Amy}}\neg \bullet^* t\)
 \end{examples}
 
-\exi{three}{b} is compiled an Fst finite state machine with -- nodes and
--- edges that accepts a countably infinite set of strings (worlds). Or similarly
-interpreted as a lazily computation of guarded strings.  These are concrete
-computational representations of the proposition denoted by \exi{three}{a}.
-This contrasts with standard computational approaches to intensional semantics,
-sentences are translated into logical formulas that have a mathematical
-interpretation as a set of worlds, but not a computational one.  Our
-representations can be used to check entailment between sentences (via a subset
-check), print random worlds that satisfy the sentence (Fst only), print all
-worlds shorter than some bound, and the like.
+\section{Discussion}
+The methodology presented here is designed for use in research in
+linguistic semantics, and for education at the level of a second
+graduate course in formal semantics, covering intensionality.  There
+are straighforward extensions to additional semantic phenomena, such
+as tense and perfective aspect as in \exi{extension}{a}, and the combination of
+metaphysical modality and prospective aspect in \exi{extension}{b}.
 
-\section{Conclusion}
+\begin{examples}   \label{extension}
+  \itema Amy has learned that Bob had learned that it's heads.
+  \itemb Amy might learn that it's heads.
+\end{examples}  
 
-\ehc{Insert happy words!}
+The development here was concerned with defining concrete possible
+worlds models, and applying them in natural language semantics.  An
+issue for further investigation is the mathematical characterizatiton
+of doxastic KATs, e.g. axioms relating product and modality.
 
-\pagebreak
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
