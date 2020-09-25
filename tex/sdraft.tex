@@ -713,20 +713,30 @@ modal axioms, \textbf{B} and \textbf{5}, are of a similarly trivial
 flavor.
 
 \section{Translation into the finite state calculus}
-The finite state calculus is an algebra of regular sets of strings and regular
-relations between strings that was designed for use in computationonal phonology and
-morphographemics \citep{kaplan1994regular,beesley2003finite}.  Current
-implementations allow for the definition of functions that have the status of defined
-operations on regular sets and relations \citep{hulden2009foma,karttunen2010update}.
-Such definitions are used here to construct of a model for epistemic KAT inside the
-finite state calculus.  The space of worlds is a set of ordinary strings.  Bit
-sequences (sequences of 0's and 1's) are used for atoms, and these alternate with
-event symbols in the encoding of a world. \ex{gs1fst} gives the encoding of worlds $w_2$ and $w_3$
-from the example.  A string is a finite sequence of symbols, and {\tt 0},
-{\tt 1}, {\tt u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are
-multi-character symbols that are found in implementations of the finite state
-calculus. The multi-character symbol {\tt a0} is an element of the alphabet that has
-no connection with the element {\tt a}.
+The finite state calculus is an algebra of regular sets of strings and
+regular relations between strings that was designed for use in
+computationonal phonology and morphographemics
+\citep{kaplan1994regular,beesley2003finite}.  Current implementations
+allow for the definition of functions on regular sets and relations
+\citep{hulden2009foma,karttunen2010update}.  Such definitions are used
+here to construct of a model for epistemic KAT inside the finite state
+calculus. We describe our translation from Epik terms to Fst programs
+here.
+
+First, the space of worlds is a set of ordinary (as opposed to
+guarded) strings.  Bit sequences (sequences of $0$'s and $1$'s) encode
+atoms, as before, these alternate with event symbols to encode a
+world. \ex{gs1fst} gives the encoding of worlds $w_2$ and $w_3$ from
+the example. The valuation of $h$ preceeds the valuation of $t$, so
+$1~0$ indicates the valuation $h\bar{t}$.
+
+%% unnecessary detail
+%% A string is a finite sequence of symbols, and {\tt 0}, {\tt 1}, {\tt
+%%   u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are
+%% multi-character symbols that are found in implementations of the
+%% finite state calculus. The multi-character symbol {\tt a0} is an
+%% element of the alphabet that has no connection with the element {\tt
+%%   a}.
 
 \begin{figure}
   \begin{tcolorbox}[size=fbox]
@@ -810,33 +820,49 @@ state acceptors.  As used here, a program in the Fst language of the
 finite state calculus is a straight-line program that defines a
 sequence of constants naming sets, constants naming relations, and
 functions (defined as macros) mapping one or more regular sets or
-relations to a regular set or relation.  The finite state calculus has
-a product operation of string concatenation raised to sets.
-Concatenation of strings with atoms (Boolean vectors) at both ends has
-the effect of doubling atoms at the juncture, and does not enforce
-matching of atoms at the juncture.  Therefore KAT product can not be
-identified with product in the finite state calculus. Instead, KAT
-product and KAT Kleene star are defined operations, see Figure
-\ref{fstfigure1}.  The binary product operation {\tt Cn} and the unary
-Kleene star operation {\tt Kst} combine strings in the string algebra,
-remove strings with non-matching atoms, and then delete the second of
-two tests to create well-formed guarded strings.  Matching of atoms is
-enforced with the set {\tt Wf0}, which is the set of strings that do
-not contain non-matching Boolean vectors.  The containment operator
-(expressed by the dollar sign) and complement (expressed by tilde) are
-operators of the finite state calculus.  The set of non-matching
-sequences of atoms {\tt UnequalStPair} is defined by a finite
-disjunction.  Deletion is accomplished by a re-write rule in the
-finite state calculus, which is a notation for defining regular
-relations by contextually constrained substitutions.  In this case, is
-{\tt Squash} is a regular relation that deletes an atom (a sequence of
-0's and 1's of a certain length) when it follows an atom.\footnote{
-  This is a non-equal length regular relation. The finite state
-  calculus includes such relations, and they can be used with relation
-  composition and relation domain and co-domain.  They are restricted
-  in that the complement and set difference for non-equal length
-  relations is not defined.  The epistemic alterative relations that
-  are defined in Figure -- are equal-length relations.  }
+relations to a regular set or relation. 
+
+Now, translating the Epik terms $0$, $1$, $b$, and $e$ are
+straightforward: we simply convert the atoms as previously described,
+ensuring to decorate the events $e$ with their compatible atoms
+first. For example $a_1$ becomes $\{01a_101\}$ Fst also has built-in notions of union (\texttt{|}),
+intersection (\texttt{\&}), and complement (\texttt{\~}). Translating
+the the remaining operators requires more work.
+
+Implementing fusion product using Fst's standard string concatenation
+(denoted by juxatposition $\texttt{X} \texttt{Y}$) requires more
+care. Naively concatenating strings with atoms (Boolean vectors) at
+both ends doubles the atoms at the juncture, and does not enforce the
+requisite atom equality.
+
+To implement the fusion product, we define the binary product
+operation \texttt{Cn}, which combines strings in the underlying string
+algebra, remove strings with non-matching atoms, and then delete the
+second of two tests to create well-formed guarded strings (see Figure
+\ref{fstfigure1}). The set {\tt Wf0} describes pairs of equal atoms as
+the complement of set of unequal atom pairs, implemented using Fst's
+containment operator \texttt{\$}. Then. to delete the second of the
+two (matching) pairs, the \texttt{Squash} operator uses Fst's rewrite
+notation to delete atoms (\texttt{St}) that are preceded by another
+atom. \footnote{ This is a non-equal length regular relation. The
+  finite state calculus includes such relations, and they can be used
+  with relation composition and relation domain and co-domain.  They
+  are restricted in that the complement and set difference for
+  non-equal length relations is not defined.  The epistemic alterative
+  relations that are defined in Figure -- are equal-length relations.
+} The squash operator is applied via the relational composition
+\texttt{.o.} and codomain \texttt{.l} operators.
+%% Deletion is accomplished by a
+%% re-write rule in the finite state calculus, which is a notation for
+%% defining regular relations by contextually constrained substitutions.
+%% In this case, is {\tt Squash} is a regular relation that deletes an
+%% atom (a sequence of 0's and 1's of a certain length) when it follows
+%% an atom.
+
+Kleene star is defined in a similar way (see Figure \ref{fstfigure1}),
+unioning the set of atoms \texttt{St} with \texttt{Kpl} which uses
+Fst's non-empty iteration operator \texttt{+} and normalizes the
+result in the same way as \texttt{Cn}.
 
 \begin{figure} \label{relclosure}
   \begin{tcolorbox}[size=fbox]
@@ -879,14 +905,14 @@ operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relatio
 \end{figure}
 
 
-An event symbol such as $a_1$ (Amy looks at heads) is in the KAT algebra a set of
-bare events decorated with compatible tests on each side, $\{ 10 a_1 10
-\}$ in this case.  This is a unit set rather than a guarded string, because elements
-of the KAT algebra are sets. Worlds in the KAT algebra are defined by sequencing
-events using {\em Kst}. The operation enforces compatibility of states, so that
-$(a_1 + a_0)(b_1 + b_0)$ contains two worlds rather than four.  The program in
-Figure \ref{epikfigure} as interpreted in FST defines a countably infinite set of possible worlds by
-KAT Kleene closure as $\mbox{\em Kst}(a_1 + a_0 +b_1 + b_0)$.
+%% An event symbol such as $a_1$ (Amy looks at heads) is in the KAT algebra a set of
+%% bare events decorated with compatible tests on each side, $\{ 10 a_1 10
+%% \}$ in this case.  This is a unit set rather than a guarded string, because elements
+%% of the KAT algebra are sets. Worlds in the KAT algebra are defined by sequencing
+%% events using {\em Kst}. The operation enforces compatibility of states, so that
+%% $(a_1 + a_0)(b_1 + b_0)$ contains two worlds rather than four.  The program in
+%% Figure \ref{epikfigure} as interpreted in FST defines a countably infinite set of possible worlds by
+%% KAT Kleene closure as $\mbox{\em Kst}(a_1 + a_0 +b_1 + b_0)$.
 
 It remains to define an epistemic alternative relation on worlds for each agent.  The
 relevant information in Figure \ref{epikfigure} is a relation between bare events for each
@@ -917,21 +943,22 @@ a world of the form $we$ is a world of the form $vd$, where $v$ is a
 world-alternative to $w$, $d$ is an event-alternative to $e$, and $vd$
 is defined (i.e.  the world alternative $v$ satisfies the
 pre-conditions of the event alternative $d$).  This principle is found
-in earlier literature (Moore 198x, Baltag, Moss and Solecki 20xx).  In
-the construction in Fst, the definition of world alternatives takes a
-simple form. Where $R_a$ is the relation on decorated events for agent
-$a$, the the corresponding relation on worlds in is the Kleene closure
-of $R_a$.  Where $R$ and $S$ are relations, the concatenation product
-of $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$,
-where $\pair{x_1}{y_1}$ is in relation $R$, and $\pair{x_2}{y_2}$ is
-in relation $S$.  The Kleene closure of relation $R$ is \(\cup_{n \geq
-  0}R^n\), where $R^n$ is the $n$-times concatenation product of $R$
-with itself (the $0$-times concatenation product is $\sem{ 1
-}^{\varphi,\mathcal E}$). This is an operation in the finite
-state calculus.  Figure \ref{relclosure} defines the corresponding
-operation in the guarded string algebra.  The epistemic alternative
-relation on worlds for an agent is then defined as the concatenation
-closure of the event alternative relation for the agent.
+in earlier literature (Moore 198x, Baltag, Moss and Solecki 20xx).
+
+In the construction in Fst, the definition of world alternatives takes
+a simple form. Where $R_a$ is the relation on decorated events for
+agent $a$, the corresponding relation on worlds in is the Kleene
+closure of $R_a$.  Where $R$ and $S$ are relations, the concatenation
+product of $R$ and $S$ is the set of pairs of the form
+$\pair{x_1x_2}{y_1y_2}$, where $\pair{x_1}{y_1}$ is in relation $R$,
+and $\pair{x_2}{y_2}$ is in relation $S$.  The Kleene closure of
+relation $R$ is \(\cup_{n \geq 0}R^n\), where $R^n$ is the $n$-times
+concatenation product of $R$ with itself (the $0$-times concatenation
+product is $\sem{ 1 }^{\varphi,\mathcal E}$). This is an operation in
+the finite state calculus.  Figure \ref{relclosure} defines the
+corresponding operation in the guarded string algebra.  The epistemic
+alternative relation on worlds for an agent is then defined as the
+concatenation closure of the event alternative relation for the agent.
 
 %(Note that in both the string algebra and the guarded string algebra, the operation
 %on relations is concatenation closure, not reflexive transitive closure.)
