@@ -22,6 +22,9 @@
 
 \newcommand{\ehc}[1]{\textit{\textcolor{red}{[ehc]: #1}}}
 \newcommand{\mr}[1]{\textit{\textcolor{cyan}{[mr]: #1}}}
+%% \newcommand{\ehc}[1]{}
+%% \newcommand{\mr}[1]{}
+
 
 \newcommand{\K}{\mathcal{K}}
 \newcommand{\B}{\mathcal{B}}
@@ -893,7 +896,7 @@ $\!\underbrace{\texttt{Squash.i}\,\texttt{.o.}}_c
 \end{tabular}
 
 \begin{hangingpar}
-{\tt{define Kst(R)
+{\tt{define RelKst(R)
     [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}}\\ The Fst
 operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relation
 {\tt{R}}.
@@ -945,17 +948,13 @@ is defined (i.e.  the world alternative $v$ satisfies the
 pre-conditions of the event alternative $d$).  This principle is found
 in earlier literature (Moore 198x, Baltag, Moss and Solecki 20xx).
 
-In the construction in Fst, the definition of world alternatives takes
-a simple form. Where $R_a$ is the relation on decorated events for
-agent $a$, the corresponding relation on worlds in is the Kleene
-closure of $R_a$.  Where $R$ and $S$ are relations, the concatenation
-product of $R$ and $S$ is the set of pairs of the form
-$\pair{x_1x_2}{y_1y_2}$, where $\pair{x_1}{y_1}$ is in relation $R$,
-and $\pair{x_2}{y_2}$ is in relation $S$.  The Kleene closure of
-relation $R$ is \(\cup_{n \geq 0}R^n\), where $R^n$ is the $n$-times
-concatenation product of $R$ with itself (the $0$-times concatenation
-product is $\sem{ 1 }^{\varphi,\mathcal E}$). This is an operation in
-the finite state calculus.  Figure \ref{relclosure} defines the
+In Fst, we use the Kleene closure of the concatenation product
+operation on relations to lift a relation on events for an agent $a$,
+$R_a$, to the corresponding relation on worlds.  First define the
+concatenation product $R~S$ of two relations $R$ and $S$ to be the set
+of pairs of the form $\pair{x_1x_2}{y_1y_2}$, where $x_1 \mathrel R
+y_1$, and $x_2 \mathrel S y_2$. Then $R+$ is the closure of $R$ with
+respect to this operation. Figure \ref{relclosure} defines the
 corresponding operation in the guarded string algebra.  The epistemic
 alternative relation on worlds for an agent is then defined as the
 concatenation closure of the event alternative relation for the agent.
@@ -968,36 +967,34 @@ concatenation closure of the event alternative relation for the agent.
 
 \section{Bounded Lazy Interpretation}
 
-We also implement the semantics of Epik terms using lazy
-lists~\cite{LazyLists} in Haskell, rather than the direct
-interpretation as sets. Unfortunately, regular expressions, and hence
-also Epik, can denote infinite sets of strings, for example the term
-$\bullet^*$. Normally regular languages are represented using a finite
-coalgebra~\cite{}. However the non-distributivity of $\diamond$
-accross $;$ complicates this construction\footnote{Axiomatic and
-  Coalgebraic models for Epik are open questions}. To sidestep this,
-we parameterize the interpretation function on a positive integer $n$
-and only produce guarded strings of length $n$ or less.
+We also implement the semantics of Epik terms using lazy lists in
+Haskell, rather than the direct interpretation as sets. Using lists
+sidesteps checking the set invariant (elements are unique) for large
+sets, such as $\bullet^*$, and laziness allows us to delay computing
+these large sets until they are actually needed. To sidestep the
+infiteness of models, we parameterize the interpretation function on a
+positive integer $n$ and only produce guarded strings of length $n$ or
+less.
 
-We translate the Epik terms into a Haskell algebraic datatype that
-represents terms with the same signature as described in Section 2. We
-then paramaterize the interpretation function on an integer $n$ that
-describes the maximum length of a string we will produce.
+%% We translate the Epik terms into a Haskell algebraic datatype that
+%% represents terms with the same signature as described in Section 2. We
+%% then paramaterize the interpretation function on an integer $n$ that
+%% describes the maximum length of a string we will produce.
 
-The bounded interpretation into lists of strings is very similar to the
-unbounded interpretation into sets of strings, except for the bounds
-checking. The full details are shown in Figure~\ref{fig:list-interp}. First note
-that when $n=0$, we simply return the empty list, denoted $[]$. Terms of the
-form $0$, $1$, $e$, and $\psi$ have the same denotation as before, translated
-into a list (for a set $X$, $\lfloor X \rfloor$ is a list with the same elements
-as $X$ arbitrarily ordered). We compute these lists using BBDs, a standard
-technique for concisely and cannoncially representing boolean functions~\cite{BBDS}.
+The bounded interpretation into lists of strings is very similar to
+the unboundeds interpretation into sets of strings, except for the
+bounds checking. The full details are shown in
+Figure~\ref{fig:list-interp}. First note that when $n=0$, the
+denotation is empty, denoted $[]$. Terms of the form $0$, $1$, $e$,
+and $\psi$ have the same denotation as before, translated into a list
+(denoted $\lfloor S\rfloor$, for a set $S$). We compute atoms using
+BBDs, which concisely represent boolean functions~\cite{BBDS}.
 
 We lift the remaining operators (except Kleene star) to their list
 equivalents: union becomes list append (written $\texttt{+\!+}$);
-concatenation becomes the fusion product (lifted to lists this time),
-negation is implemented using list difference ($\setminus$), and the
-modal operator lifts the alternative relation over lists of
+fusion product is lifted to lists instead of sets, negation is
+implemented using list difference ($\setminus$), and the modal
+operator lifts the alternative relation over lists of
 strings\footnote{Figure~\ref{fig:list-interp} depicts this using the
   list comprehension notation, which is analogous to set builder
   notation, except that it is written using square brackets. Element
@@ -1048,9 +1045,9 @@ $p$, making sure to filter out guarded strings that are too long.
   \label{fig:bound-interp}
 \end{figure}
 
-The lists we use here are \emph{lazy} (as opposed to \emph{strict}), which
-broadly means that computation is delayed until the value is needed. This allows
-us to avoid computing large, unnecessary iterations.
+%% The lists we use here are \emph{lazy} (as opposed to \emph{strict}), which
+%% broadly means that computation is delayed until the value is needed. This allows
+%% us to avoid computing large, unnecessary iterations.
 
 \section{Syntax-semantics interface}
 
@@ -1141,20 +1138,18 @@ Sentences are parsed with a chart parser for categorial grammar.  The
 semantics for complex phrases are obtained by application of semantic
 translations, accompanied by beta reductions that eliminate all
 lambdas in logical forms for clauses.  In consequence, the semantic
-term translating a sentence is a term of the logical language.  Such a
-term designates a set of possible words (guarded strings) in the
-possible worlds model determined by an Epik specification.  By way of
-example, \exi{three}{a} is an English sentence with conjunction and
-several levels of clausal embedding.  Using the grammar and parser,
-the sentence is mapped to the term in \exi{three}{b}. Then
-\exi{three}{c} shows a simplified logical from constructed form
-\exi{three}{b} using simply logical equivalences. The negations are
-propositional. The double negation, while logically redundant, comes
-syntactically from the grammar. This term is compiled in an
+term translating a sentence is an Epik term.  Such a term designates a
+set of possible words (guarded strings).  By way of example,
+\exi{three}{a} is an English sentence with conjunction and several
+levels of clausal embedding.  Using the grammar and parser, the
+sentence is mapped to the term in \exi{three}{b}. Then \exi{three}{c}
+shows a simplified logical from constructed form \exi{three}{b} using
+simply logical equivalences. This term is compiled in an
 implementation of the finite state calculus to a finite state machine
 with six states and eight arcs, which accepts a countably infinite set
-of worlds.  In this way the methodology ``directly'' represents the
-set of worlds denoted by \exi{three}{a}.
+of worlds. \ehc{Is this right anymore? the formula has changed
+  drastically}. In this way the methodology ``directly'' represents
+the set of worlds denoted by \exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
 \newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
@@ -1164,7 +1159,7 @@ set of worlds denoted by \exi{three}{a}.
 \begin{examples} \label{three}
 \itema It's tails and Amy knows that Bob knows that Amy knows whether it's heads.
 % (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
-\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)\\
+\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)
 \itemc \(\bullet^*t \wedge \K_{a}(\K_{b}(\K_{a} \bullet^* h + \K_{a} \neg \bullet ^* h))\)
 \itemd Amy knows that it's tails.
 \iteme \(
@@ -1192,7 +1187,7 @@ possible worlds model.
 The methodology presented here is designed for use in research in
 linguistic semantics, and for education at the level of a second
 graduate course in formal semantics, covering intensionality.  There
-are straighforward extensions to additional semantic phenomena, such
+are straightforward extensions to additional semantic phenomena, such
 as tense and perfective aspect as in \exi{extension}{a}, and the combination of
 metaphysical modality and prospective aspect in \exi{extension}{b}.
 
