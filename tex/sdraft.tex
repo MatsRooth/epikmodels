@@ -20,10 +20,11 @@
 %\usepackage{caption}
 \renewcommand{\UrlFont}{\ttfamily\small}
 
-\newcommand{\ehc}[1]{\textit{\textcolor{green}{[ehc]: #1}}}
+\newcommand{\ehc}[1]{\textit{\textcolor{red}{[ehc]: #1}}}
 \newcommand{\mr}[1]{\textit{\textcolor{cyan}{[mr]: #1}}}
 
-
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\B}{\mathcal{B}}
 
 %\captionsetup{belowskip=0pt}
 
@@ -337,7 +338,7 @@ respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
       \begin{center}
         {\tt
           \begin{tabular}{l}
-            agent aly \\
+            agent amy \\
             \hspace{3mm} o1  -> o1 \\
             \hspace{3mm} o0  -> o0 \\
             \hspace{3mm} a1  -> a1 \\
@@ -517,18 +518,14 @@ b_0 T c_0 T,H b_1 H c_1 H\}$, with two world-alternatives instead of four.
 \begin{figure}
   \fbox{
     \begin{minipage}{\columnwidth}
-      \(\begin{array}{ll}
-      \text{events} & e \in \mathsf{P} \\
-      \text{states} & \sigma~\text{as in Figure 1} \\    
-      p,q & ::= e\,|\,\sigma\,|\,p+q\,|\,pq\,|\,p^*\,|\,\neg p\,|\, \Diamond_ap \\
-      \end{array}\)
-      
-      \vspace{1mm}
-      \begin{tabular}{cl}
-        $\Box_a p$ & $\triangleq \neg\Diamond_a\neg p$ \\
-        \(p \wedge q\) &  \(\triangleq \neg(\neg p + \neg q)\) \\
-        $\bullet$ & \( \triangleq \sum_{e \in \mathsf P}e\)
-      \end{tabular}
+      \(\begin{array}{llll}
+      \multicolumn{4}{l}{\text{events}~~e\in \mathsf{P}} \\
+      p,q &\multicolumn{3}{l}{::= e\,|\,\sigma\,|\,p+q\,|\,pq\,|\,p^*\,|\,\neg p\,|\, \Diamond_ap} \\
+      \Box_a p & \triangleq \neg\Diamond_a\neg p &
+      \bullet & \triangleq \sum_{e \in \mathsf P}e \\      
+      p \wedge q &  \triangleq \neg(\neg p + \neg q) &
+      p \to q & \neg p + q      
+      \end{array} \)
   \end{minipage}}
 
 \caption{The language of Epik terms and key derived
@@ -568,20 +565,52 @@ of worlds where the coin ends heads-up\footnote{A mapping from English sentences
   terms in epistemic KAT is presented in Section 6}.
 
 \begin{example}   \label{interpretation1}
-\begin{tabular}[t]{ll}
+\hspace{-1.5em}\begin{tabular}[t]{ll}
 ${\bullet}^*t$ & It's tails. \\
 $\bullet^*h$ & It's heads. \\  
-$\Box_a \bullet^* h$  & Amy knows that it's heads. \\
+  $ \bullet^* h \wedge \Box_a \bullet^* h$  & Amy knows it's heads. \\
 \end{tabular}
 \vspace{1mm}
-
-\begin{tabular}[t]{l}
+\hspace{-1.5em}\begin{tabular}[t]{l}
   $\Box_b(\Box_a\bullet^*t + \Box_a\neg\bullet^*t)$\\
- Bob knows that Amy knows whether \\ \hspace{3mm} it's tails.  \\
+ Bob believes Amy knows whether it's tails.  \\
 \end{tabular}
 \end{example}
+\ehc{I took the `that's out of these sentences. I remember from class
+  that even if they are assigned null in the PF they still exist in
+  the LF. Is it okay to leave it out here?}
 
+\subsection{Standard Epistemic Modalities}
 
+Using our existential modal primitive $\Diamond_a$, and the dual
+encodings of $\Box_a$ and $\wedge$, we can encode the standard modal
+operators expressing knowledge $(\K_a)$ and belief $(\B_a)$ into
+Epik\footnote{The choice to refer to $\Diamond_a$ as an ``epistemic''
+  primitive rather than a ``doxastic'' primitive, is that it is
+  essential in constructing both the doxastic and epistemic
+  operators. A ``doxastic'' moniker would suggest the
+  unrepresentability of epistemic modalities}. These encodings are
+shown below:
+
+\begin{example}\label{encodings}
+  \( \begin{array}[t]{ccl}
+    \textsc{Belief} & \B_a~p &\triangleq \Box_a~p \\
+    \textsc{Knowledge} & \K_a~p & \triangleq p \wedge \B_a~p
+    \end{array}\)
+\end{example}
+
+%% As a consequence of these encodings, the standard dualities
+%% hold. These are shown in \ex{modalprops}.
+%% \begin{example} \label{modalprops}
+%%   \(\K_a~p \to \B_a~p \qquad \B_a~p \to \neg\K_a\neg p \)
+%% \end{example}
+
+To construct different types of reasoners (e.g. accurate, inaccurate,
+etc), users of Epik can construct an agents alternative relation
+accordingly. Observe the discussion of modal axioms \textbf{T} and
+\textbf{D} in Section~\ref{sec:axioms}.
+
+\subsection{Guarded String Interpretation}
 \newcommand{\epikspec}{\test,\event,\varphi,\zeta}
 \newcommand{\AphiB}{\mathcal A^\varphi_{\mathsf B}}
 
@@ -653,7 +682,35 @@ concrete $n$-agent Kripke frame $\tuple{\sem{\bullet^*}^{\epikspec},
 epistemic-alternative relation for each agent.  It is used as a target
 for natural-language interpretation in Section 6.
 
-% $\tuple{K,+,\cdot,*,\bar{},0,1,{}^c,\Diamond_1,...,\Diamond_n}$
+\subsection{Axiomatic Classification}
+\label{sec:axioms}
+
+To situate our logic as a modal logic, we investigate the soundness of
+the standard modal axioms~\cite{????} in Epik's semantics. Some of
+these standard axioms (\ex{valid-axioms}) hold all the time, i.e. they
+are \emph{valid}, and the remaining axioms are valid when $\hat{R}_a$
+has a certain shape. The axioms in \ex{conditionally-valid-axioms}
+have a nontrivial condition validity condition. 
+
+\begin{example}\label{valid-axioms}
+  \begin{enumerate}[align=left]
+  \item[\textbf{N}] If $p$ is valid, then $\Box_ap$ is valid
+  \item[\textbf{K}] $\Box_a(p \to q) \to \Box_a~p \to \Box_a~q$ is valid.
+  \end{enumerate}
+\end{example}
+
+\begin{example}\label{conditionally-valid-axioms}
+  \(\begin{array}[t]{lll}
+  \textbf{T} & \Box_a p \to p & \text{if } g\mathrel{\hat{R}_a} g, \forall g \\
+  \textbf{D} & \Box_a p \to \Diamond_a p & \text{if } g \in \dom(\hat{R}_a), \forall g \\
+  \textbf{4} & \Box_a p \to \Box_a\Box_a p & \text{if } \hat{R}_a \text{ idempotent}
+  \end{array}\)
+\end{example}
+
+The condition on \textbf{4} is essentially just a restatement of the
+theorem in relational terms. The conditions on the remaining standard
+modal axioms, \textbf{B} and \textbf{5}, are of a similarly trivial
+flavor.
 
 \section{Translation into the finite state calculus}
 The finite state calculus is an algebra of regular sets of strings and regular
@@ -664,7 +721,7 @@ operations on regular sets and relations \citep{hulden2009foma,karttunen2010upda
 Such definitions are used here to construct of a model for epistemic KAT inside the
 finite state calculus.  The space of worlds is a set of ordinary strings.  Bit
 sequences (sequences of 0's and 1's) are used for atoms, and these alternate with
-event symbols in the encoding of a world. \ex{gs1fst} gives the encoding of worlds
+event symbols in the encoding of a world. \ex{gs1fst} gives the encoding of worlds $w_2$ and $w_3$
 from the example.  A string is a finite sequence of symbols, and {\tt 0},
 {\tt 1}, {\tt u}, and {\tt d}, are symbols.  {\tt a0} and {\tt b0} are
 multi-character symbols that are found in implementations of the finite state
@@ -720,15 +777,15 @@ define Kst(X) St | Kpl(X);
 KAT Kleene plus and Kleene star. The Fst operation {\tt |} is union.
 \end{hangingpar}
 \end{tcolorbox}
-\caption{\raggedright Definition in Fst of KAT product and KAT Kleene star.
-  Where {\tt X} and {\tt Y} are regular sets and
-  {\tt R} and {\tt S} are regular relatiions,
-  {\tt X{\&}Y} is the intersection of {\tt X} and {\tt Y},
-  {\tt X|Y} is the union of {\tt X} and {\tt Y},
-  {\tt \~{}X} is the complement of {\tt X},
-  {\tt R{.o.}S} is the composition of {\tt R} and {\tt S},
-  {\tt R{.}l} is the co-domain of {\tt R}, and
-  {\tt {\$}X} is the set of strings that have a substring in $X$.   
+\caption{\raggedright Definition in Fst of KAT product and star.
+  %% Where {\tt X} and {\tt Y} are regular sets and
+  %% {\tt R} and {\tt S} are regular relatiions,
+  %% {\tt X{\&}Y} is the intersection of {\tt X} and {\tt Y},
+  %% {\tt X|Y} is the union of {\tt X} and {\tt Y},
+  %% {\tt \~{}X} is the complement of {\tt X},
+  %% {\tt R{.o.}S} is the composition of {\tt R} and {\tt S},
+  %% {\tt R{.}l} is the co-domain of {\tt R}, and
+  %% {\tt {\$}X} is the set of strings that have a substring in $X$.   
 }
 \label{fstfigure1}
 \end{figure}
@@ -736,13 +793,10 @@ KAT Kleene plus and Kleene star. The Fst operation {\tt |} is union.
 
 \begin{example}   \label{gs1fst}
   \renewcommand{\arraystretch}{1.2}
-Worlds coded as strings
-\vspace{1mm}
-
- \hspace{-13mm} \begin{tabular}[t]{cl}
-{\textit{World}} & {\textit{String}} \\
+\begin{tabular}[t]{cl}
+%% {\textit{World}} & {\textit{String}} \\
 % $v_1$ & $ 0 \,u\,  1 \,u\,  2 \,d\,  1 \,u\,  2$ \\
-$w_1$ & {\tt 1 0} \\
+%% $w_1$ & {\tt 1 0} \\
 $w_2$ & {\tt 1 0 a1 1 0} \\
 $w_3$ & {\tt 1 0 a1 1 0 b1 1 0} \\  
   \end{tabular}
@@ -1009,7 +1063,8 @@ express universal modal force.
         heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
         tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
         is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
-        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
         that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
         & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
         whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
@@ -1062,46 +1117,49 @@ lambdas in logical forms for clauses.  In consequence, the semantic
 term translating a sentence is a term of the logical language.  Such a
 term designates a set of possible words (guarded strings) in the
 possible worlds model determined by an Epik specification.  By way of
-example, \exi{three}{a} is an English sentence with 
-conjunction and several levels of clausal embedding.  Using the
-grammar and parser, the sentence is mapped to the term in
-\exi{three}{b}. The negations are propositional. The double
-negation, while logically redundant, comes syntactically from the grammar. This term
-is compiled in an implementation of the finite state calculus to a
-finite state machine with six states and eight arcs, which accepts a
-countably infinite set of worlds.  In this way the methodology
-``directly'' represents the set of worlds denoted by \exi{three}{a}.
+example, \exi{three}{a} is an English sentence with conjunction and
+several levels of clausal embedding.  Using the grammar and parser,
+the sentence is mapped to the term in \exi{three}{b}. Then
+\exi{three}{c} shows a simplified logical from constructed form
+\exi{three}{b} using simply logical equivalences. The negations are
+propositional. The double negation, while logically redundant, comes
+syntactically from the grammar. This term is compiled in an
+implementation of the finite state calculus to a finite state machine
+with six states and eight arcs, which accepts a countably infinite set
+of worlds.  In this way the methodology ``directly'' represents the
+set of worlds denoted by \exi{three}{a}.
+
+\newcommand{\HEADS}{\bullet^*h}
+\newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
+\newcommand{\BKAKWH}{\neg(\neg(\AKWH) + \Diamond_{b}\neg(\AKWH))}
+\newcommand{\AKBKAKWH}{\neg(\neg(\BKAKWH) + \Diamond_{a}\neg(\BKAKWH))}
 
 \begin{examples} \label{three}
-\itema Its tails and Amy knows that Bob knows that Amy knows whether its heads.
+\itema It's tails and Amy knows that Bob knows that Amy knows whether it's heads.
 % (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
-\itemb \( \displaystyle
-\bullet^*t \wedge \neg \Diamond_{\text{Amy}} \neg \neg \Diamond_{\text{Bob}} \neg(
-\neg \Diamond_{\text{Amy}} \neg \bullet^*h 
-+
-\neg \Diamond_{\text{Amy}} \bullet^*h 
-)
+\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)\\
+\itemc \(\bullet^*t \wedge \K_{a}(\K_{b}(\K_{a} \bullet^* h + \K_{a} \neg \bullet ^* h))\)
+\itemd Amy knows that it's tails.
+\iteme \(
+\bullet ^*t \wedge \neg \Diamond_{a} \neg \bullet^*t~~~~~~(\equiv \K_a \bullet^* t)
 \)
-\end{examples}
-Sentence \exi{entail}{a} is assigned the logical form \exi{entail}{b} by the grammar.
-Logical relations between propositions are checked in the finite state calculus
-by checking set-theoretic relations between sets of worlds.
-In this case, the propositions $p_{11}$ (from \ex{three}) and
-$p_{12}$ (from \ex{entail}) have an empty
-symmetric difference 
-$(p_{11} - p_{12}) + (p_{12} - p_{11})$, and so sentences
-\exi{three}{a} and \exi{entail}{b} are equivalent, in the sense that they
-denote the same set of worlds.  This relation is assessed computationally
-in the possible worlds model.
 
-\begin{examples} \label{entail}
-\itema Amy knows that its tails.
-\itemb \( \displaystyle
-\neg \Diamond_{\text{Amy}} \neg \bullet^*t
-)
-\)
-% \itemc \(\displaystyle \Box_{\text{Amy}}\Box_{\text{Bob}}(\Box_{\text{Amy}} \neg \bullet^* h + \Box_{\text{Amy}}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{\text{Amy}}\neg\Box_{\text{Bob}}\Box_{\text{Amy}}\neg \bullet^* t\)
 \end{examples}
+Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by
+the grammar.  Logical relations between propositions are checked in
+the finite state calculus by checking set-theoretic relations between
+sets of worlds.  In this case, the propositions \exi{three}{b} and
+\exi{three}{e} are equivalent, in the sense that they denote the same
+set of worlds.  This equivalence is attested computationally in the
+possible worlds model.
+
+%% \begin{examples} \label{entail}
+%% \itema Amy knows that it's tails.
+%% \itemb \(
+%% \neg \Diamond_{a} \neg \bullet^*t
+%% \)
+%% % \itemc \(\displaystyle \Box_{a}\Box_{b}(\Box_{a} \neg \bullet^* h + \Box_{a}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{a}\neg\Box_{b}\Box_{a}\neg \bullet^* t\)
+%% \end{examples}
 
 \section{Discussion}
 The methodology presented here is designed for use in research in
@@ -1118,8 +1176,8 @@ metaphysical modality and prospective aspect in \exi{extension}{b}.
 
 The development here was concerned with defining concrete possible
 worlds models, and applying them in natural language semantics.  An
-issue for further investigation is the mathematical characterizatiton
-of doxastic KATs, e.g. axioms relating product and modality.
+issue for further investigation are the mathematical characterizations
+of epistemic KATs, e.g. sound and complete axioms, coalgebra, decidability.
 
 
 \bibliographystyle{acl_natbib}
