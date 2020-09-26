@@ -1023,8 +1023,8 @@ express universal modal force.
   \begin{tabular}[t]{lcc}
     \toprule
         \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
-        Amy & $e$ & ${R}_a$\\
-        Bob & $e$ & ${R}_b$\\
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\
         it & $d$ & $d$ \\
         heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
         tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
@@ -1085,11 +1085,11 @@ term translating a sentence is an Epik term.  Such a term designates a
 set of possible words (guarded strings).  By way of example,
 \exi{three}{a} is an English sentence with conjunction and several
 levels of clausal embedding.  Using the grammar and parser, the
-sentence is mapped to the term in \exi{three}{b}. Then \exi{three}{c}
+sentence is mapped to the term in \exi{three}{b}. \exi{three}{c}
 shows a simplified logical from constructed form \exi{three}{b} using
-simply logical equivalences. This term is compiled in an
+logical equivalences. The origial term is compiled in an
 implementation of the finite state calculus to a finite state machine
-with six states and eight arcs, which accepts a countably infinite set
+with ====== states and ====== arcs, which accepts a countably infinite set
 of worlds. \ehc{Is this right anymore? the formula has changed
   drastically. MR: No, we need to write the Epik program and compile it
 into Fst. The sentences might not be equivalent any more.}. In this way the methodology ``directly'' represents
