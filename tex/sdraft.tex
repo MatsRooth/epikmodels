@@ -272,11 +272,11 @@ the bottom in \ex{effect}.
   
   \(
   \begin{array}{lll}
-    \sem{\rho\mathbin{:}\sigma}^\varphi & = &
+    \sem{\rho\mathbin{:}\sigma}^\varphi & \triangleq &
         {\mathcal A}^{\rho\varphi}_{\mathsf{B}}\times{\mathcal A}^{\sigma\varphi}_{\mathsf{B}}\\[.1em]
-        \sem{\zeta +\eta}^\varphi & = & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
-        \sem{\zeta \mathbin{\&}  \eta}^\varphi & = & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
-        \sem{\bar{\zeta}}^\varphi & = & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
+        \sem{\zeta +\eta}^\varphi & \triangleq & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
+        \sem{\zeta \mathbin{\&}  \eta}^\varphi & \triangleq & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
+        \sem{\bar{\zeta}}^\varphi & \triangleq & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
   \end{array}  
   \)
   \end{minipage}}
@@ -575,7 +575,7 @@ $\bullet^*h$ & It's heads. \\
  Bob believes Amy knows whether it's tails.  \\
 \end{tabular}
 \end{example}
-xs
+
 {\em Standard Epistemic Modalities}
 Using our existential modal primitive $\Diamond_a$, and the dual
 encodings of $\Box_a$ and $\wedge$, we can encode the standard modal
@@ -681,7 +681,7 @@ for natural-language interpretation in Section 6.
 
 \label{sec:axioms}
 
-{\em Axiomatic Classification}. To situate our logic as a modal logic, consieer the soundness of
+{\em Axiomatic Classification}. To situate our logic as a modal logic, consider the soundness of
 the standard modal axioms given our semantics \citep{hughes1996new}. Some of
 these standard axioms (see \ex{valid-axioms}) hold all the time, i.e. they
 are \emph{valid}, and the remaining axioms are valid when $\hat{R}_a$
@@ -807,7 +807,7 @@ Fst set difference (\texttt{-}) is used to define propositional complement as th
 difference between the set of worlds and the argument.
 
 Defining KAT product using Fst's set-lifted string concatenation (denoted by
-juxatposition $\texttt{X} \texttt{Y}$) requires more care. Naively concatenating
+juxtaposition $\texttt{X}~\texttt{Y}$) requires more care. Naively concatenating
 strings with atoms (Boolean vectors) at both ends doubles atoms at the juncture, and
 does not enforce the requisite atom equality.  To implement KAT product, we define
 the binary operation \texttt{Cn}, which concatenates strings in the string algebra,
@@ -836,7 +836,7 @@ KAT Kleene star is definied from KAT Kleene plus and the multiplicative identity
 which is the set of well-formed atoms \texttt{St}.
 
 
-\begin{figure} \label{relclosure}
+\begin{figure}
   \begin{tcolorbox}[size=fbox]
   \footnotesize  
 {\raggedright
@@ -892,7 +892,7 @@ each agent. This determines a relation between bare events decorated with compat
 atoms. 
 In Fst, we use the closure of the concatenation
 product operation on relations to lift a relation on decorated events for an agent to
-the corresponding relation on worlds.  The concatenation product $RS$ of two
+the corresponding relation on worlds.  The concatenation product $R~S$ of two
 relations $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$, where
 $x_1 \mathrel R y_1$, and $x_2 \mathrel S y_2$.  In Fst, {\tt{R+}} is the closure of relation {\tt R} with
 respect to this operation. Figure \ref{relclosure} defines the corresponding
@@ -925,11 +925,11 @@ less.
 The bounded interpretation into lists of strings is very similar to
 the unboundeds interpretation into sets of strings, except for the
 bounds checking. The full details are shown in
-Figure~\ref{fig:list-interp}. First note that when $n=0$, the
+Figure~\ref{fig:bound-interp}. First note that when $n=0$, the
 denotation is empty, denoted $[]$. Terms of the form $0$, $1$, $e$,
 and $\psi$ have the same denotation as before, translated into a list
 (denoted $\lfloor S\rfloor$, for a set $S$). We compute atoms using
-BBDs, which concisely represent boolean functions~\cite{BBDS}.
+BDDs, which concisely represent boolean functions~\cite{lee1959representation}.
 
 We lift the remaining operators (except Kleene star) to their list
 equivalents: union becomes list append (written $\texttt{+\!+}$);
@@ -1115,7 +1115,7 @@ Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by the gramm
 Logical relations between propositions are checked in the finite state calculus by
 checking set-theoretic relations between sets of worlds.
 For instance entailment $p \rightarrow q$ is decided by checking in an interpreter
-for the finite sate calculus whether $p - q$ is non-empty.
+for the finite state calculus whether $p - q$ is non-empty.
 In the model defined by Figure 2, the
 propositions \exi{three}{b} and \exi{three}{e} are
 independent. They are equivalent in a version 
@@ -1157,8 +1157,8 @@ worlds models, and applying them in natural language semantics.
 Issues for further investigation are mathematical characterizations
 of epistemic KATs, e.g. sound and complete axioms, coalgebra, and decidability.
 
-
-Open source code will be distributed in conjunction with the conference.
+We will release Epik's source code under an open source license prior
+to the conference.
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
