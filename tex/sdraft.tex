@@ -22,8 +22,8 @@
 
 \newcommand{\ehc}[1]{\textit{\textcolor{red}{[ehc]: #1}}}
 \newcommand{\mr}[1]{\textit{\textcolor{cyan}{[mr]: #1}}}
-%% \newcommand{\ehc}[1]{}
-%% \newcommand{\mr}[1]{}
+% \newcommand{\ehc}[1]{}
+% \newcommand{\mr}[1]{}
 
 
 \newcommand{\K}{\mathcal{K}}
@@ -35,7 +35,6 @@
 \setlength{\belowcaptionskip}{-15pt}
 
 \setlength{\abovecaptionskip}{5pt plus 3pt minus 2pt}
-
 
 % This is not strictly necessary, and may be commented out,
 % but it will improve the layout of the manuscript,
@@ -66,6 +65,7 @@
 
 \usepackage{amssymb,amsmath,accents}
 \usepackage{stmaryrd}
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}
 \usepackage{array}
 \usepackage{hang}
 \renewcommand{\UrlFont}{\ttfamily\small}
@@ -583,7 +583,7 @@ operators expressing knowledge $(\K_a)$ and belief $(\B_a)$
 as in \ex{encodings}.\footnote{Deeper analyisis of the lexical semantics
   of {\em know} requires adding modeling of presupposition
   \citep{collard2018finite}. The grammar fragment in Section 6 does not model
-  the presupposition of {\em know}, except (depending on the Epik model) as
+  the presupposition of {\em know}, except as
   an entailment.}
 
 
@@ -897,7 +897,7 @@ relations $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$, w
 $x_1 \mathrel R y_1$, and $x_2 \mathrel S y_2$.  In Fst, {\tt{R+}} is the closure of relation {\tt R} with
 respect to this operation. Figure \ref{relclosure} defines the corresponding
 operation on sets of guarded strings as encoded in Fst.\footnote{Relation concatenation in Fst
-  differs from relation composition (.o.), and the closure under discussion here is
+  differs from relation composition ({\tt{.o.}}), and the closure under discussion here is
   the closure of the former rather than the latter.}  The epistemic alternative
 relation on worlds for an agent is then defined as the KAT relational concatenation
 closure {\tt RelKst} of the decorated-event alternative relation for the agent.
@@ -936,7 +936,7 @@ equivalents: union becomes list append (written $\texttt{+\!+}$);
 fusion product is lifted to lists instead of sets, negation is
 implemented using list difference ($\setminus$), and the modal
 operator lifts the alternative relation over lists of
-strings\footnote{Figure~\ref{fig:list-interp} depicts this using the
+strings\footnote{Figure~7 depicts this using the
   list comprehension notation, which is analogous to set builder
   notation, except that it is written using square brackets. Element
   order is evoked by the keyword \texttt{for}, rather than using the
@@ -1077,23 +1077,23 @@ modality ${\Diamond_R}p$, rather than an universal modality ${\Box_R}p$.  This
 is corrected by the complementizer {\em that} or {\em whether}, which introduces
 the dual.
 
-Sentences are parsed with a chart parser for categorial grammar.  The
-semantics for complex phrases are obtained by application of semantic
-translations, accompanied by beta reductions that eliminate all
-lambdas logical forms for clauses.  In consequence, the semantic
-term translating a sentence is an Epik term.  Such a term designates a
-set of possible words (guarded strings).  By way of example,
-\exi{three}{a} is an English sentence with conjunction and several
-levels of clausal embedding.  Using the grammar and parser, the
-sentence is mapped to the term in \exi{three}{b}. \exi{three}{c}
-shows a simplified logical from constructed form \exi{three}{b} using
-logical equivalences. The origial term is compiled in an
-implementation of the finite state calculus to a finite state machine
-with ====== states and ====== arcs, which accepts a countably infinite set
-of worlds. \ehc{Is this right anymore? the formula has changed
-  drastically. MR: No, we need to write the Epik program and compile it
-into Fst. The sentences might not be equivalent any more.}. In this way the methodology ``directly'' represents
-the set of worlds denoted by \exi{three}{a}.
+Sentences are parsed with a chart parser for categorial grammar.  The semantics for
+complex phrases are obtained by application of semantic translations, accompanied by
+beta reductions that eliminate all lambdas logical forms for clauses.  In
+consequence, the semantic term translating a sentence is an Epik term.  Such a term
+designates a set of possible words (guarded strings).  By way of example,
+\exi{three}{a} is an English sentence with conjunction and several levels of clausal
+embedding.  Using the grammar and parser, the sentence is mapped to the term in
+\exi{three}{b}. \exi{three}{c} shows a simplified logical from constructed form
+\exi{three}{b} using logical equivalences. Either term is compiled in an
+implementation of the finite state calculus to a finite state machine with 10
+states and 23 edges, which accepts a countably infinite set of worlds.\footnote{
+Machine sizes need not be small, especially as the cardinality of $\sf{B}$
+increases.  A certain Epik model with fourteen primitive tests has the set of worlds
+representented by a finite state machine with 184794 states and 257881
+edges.}
+In this way the methodology ``directly'' represents the set of worlds
+denoted by \exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
 \newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
@@ -1113,12 +1113,14 @@ the set of worlds denoted by \exi{three}{a}.
 \end{examples}
 Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by the grammar.
 Logical relations between propositions are checked in the finite state calculus by
-checking set-theoretic relations between sets of worlds (as represented by finite
-state machines in an interpreter for the finite state calculus).  In this case, the
-propositions \exi{three}{b} and \exi{three}{e} are equivalent, in the sense that they
-denote the same set of worlds.  This equivalence is attested computationally in the
-possible worlds model.  Entailment can be tested with a subset check on sets of
-worlds, and logical compatibility with a check for non-empty intersection.
+checking set-theoretic relations between sets of worlds.
+For instance entailment $p \rightarrow q$ is decided by checking in an interpreter
+for the finite sate calculus whether $p - q$ is non-empty.
+In the model defined by Figure 2, the
+propositions \exi{three}{b} and \exi{three}{e} are
+independent. They are equivalent in a version 
+without secret flipping.
+
 
 %% \begin{examples} \label{entail}
 %% \itema Amy knows that it's tails.
@@ -1142,7 +1144,7 @@ aspect in \exi{extension}{b}.
 \end{examples}  
 
 The model framework is a constructive branching-time framework with metaphysical
-modality and epistemic modality, which should be applicable in linguistic semantic
+modality and epistemic modality, which will be applicable in linguistic semantic
 research on combinations of tense, metaphysical modality, and epistemic
 complementation \citep{thomason1984combinations, abusch1998generalizing,
   condoravdi2002temporal}.  Connections with research on temporal constitution of
@@ -1150,7 +1152,7 @@ events in a related formal setting remain to be explored
 \citep{fernando2004finite,fernando2007observing,carlson2009tense}.
 
 
-The development here is concerned with defining concrete possible
+The development here is concerned with defining concrete computable possible
 worlds models, and applying them in natural language semantics.  
 Issues for further investigation are mathematical characterizations
 of epistemic KATs, e.g. sound and complete axioms, coalgebra, and decidability.
