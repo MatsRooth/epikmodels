@@ -453,7 +453,8 @@
 
 % DK/IV: Workaround for annoying hyperref pagewrap bug 
 \RequirePackage{etoolbox}
-\patchcmd\@combinedblfloats{\box\@outputbox}{\unvbox\@outputbox}{}{\errmessage{\noexpand patch failed}}
+% mr249 -- edit this out, it causes an error.
+%\patchcmd\@combinedblfloats{\box\@outputbox}{\unvbox\@outputbox}{}{\errmessage{\noexpand patch failed}}
 
 % bibliography
 
