@@ -1,0 +1,1645 @@
+%
+% File acl2020.tex
+%
+%% Based on the style files for ACL 2020, which were
+%% Based on the style files for ACL 2018, NAACL 2018/19, which were
+%% Based on the style files for ACL-2015, with some improvements
+%%  taken from the NAACL-2016 style
+%% Based on the style files for ACL-2014, which were, in turn,
+%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
+%% EACL-2009, IJCNLP-2008...
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{acl2020}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{enumitem}
+%\usepackage{caption}
+\renewcommand{\UrlFont}{\ttfamily\small}
+
+\newcommand{\ehc}[1]{\textit{\textcolor{red}{[ehc]: #1}}}
+\newcommand{\mr}[1]{\textit{\textcolor{cyan}{[mr]: #1}}}
+% \newcommand{\ehc}[1]{}
+% \newcommand{\mr}[1]{}
+
+
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\B}{\mathcal{B}}
+
+%\captionsetup{belowskip=0pt}
+
+%\setlength{\abovecaptionskip}{-10pt}
+\setlength{\belowcaptionskip}{-15pt}
+
+\setlength{\abovecaptionskip}{5pt plus 3pt minus 2pt}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% MR249 UNCOMMENTED FOR FINAL VERSION
+\aclfinalcopy % Uncomment this line for the final submission
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\newcommand\BibTeX{B\textsc{ib}\TeX}
+
+\title{Epistemic Semantics in Guarded String Models}
+
+\author{Eric Campbell \\
+  Cornell University\\
+  \texttt{ehc86@cornell.edu} \\\And
+  Mats Rooth \\
+  Cornell University\\
+  \texttt{mr249@cornell.edu} \\}
+
+\date{}
+
+\usepackage{amssymb,amsmath,accents}
+\usepackage{stmaryrd}
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}
+\usepackage{array}
+\usepackage{hang}
+\renewcommand{\UrlFont}{\ttfamily\small}
+\usepackage{microtype}
+
+\newcommand{\dom}{\ensuremath{\mathrm{dom}}}
+\input{syntax.tex}
+\usepackage{wasysym,graphicx}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+
+\newcommand{\event}{\sf{P}}
+\newcommand{\test}{\sf{B}}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  Constructive and computable multi-agent epistemic possible worlds
+  models are defined, where possible worlds models are guarded string
+  models in an epistemic extension of Kleene Algebra with Tests.  The
+  account is framed as a formal language Epik (Epistemic KAT) for
+  defining such models.  The language is implemented by translation
+  into the finite state calculus, and alternatively by modeling
+  propositions as lazy lists in Haskell. The syntax-semantics
+  interface for a fragment of English is defined by a categorial
+  grammar.
+\end{abstract}
+
+
+\nocite{beesley2003finite,hulden2009foma}
+\nocite{karttunen2010update}
+
+\section{Introduction and Related Work}
+Linguistic semantics in the Montague tradition proceeds by assigning
+propositional {\em semantic values} to disambiguated sentences of a
+natural language.  A proposition is a set or class of {\em possible
+  worlds}.  These are often assumed to be things with the same nature
+and complexity as the world we occupy \citep{lewis1986plurality}.  But
+alternatively, one can work with small idealized models, in order to
+illustrate and test ideas.  The point of this paper is to scale up toy
+or idealized models to countable sets of worlds, and to constructive
+and computable modeling of epistemic alternatives for agents.  We
+describe a systematic way of defining such models, and
+illustrate how to apply them in natural language semantics.  The focus
+is on epistemic semantics and clausal embedding. The fundamental move
+is to identify possible worlds with strings of primitive events, so
+that propositions are sets of strings. An advantage in this is that it
+allows for a mathematical description of an algebra of propositions,
+coupled with a computational representation using either lazy lists of
+strings, or finite state machines that describe sets of strings.
+
+The approach taken here synthesizes five antecedents in a certain way.
+John McCarthy's {\em Situation Calculus} is the source of the idea of
+constructing possible worlds as event sequences
+\citep{mccarthy1963situations,reiter2001knowledge}.  The algebraic
+theory of {\em Kleene Algebra with Tests} characterizes algebras with
+elements corresponding to propositions and event types in our
+application \citep{kozen2001automata}.  {\em Action models} in dynamic
+epistemic semantics introduce the technique of constructing epistemic
+models from primitive alternative relations on events, in order to
+capture the epistemic consequences of perceptual and communicative
+events \citep{baltag1999logic}.  Literature on {\em finite state
+  methods in linguistic semantics} has used event strings and sets of
+event strings to theorize about tense and aspect in natural language
+semantics
+\citep{fernando2004finite,fernando2007observing,carlson2009tense} and
+to express intensions \cite{fernando2017intensions}.  Work on {\em
+  finite state intensiononal semantics} has investigated how to do the
+semantics of intensional complementation in a setting where
+compositional semantics is expressed in a finite state calculus
+\citep{rooth2017finite,collard2018finite}.
+
+
+
+A running example of an event-sequence model is {\em The Concealed
+  Coin}.  Amy and Bob are seated at a table.  There is a coin on the
+table under a cup, heads up.  The coin could be heads-up $H$ or
+tails-up $T$, and neither agent knows which it is.  This initial
+situation is possible world $w_1$.  Two additional worlds $w_2$ and
+$w_3$ are defined by sequencing events after the initial state, with
+events interpreted as in \ex{coin1}. The truth values for English
+sentences shown in \ex{coin3} are observed, where $0$ stands for
+falsity and $1$ for truth.
+
+\newcommand{\apH}{\ensuremath{a_1}}
+\newcommand{\apT}{\ensuremath{a_0}}
+\newcommand{\bpH}{\ensuremath{b_1}}
+\newcommand{\bpT}{\ensuremath{b_0}}
+
+\newcommand{\atTH}{\ensuremath{a_{01}}}
+\newcommand{\atHT}{\ensuremath{a_{10}}}
+\newcommand{\btTH}{\ensuremath{b_{01}}}
+\newcommand{\btHT}{\ensuremath{b_{10}}}
+
+
+\begin{example}  \label{coin1} \begin{enumerate}[align=left,leftmargin=0.75em]
+  \item[\apH] Amy peeks at $H$, by tipping the cup. Bob sees she's peeking, but not what she sees.
+  \item[\bpH] Bob peeks at $H$.
+  \item[\apT] Amy peeks at $T$.
+  \item[\bpT] Bob peeks at $T$. 
+  \item[\atTH] Amy secretly turns the coin from $T$ to $H$.
+    She knows she turned the coin over, but not which side was face up. Bob thinks nothing happened.
+  \item[\atHT] Amy secretly turns the coin from $H$ to $T$.
+  \item[\atTH] Bob secretly turns the coin from $T$ to $H$.
+  \item[\btHT] Bob secretly turns the coin from $H$ to $T$.
+\end{enumerate}
+\end{example}
+
+\begin{example} \label{coin2}
+  \(w_2 = w_1\apH \hfill
+  w_3 = w_2\bpH \hfill
+  w_4 = w_3\atHT\btTH\bpH\)
+\end{example}
+
+\begin{example} \label{coin3}
+\hspace{-7mm} \begin{tabular}[t]{ccccl}
+  $w_1$ & $w_2$  & $w_3$ & $w_4$ & Sentence\\
+  $0$ & $1$ & $1$& $0$ & Amy knows it's heads. \\
+  $0$ & $0$ & $1$& $1$ & Bob knows it's heads. \\
+  $0$ & $0$ & $1$& $0$ & Bob knows Amy \\ &&&& knows it's heads. \\
+  $0$ & $1$ & $1$& $0$ & Bob knows Amy \\ &&&& knows  whether it's \\ &&&& heads or tails. \\
+\end{tabular}
+\end{example}
+
+%\ehc{I'm not sure if these sentences are the most interesting anymore!}
+
+\newcommand{\ev}[2]{#1 \mathbin{:} #2}
+\newcommand{\evr}[2]{\ev{#2}{#1}}
+
+The events come with pre-conditions and post-conditions.  Amy can turn
+the coin from heads to tails only if the coin is heads-up, so $\atHT$
+has the pre-condition of the coin being heads up. Once she turns the
+coin over, tails must be face-up, so $a_{10}$ has the post-condition
+of the coin being tails-up. Let $h$ be the Boolean proposition that
+the coin is heads up and $t$ be the Boolean proposition that the coin
+is tails-up.  Then pre- and post-conditions can be described by
+Boolean formulas, with $h$ being the pre-condition of $\atHT$ and
+$a_{01}$ being the post-condition. This is expressed using an operator
+``$:$'' (read ``and next'') that pairs Boolean formulas. The formula
+$\ev h t$ describes $\atHT$ (Amy turning the coin from heads
+to tails) as happening only in an $h$ state, and concluding in a
+not-$h$ state.  Events don't have to change state: the event $\apT$
+(Amy peeking at tails) can happen only in a $t$ state, and does
+not change the state ($\ev{t}{t}$).
+
+
+%\renewcommand{\arraystretch}{1.0}
+
+However a coin cannot be showing both heads and tails! Currently the
+precondition $h$ of $\atHT$ only says that heads must be showing, and
+says nothing about the fact that tails must be face-down, indicated by
+the formula $\bar t$. We will further restrict the feasible conditions
+for our actions by restricting the space of valuations for our formulae.
+
+A sequence such as $\bar{h}{t}$ can be viewed both as a formula and as
+a valuation of primitive propositions, which we use to describe world
+state. The primitives are listed in fixed order, and left unmarked
+(indicating true) or marked with the overbar (indicating false).
+Since a coin is heads or tails but not both, we want to allow the
+valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
+$\bar{h}\bar{t}$.  This is enforced by a {\em state formula}, which is
+a Boolean formula, in this case the one given on the second line of
+\ex{effect}.  Where {\sf{B}} is a set of atomic tests and $\phi$ is a
+state constraint over {\sf{B}},
+${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\phi}$ is the set of valuations of
+{\sf{B}} that make formula $\phi$ true. Valuations are called atoms,
+because they correspond to the atoms of a Boolean algebra of tests
+\citep{kozen2001automata}.
+
+
+Formulas that describe pre- and
+post-conditions are {\em effect formulas}. They are interpreted as
+defining relations between atoms, as defined in Figure
+\ref{effectfigure}.  The atoms they relate are constrained by the
+state formula as well.  For the heads-tails example, let the state
+formula and the effect formula for $a_1$ (Amy peeking at heads) be as
+specified in \ex{effect}. Then ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\varphi}$
+and the relation on atoms for the event $a_1$ are as given at
+the bottom in \ex{effect}.
+
+
+\begin{example}   \label{effect}
+\(\begin{array}[t]{ll}
+{\sf{B}} & \{h,t\}\\
+\mbox{state formula $\varphi$} & h\bar{t} + \bar{h}t \\
+\mbox{effect formula $\zeta$ for $a_1$} &  h \mathbin{:} h \\
+ \mathcal{A}^\varphi_{\mathsf B} & \{h\bar{t},\bar{h}t\}   \\
+\sem{\zeta}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
+\end{array}\)
+\end{example}
+
+
+
+\begin{figure}
+  \fbox{
+    \begin{minipage}{\columnwidth}
+  \(\begin{array}{lcl}
+  \multicolumn 3 l {\textrm{state formulas}\hfill (a \in \mathsf{B}) \hfill \mbox{}}\\
+  \rho,\sigma,\varphi &::=& a \mid0 \mid 1 \mid\rho+\sigma \mid \rho\,\sigma \mid \bar{\rho} \\
+  \multicolumn {3} l {\textrm{effect formulas}}\\
+  \zeta,\eta & ::= & \rho \mathbin{:} \sigma \mid \zeta+\eta
+    \mid \zeta \mathbin{\&} \eta \mid \bar{\zeta}
+  \end{array}\)
+  
+  \(
+  \begin{array}{lll}
+    \sem{\rho\mathbin{:}\sigma}^\varphi & \triangleq &
+        {\mathcal A}^{\rho\varphi}_{\mathsf{B}}\times{\mathcal A}^{\sigma\varphi}_{\mathsf{B}}\\[.1em]
+        \sem{\zeta +\eta}^\varphi & \triangleq & \sem{\zeta}^\varphi\cup\sem{\eta}^\varphi\\
+        \sem{\zeta \mathbin{\&}  \eta}^\varphi & \triangleq & \sem{\zeta}^\varphi\cap\sem{\eta}^\varphi\\
+        \sem{\bar{\zeta}}^\varphi & \triangleq & {\mathcal A}^{\varphi}_{\mathsf{B}} \times {\mathcal A}^{\varphi}_{\mathsf{B}} \setminus \sem{\zeta}^\varphi\\
+  \end{array}  
+  \)
+  \end{minipage}}
+\caption{Syntax of state formulas and syntax and semantics of effect formulas. Effect formulas
+  denote relations between atoms. In a state formula, juxtaposition $\rho\,\sigma$ is conjunction.}
+\label{effectfigure}
+\end{figure}
+
+\vspace{1mm}
+
+
+\section{Epistemic guarded string models}
+
+
+Epik is a specification language for possible worlds models that
+includes declarations of events and states, state formulas, effect
+formulas, and additional information.  Figure \ref{epikfigure} shows
+an Epik program that describes a possible worlds model for two agents
+with information about one coin, events of the agents
+semi-privately looking at the coin, and events of secretly turning the coin.
+The line beginning with {\tt
+  state} enumerates ${\sf{B}}$. The line beginning with {\tt restrict}
+gives the state formula.  The lines beginning with {\tt event} declare
+events and their effect formulas.  Finally the lines beginning with
+{\tt agent} define {\em event alternative} relations for agents.  Each
+clause with an arrow has a single event symbol on the left, and a
+disjunction of alternative events on the right of the arrow. The
+interpretation of Amy's alternatives for $b_1$ (Bob peeks at heads),
+is that when $b_1$ happens, for Amy either $b_1$ or $b_0$ (Bob peeks
+at tails) could be happening. Her alternatives for $a_{01}$ and
+$a_{10}$ (she turns the coin over) are $a_{10}$ and $a_{01}$,
+indicating that she doesn't know, \emph{a priori}, whether she's
+turning the coin from $H$ to $T$ or from $T$ to $H$. Similarly, Bob
+secretly turns the coin over, in $b_{10}$ or $b_{01}$, she doesn't
+know anything has happened, so her alternatives are the no-operation
+events $o_1$ and $o_0$ for heads-worlds and tails-worlds
+respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
+
+\begin{figure}
+  \begin{tcolorbox}
+    \footnotesize
+    \begin{minipage}{0.48\textwidth}
+      \begin{center}    
+        {\tt
+          \begin{tabular}{l}
+            state h t \\
+            restrict  h!t \\
+            \phantom{restrict }+ t!h \\
+            event o1  h:h \\
+            event o0  t:t \\
+            event a1  h:h \\
+            event a0  t:t \\
+            event b1  h:h \\
+            event b0  t:t \\
+            event a10 h:t \\
+            event a01 t:h \\
+            event b10 h:t \\
+            event b01 t:h \\
+      \end{tabular}}
+      \end{center}
+    \end{minipage} \hfill 
+    \begin{minipage}{0.51\textwidth}
+      \begin{center}
+        {\tt
+          \begin{tabular}{l}
+            agent amy \\
+            \hspace{3mm} o1  -> o1 \\
+            \hspace{3mm} o0  -> o0 \\
+            \hspace{3mm} a1  -> a1 \\
+            \hspace{3mm} a0  -> a0 \\
+            \hspace{3mm} b1  -> b1 + b0\\
+            \hspace{3mm} b0  -> b1 + b0\\
+            \hspace{3mm} a10 -> a10 + a01 \\
+            \hspace{3mm} a01 -> a10 + a01 \\
+            \hspace{3mm} b10 -> o0 + o1 \\
+            \hspace{3mm} b01 -> o0 + o1 \\
+            agent bob \\
+            \hspace{3mm} <\textrm{\textit{sim.} swap }a\textrm{ and }b>
+            %% agent bob \\
+            %% \hspace{3mm} b1 -> b1 \\
+            %% \hspace{3mm} b0 -> b0 \\
+            %% \hspace{3mm} a1 -> a1 + a0\\
+            %% \hspace{3mm} a0 -> a1 + a0\\
+        \end{tabular} }
+      \end{center}
+    \end{minipage}
+  \end{tcolorbox}
+  
+\caption{Epik program describing a possible-worlds event sequence
+  model for two agents with information about one coin, and events of
+  the agents semi-privately looking at the coin. }
+\label{fig:epik-example}
+\label{epikfigure}
+\end{figure}
+
+
+This paper focuses on defining a concrete possible worlds model from
+an Epik specification.  The models are an extension of guarded-string
+models for Kleene Algebra with Tests (KAT). This is an algebraic
+theory that has model classes including guarded string models,
+relational models, finite models, and matrix models.  Our definitions
+and notation follow \cite{kozen2001automata}.  We add syntax and
+semantics to cover multi-agent epistemic semantics.
+
+Guarded strings over a finite alphabet ${\sf{P}}$
+are like ordinary strings, but with atoms over a set ${\sf{B}}$  
+alternating with the symbols
+from ${\sf{P}}$.  In the algebra described by Figure \ref{epikfigure}, 
+${\sf{P}}$ is the set of events $\{a_1,a_0,b_1,b_0,a_{10},a_{01},b_{10},b_{01}\}$, and
+${\sf{B}}$ is $\{h,t\}$.
+
+In the coin example, as we already saw in \ex{effect},
+$\mathcal{A}^\varphi_{\mathsf B}$ is $\{h\bar{t},\bar{h}t\}$, for
+which we use the shorthand $\{H,T\}$.  A guarded string over
+${\sf{P}}$ and ${\sf{B}}$ is a strings of events from ${\sf{P}}$,
+alternating with atoms over ${\sf{B}}$, and beginning and ending with
+atoms.  In this construction, $w_1=H$, $w_2=Ha_1H$, $w_3=Ha_1Hb_1H$,
+and $w_4=Ha_1Hb_1Ha_{10}Tb_{01}H$.
+
+The discussion of \ex{coin2} mentioned building worlds by incrementing
+worlds with events.  This is accomplished in guarded string models
+with fusion product $\diamond$, a partial operation that combines two
+guarded strings, subject to the condition that the atom at the end of
+the the first argument is identical to the atom at the start of the
+second one.  \ex{fusion1} gives some examples.
+
+
+\begin{example} \label{fusion1}
+%\hspace{-2mm}\(\hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \; \diamond \; \hat 1 \,u\, \hat 2 = \hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \,u\, \hat 2 \)
+
+%\hspace{-2mm}\( \hat 0 \,u\, \hat 1 \,u\, \hat 2 \,d\, \hat 1 \; \diamond \; \hat 2 \,u\, \hat 3 = \textit{undefined} \)
+
+\hspace{-2mm}\(H\,b_1\,H \; \diamond \; H \,a_1\, H = H\, b_1\, H \,a_1\, H \)
+
+\hspace{-2mm}\(T\,b_{01}\,H \; \diamond \; T \,a_1\, T = \textit{undefined} \)
+\end{example}
+
+Rather than individual guarded strings, elements of a guarded string
+model for KAT are sets of guarded strings.  In our application, these
+elements have the interpretation of propositions, which are sets of possible
+worlds.  In a free guarded string model for KAT, any event can be
+adjacent to any atom in a guarded string that is an element of the
+underlying set for the algebra.  We instead impose the constraints
+coming from the state and effect formulas.  \ex{wf1} defines the
+well-formed guarded strings determined by an Epik specification.  Condition (i)
+says that each atom is consistent with the state constraint, and condition (ii)
+says that each constituent token event $\alpha_ie_i\alpha_{i+1}$ is
+consistent with the effect constraint on $e_i$.\footnote{
+An alternative is to define equations such as
+$\bar{\phi}=0$ (from the state formula $\phi$)
+and $a_1\,{=}\,ha_{1}h$ (from the effect formula $h\mathbin{:}h$ for event $a_1$),
+and construct a quotient algebra from the equivalence relation generated
+by these equations.  This results in equating sets of guarded strings in the free algebra that
+differ by guarded strings that are ill-formed according to the state and
+effect formulas.  In the development in the text, we instead use
+a set of guarded strings that are well-formed according to the state
+and effect formulas as the representative of the equivalence class.
+}
+
+\begin{example}   \label{wf1}
+Given $\sf{P}$, $\sf{B}$, a
+state formula $\varphi$, and an effect formula $\zeta_e$ for each
+event $e$ in $\sf{P}$,    
+$\alpha_0e_0 ... e_n\alpha_{n+1}$ is well-formed iff
+
+\vspace{1mm}
+
+\hspace{2mm}(i) $\element{\alpha_i}{{\mathcal A}^{\varphi}_{\mathsf{B}}}$ ($0{\leq}i{\leq}n$), and 
+
+\hspace{2mm}(ii) $\element{\tuple{\alpha_i,\alpha_{i+1}}}{\sem{\zeta_{ei}}^{\varphi}}$, ($0{\leq} i {\le} n$).
+\end{example}
+
+Well-formed guarded strings have the interpretation of worlds in the application
+to natural-language semantics.  The set of possible worlds in the Kripke frame
+determined by an Epik specification is the set of well-formed guarded strings.
+At this point, we could say that any set of worlds is a proposition, so that the
+set of propositions is the power set of the set of worlds
+\citep{montague1975formal,gallin1975intensional}.  We will instead define a more
+restrictive set of propositions corresponding to the regular sets of
+strings. This is deferred to the next section.  Certain sets of well-formed
+guarded strings have the addional interpretation of event types.  An event-type
+is something that can ``happen'' is different worlds. For example, $a_1$ has the
+event type $\{H\,a_1\,H\}$, and $a_0$ has the event type $\{T\,a_0\,T\}$.
+
+The construction so far defines a set of worlds from an Epik specification.  Normally
+the set is countably infinite, though some choices of effect formulas can result in a
+finite set of worlds.  The next step is to define an alternative relation $R_a$ on
+worlds for each agent $a$. This will result in a Kripke frame $\tuple{W,R_1,...,R_n}$
+consisting of a set of worlds, and a world-alternative relation for each agent
+\citep{kripke1963semantical}.  An Epik specification defines an alternative relation
+on bare events for each agent $a$, which we notate as ${R}_{a}$.  This should be
+lifted to a relation $\hat{R}_a$ on worlds.  The basic idea is that when a world $w$
+is incremented with an event $e$, in the resulting world $w \diamond e$, epistemic
+alternatives for agent $a$ are of the form $w' \diamond e'$, where $w'$ is an
+alternative to for $a$ in $w$, and $e'$ is and event-alternative to $e$ for
+$a$.\footnote{In this it is important that the event-alternative relation for an
+  agent is constant across worlds. We anticipate that the definition given here
+  produces results equivalent to what is found in literature on event alternatives in
+  dynamic epistemic semantics, though we have not verified this.  That literature
+  primarily focuses on mapping an epistemic model for a single time and situation to
+  another, and uses general first-order models, rather than guarded string
+  models. See \citet{baltag1999logic}, \citet{van2007dynamic}, and articles in
+  \citet{ditmarsch2015handbook}.  Previous literature is motivated by epistemic logic
+  and AI planning, rather than computable possible worlds models in natural language
+  semantics.  } This needs to be implemented in a way that takes account of pre- and
+post-conditions for events. For this, our approach is to refer the definition of
+well-formed guarded strings.  \ex{raise1} defines a relation on worlds from a
+relation on bare events.
+
+\begin{example}  \label{raise1}
+  Let $W$ be a set of guarded strings over events P and primitive
+  tests B, and ${R}$ be a relation on $P$. The corresponding
+  relation $\hat{R}$ on $W$ holds between a guarded string
+\(
+\alpha_0e_0 ... e_n\alpha_{n+1} 
+\)
+in $W$ and a guarded string  $q$ iff $q$ is an element of $W$ and is of the form
+\(
+\alpha_0'e_0' ... e_n'\alpha_{n+1}', 
+\), where for $0 \leq n$, $\element{\tuple{e_i,e'_i}}{{R}}$.
+\end{example}  
+
+This requires that in an alternative world, each constituent event $e'_i$ is an
+alternative to the event $e_i$ in the base world.
+Compatibilities between events in the alternative world are enforced by the
+requirement that the alternative world is an element of $W$, so that state and effect
+formulas are enforced.
+
+Consider a scenario like the one from Figure 1, but with an additional agent Cal. The
+base world $T b_0 T c_0 T$ is one where the coin is tails, and first Bob looks at
+tails, and them Cal looks at tails. The first event $b_0$ has the alternatives $b_0$
+and $b_1$ for Amy, and the second event $c_0$ has the alternatives $c_0$ and $c_1$
+for Amy.  This results in four combinations $b_0c_0$, $b_0c_1$, $b_1c_0$, and
+$b_1c_1$. But these are filtered by post- and pre-conditions of events in the
+alternative world, so that the set of alernatives for Amy in $T b_0 T c_0 T$ is $\{T
+b_0 T c_0 T,H b_1 H c_1 H\}$, with two world-alternatives instead of four.
+
+
+\begin{figure}
+  \fbox{
+    \begin{minipage}{\columnwidth}
+      \(\begin{array}{llll}
+      \multicolumn{4}{l}{\text{events}~~e\in \mathsf{P}} \\
+      p,q &\multicolumn{3}{l}{::= e\,|\,\sigma\,|\,p+q\,|\,pq\,|\,p^*\,|\,\neg p\,|\, \Diamond_ap} \\
+      \Box_a p & \triangleq \neg\Diamond_a\neg p &
+      \bullet & \triangleq \sum_{e \in \mathsf P}e \\      
+      p \wedge q &  \triangleq \neg(\neg p + \neg q) &
+      p \to q & \neg p + q      
+      \end{array} \)
+  \end{minipage}}
+
+\caption{The language of Epik terms and key derived
+  operators.}
+\label{fig:epik-grammar}
+\label{termfigure}
+\end{figure}
+
+
+\section{The logical language of Epistemic KAT}
+The standard language for Kleene algebra with tests has the signature
+$\tuple{K,+,\cdot,*,\bar{},0,1}$ \citep{kozen2001automata}.  In a guarded string
+model for KAT, $K$ is a set of sets of guarded strings, $+$ is set union, the
+operation $\cdot$ is fusion product raised to sets, $*$ is Kleene star, the operation
+$\;\bar{}\;$ is complement for tests, $0$ is the empty set, and $1$ is the set of
+atoms.\footnote{$0$ has the dual role the identity for $+$ (union), and as False for
+  operations on tests.  $1$ has the dual role of the identity for product (fusion
+  product raised to sets), and True for tests.  } To this we add a unary
+modal operation $\Diamond_a$ for each agent, and a unary complement operation $\neg$
+on elements of $K$.  Intuitively, $\Diamond_a p$ is the set of
+worlds where proposition $p$ is epistemically possible for agent $a$.  Propositional
+complement is included because natural languages have sentence negation.  In
+addition, universal box modalities are defined as duals of existential diamond
+modalities.
+
+With modalities and propositional negation added, the signature of $n$-agent
+epistemic KAT is $\tuple{K,+,\cdot,*,\bar{},0,1,\neg,\Diamond_1
+  ... \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language.
+Juxtaposition is used for product.  Terms in this language
+are used to represent the proposositional semantic values of English sentences.
+\ex{interpretation1} gives some examples.  To explain the first one, $\bullet$ as
+defined in Figure \ref{fig:epik-grammar} is the disjunction of the primitive events.
+Since a world is a well-formed sequence of events, $\bullet^*$ is the set of worlds.
+Multiplying by the state symbol $h$ in the term $\bullet^* h$ has the effect of
+conjoining $h$ with the atom at the end of the world.  So $\bullet^* h$ is the set
+of worlds where the coin ends heads-up.
+
+\begin{example}   \label{interpretation1}
+\hspace{-1.5em}\begin{tabular}[t]{ll}
+${\bullet}^*t$ & It's tails. \\
+$\bullet^*h$ & It's heads. \\  
+  $ \bullet^* h \wedge \Box_a \bullet^* h$  & Amy knows it's heads. \\
+\end{tabular}
+\vspace{1mm}
+\hspace{-1.5em}\begin{tabular}[t]{l}
+  $\Box_b(\Box_a\bullet^*t + \Box_a\neg\bullet^*t)$\\
+ Bob believes Amy knows whether it's tails.  \\
+\end{tabular}
+\end{example}
+
+{\em Standard Epistemic Modalities}
+Using our existential modal primitive $\Diamond_a$, and the dual
+encodings of $\Box_a$ and $\wedge$, we can encode the standard modal
+operators expressing knowledge $(\K_a)$ and belief $(\B_a)$
+as in \ex{encodings}.\footnote{Deeper analyisis of the lexical semantics
+  of {\em know} requires adding modeling of presupposition
+  \citep{collard2018finite}. The grammar fragment in Section 6 does not model
+  the presupposition of {\em know}, except as
+  an entailment.}
+
+
+\begin{example}\label{encodings}
+  \( \begin{array}[t]{ccl}
+    \textsc{Belief} & \B_a~p &\triangleq \Box_a~p \\
+    \textsc{Knowledge} & \K_a~p & \triangleq p \wedge \B_a~p
+    \end{array}\)
+\end{example}
+
+%% As a consequence of these encodings, the standard dualities
+%% hold. These are shown in \ex{modalprops}.
+%% \begin{example} \label{modalprops}
+%%   \(\K_a~p \to \B_a~p \qquad \B_a~p \to \neg\K_a\neg p \)
+%% \end{example}
+
+Different types of reasoners (e.g. accurate, inaccurate,
+etc) are modeled using the event-alternatives in an
+Epik specification.\footnote{See the discussion of modal axioms \textbf{T} and
+  \textbf{D} below.}  The agents in Figure 1 do not always have reliable beliefs,
+because of the possibility of secret turning.
+
+
+\newcommand{\epikspec}{\test,\event,\varphi,\zeta}
+\newcommand{\AphiB}{\mathcal A^\varphi_{\mathsf B}}
+
+{\em Guarded String Interpretation.} A term $p$ of the logical language is interpreted as a set of guarded
+strings $\sem{p}^{\epikspec}$, where superscript captures dependence
+on an Epik specification.  Figure \ref{fig:interp2} defines the
+interpretation.  The interpretation $\sem{ 1
+}^{\epikspec}$ of the multiplicative identity 1 is the set of atoms that
+satisfy the state constraint $\varphi$.  Where $b$ is a primitive
+Boolean, $\sem{ b }^{\epikspec}$ is the set of atoms that satisfy the
+state constraint and where $b$ is true.  Where $e$ is a primitive
+event, $\sem{ e }^{\epikspec}$ is the set of guarded strings that have
+the form of $e$ flanked by compatible atoms, as determined by the
+event formula $\zeta_e$. The product $pq$ is
+interpreted with fusion product raised to sets of guarded strings.
+Kleene star is interpreted as the union of exponents ($p^n$ is
+the $n$-times product of $p$ with itself, with $p^0 = 1$).
+Propositional complement is complement relative to the set of worlds.
+The epistemic formula $\Diamond_a p$ is interpreted with Kripke
+semantics for epistemic modality, as the pre-image of $p$ 
+under the world-alternative relation $\hat{R}_a$.
+
+\newlength{\dhatheight}
+\newcommand{\doublehat}[1]{%
+    \settoheight{\dhatheight}{\ensuremath{\hat{#1}}}%
+    \addtolength{\dhatheight}{-0.35ex}%
+    \hat{\vphantom{\rule{1pt}{\dhatheight}}%
+      \smash{\hat{#1}}}}
+
+
+
+
+\begin{figure}
+  \fbox{\begin{minipage}{\columnwidth}
+  \centering
+  \(\begin{array}{l >{\triangleq}c l}
+  \sem{ 0 }^{\epikspec} && \emptyset \\  
+  \sem{ 1 }^{\epikspec} && \mathcal A^\varphi_{\mathsf B}\\
+  \sem{ b }^{\epikspec} && \mathcal A^{b\varphi}_{\mathsf B}\\
+  \sem{ \bar{\sigma} }^{\epikspec} && \AphiB \setminus \sem{\sigma}^{\epikspec}\\
+  \sem{ e }^{\epikspec}&&  \setabs{\alpha e \beta}{\alpha \zeta_e \beta} \\
+  \sem{{p+q}}^{\epikspec} && \sem{{p}}^{\epikspec} \cup \sem{ q }^{\epikspec}\\
+  \sem{{pq}}^{\epikspec} && \setabs{x \diamond y}{ \begin{array}{l}x \in \sem{p}^{\epikspec} \\ y \in \sem{q}^{\epikspec}\\\mbox{$x \diamond y$ is defined}\end{array}} \\
+  \sem{p^*}^{\epikspec} && \displaystyle\bigcup_{n \geq 0} {\sem{ p^n }^{\epikspec}} \\
+  \sem{ \neg p }^{\epikspec} && \sem{\bullet^*}^{\epikspec} \setminus \sem{ p }^{\epikspec} \\
+  \end{array}
+  \)
+  
+  \hspace{2mm}\(\sem{ \Diamond_a\,p } \hspace{4mm}{\triangleq} \hspace{4mm}\{x \mid \exists y . x{\hat{R}_a}y \wedge y \in \sem{ p }^{\epikspec}\} \)
+  \end{minipage}}
+  \caption{Interpretation of Epik terms as sets of guarded strings}
+  \label{fig:interp2}
+\end{figure}
+
+Summing up, given an Epik specification $\epikspec$, term $p$ (as
+defined syntactically in Figure \ref{termfigure}) is interpreted as a
+set of guarded strings $\sem{p}^{\epikspec}$.  Let $K^{\epikspec}$ be
+the sets that are interpretations of terms.  Then
+$\tuple{K^{\epikspec},+,\cdot,*,\bar{},0,1,\neg,\Diamond_{a_1},...,\Diamond_{a_n}}$
+is a concrete guarded string interpretation for the signature of
+epistemic KAT, with operations as in Figure \ref{fig:interp2}
+(e.g. the binary operation $+$ is union, and the unary operation
+$\Diamond_a$ is pre-image relative to $\hat{R}_a$).  This provides a
+concrete $n$-agent Kripke frame $\tuple{\sem{\bullet^*}^{\epikspec},
+  \hat{R}_1,...,\hat{R}_n}$.\footnote{ The domain of the Kripke frame
+  differs from the domain of the guarded string model, because the
+  former is the set of worlds, while the latter is the set of
+  propositions.  } The frame consists of a set of worlds, and an
+epistemic-alternative relation for each agent.  It is used as a target
+for natural-language interpretation in Section 6.
+
+
+\label{sec:axioms}
+
+{\em Axiomatic Classification}. To situate our logic as a modal logic, consider the soundness of
+the standard modal axioms given our semantics \citep{hughes1996new}. Some of
+these standard axioms (see \ex{valid-axioms}) hold all the time, i.e. they
+are \emph{valid}, and the remaining axioms are valid when $\hat{R}_a$
+has a certain shape. The axioms in \ex{conditionally-valid-axioms}
+have a nontrivial condition validity condition. 
+
+\begin{example}\label{valid-axioms}
+  \begin{enumerate}[align=left]
+  \item[\textbf{N}] If $p$ is valid, then $\Box_ap$ is valid
+  \item[\textbf{K}] $\Box_a(p \to q) \to \Box_a~p \to \Box_a~q$ is valid.
+  \end{enumerate}
+\end{example}
+
+\begin{example}\label{conditionally-valid-axioms}
+  \(\begin{array}[t]{lll}
+  \textbf{T} & \Box_a p \to p & \text{if } g\mathrel{\hat{R}_a} g, \forall g \\
+  \textbf{D} & \Box_a p \to \Diamond_a p & \text{if } g \in \dom(\hat{R}_a), \forall g \\
+  \textbf{4} & \Box_a p \to \Box_a\Box_a p & \text{if } \hat{R}_a \text{ idempotent}
+  \end{array}\)
+\end{example}
+
+The condition on \textbf{4} is essentially just a restatement of the
+theorem in relational terms. The conditions on the remaining standard
+modal axioms, \textbf{B} and \textbf{5}, are of a similarly trivial
+flavor.
+
+\section{Translation into the finite state calculus}
+The finite state calculus is an algebra of regular sets of strings and
+regular relations between strings that was designed for use in
+computationonal phonology and morphographemics
+\citep{kaplan1994regular,beesley2003finite}.  Current implementations
+allow for the definition of functions on regular sets and relations
+\citep{hulden2009foma,karttunen2010update}.  Such definitions are used
+here to construct of a model for epistemic KAT inside the finite state
+calculus. We describe our translation from Epik terms to Fst programs
+here.
+
+The space of worlds is a set of ordinary (as opposed to guarded) strings.  Bit
+sequences (sequences of $0$'s and $1$'s) encode atoms, and as before, these alternate
+with event symbols to encode a world.  In this construction, $w_3$ of the example is
+the string {\tt{10\hspace{2pt}a1\hspace{2pt}10\hspace{2pt}b1\hspace{2pt}10}}.
+
+\begin{figure}
+  \begin{tcolorbox}[size=fbox]
+\footnotesize
+\begin{hangingpar}
+  {\tt St} \hspace{2mm} \\
+  Atomic Tests such as $0110$.% The length is the number of generators.
+\end{hangingpar}
+  
+\begin{hangingpar}
+  {\tt UnequalStPair} \hspace{2mm} \\
+  Sequence of two unequal tests such as $0110~0111$.
+\end{hangingpar}
+
+\begin{hangingpar}
+\begin{verbatim}
+define Wf0 ~[$ UnequalStPair];
+\end{verbatim}
+String that doesn't contain a non-matching test pair.
+\end{hangingpar}
+
+\begin{hangingpar}
+\begin{verbatim}
+define Squash St -> 0 || St _;
+\end{verbatim}
+Rewrite relation deleting the second of two tests.
+\end{hangingpar}
+
+\begin{hangingpar}
+\begin{verbatim}
+define Cn(X,Y) 
+  [[[X Y] & Wf0] .o. Squash].l;
+\end{verbatim}
+KAT product.
+\end{hangingpar}
+
+\begin{hangingpar}
+\begin{verbatim}
+define Kpl(X) 
+  [[[X+] & Wf0] .o. Squash].l;
+\end{verbatim}
+\end{hangingpar}
+
+\begin{hangingpar}
+\begin{verbatim}
+define Kst(X) St | Kpl(X);
+\end{verbatim}
+KAT Kleene plus and Kleene star. The Fst operation {\tt |} is union.
+\end{hangingpar}
+\end{tcolorbox}
+\caption{\raggedright Definition in Fst of KAT product and star.
+  %% Where {\tt X} and {\tt Y} are regular sets and
+  %% {\tt R} and {\tt S} are regular relatiions,
+  %% {\tt X{\&}Y} is the intersection of {\tt X} and {\tt Y},
+  %% {\tt X|Y} is the union of {\tt X} and {\tt Y},
+  %% {\tt \~{}X} is the complement of {\tt X},
+  %% {\tt R{.o.}S} is the composition of {\tt R} and {\tt S},
+  %% {\tt R{.}l} is the co-domain of {\tt R}, and
+  %% {\tt {\$}X} is the set of strings that have a substring in $X$.   
+}
+\label{fstfigure1}
+\end{figure}
+
+
+Terms in the finite state calculus are interpreted as sets of strings,
+or for relational terms, as relations between strings.
+Computationally, the sets and relations are represented by finite
+state acceptors.  As used here, a program in the Fst language of the
+finite state calculus is a straight-line program that defines a
+sequence of constants naming sets, constants naming relations, and
+functions (defined as macros) mapping one or more regular sets or
+relations to a regular set or relation. 
+
+Translating the Epik terms $0$, $1$, $b$, and $e$ are
+straightforward: we simply convert the atoms as previously described,
+decorate the events $e$ with their compatible atoms. For example $a_1$ becomes
+an Fst term denoting
+$\{01a_101\}$. Fst has built-in operations of union (\texttt{|}),
+and intersection (\texttt{\&}), which define
+the sum and intersection operations in the guarded string algebra.
+Fst set difference (\texttt{-}) is used to define propositional complement as the
+difference between the set of worlds and the argument.
+
+Defining KAT product using Fst's set-lifted string concatenation (denoted by
+juxtaposition $\texttt{X}~\texttt{Y}$) requires more care. Naively concatenating
+strings with atoms (Boolean vectors) at both ends doubles atoms at the juncture, and
+does not enforce the requisite atom equality.  To implement KAT product, we define
+the binary operation \texttt{Cn}, which concatenates strings in the string algebra,
+removes strings with non-matching atoms, and then deletes the second of two atoms to
+create a set of well-formed guarded strings.  See Figure \ref{fstfigure1}. {\tt Wf0}
+is the set of ordinary strings that does not contain unequal pairs of atoms, as
+defined using Fst's containment operator \texttt{\$}. The \texttt{Squash} relation
+uses Fst's rewrite notation to delete atoms (elements of \texttt{St}) that are
+preceded by another atom. \footnote{ This is a non-equal length regular relation. The
+  finite state calculus includes such relations, and they can be used with relation
+  composition and relation domain and co-domain.  They are restricted in that the
+  complement and set difference for non-equal length relations is not defined.
+  Epistemic alterative relations are equal-length relations.} This relation is
+applied via the relational composition (\texttt{.o.}) and codomain (\texttt{.l})
+operators.
+%% Deletion is accomplished by a
+%% re-write rule in the finite state calculus, which is a notation for
+%% defining regular relations by contextually constrained substitutions.
+%% In this case, is {\tt Squash} is a regular relation that deletes an
+%% atom (a sequence of 0's and 1's of a certain length) when it follows
+%% an atom.
+
+KAT Kleene plus is defined in a similar way using Kleene plus in the string algebra,
+with checks for equality of atoms and deletion of atoms. See Figure \ref{fstfigure1}.
+KAT Kleene star is definied from KAT Kleene plus and the multiplicative identity,
+which is the set of well-formed atoms \texttt{St}.
+
+
+\begin{figure}
+  \begin{tcolorbox}[size=fbox]
+  \footnotesize  
+{\raggedright
+  \begin{hangingpar}
+%% {\tt{define RelKpl(R)}}\\
+%% $\underbrace{\mbox{\tt{Squash.i\hspace{1pt}.o.}}}_c$
+%% $\underbrace{\mbox{\tt Wf0\hspace{1pt}.o.}}_b$
+%% $\underbrace{\mbox{\tt{[R+]}}}_a$
+%% $\underbrace{\mbox{\tt .o.\hspace{1pt}Wf0}}_b$
+%% $\underbrace{\mbox{\tt{.o.\hspace{1pt}Squash}}}_c$
+{\tt{define RelKpl(R)}}\\
+$\!\underbrace{\texttt{Squash.i}\,\texttt{.o.}}_c
+\underbrace{\mbox{\tt Wf0\,.o.}}_b
+\underbrace{\mbox{\tt{[R+]}}}_a
+\underbrace{\mbox{\tt .o.\,Wf0}}_b
+\underbrace{\mbox{\tt{.o.\,Squash}}}_c$
+
+\end{hangingpar}}
+
+\begin{tabular}{ll}
+  $a$ & Relational Kleene plus in the string algebra \\
+  $b$ & Constrain domain and co-domain to contain \\
+      & no unmatched tests. \\
+  $c$ & Reduce doubled tests to a single \\
+      & test in the domain and co-domain. \\
+\end{tabular}
+
+\begin{hangingpar}
+{\tt{define RelKst(R)
+    [St\hspace{1pt}.x.\hspace{1pt}St]\hspace{1pt}|\hspace{1pt}Kpl(X);}}\\ The Fst
+operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relation
+{\tt{R}}.
+\end{hangingpar}
+\end{tcolorbox}
+\caption{Definition in Fst of the Kleene concatenation closure of
+  a relation between guarded strings.}
+\label{relclosure}
+\end{figure}
+
+
+%% An event symbol such as $a_1$ (Amy looks at heads) is in the KAT algebra a set of
+%% bare events decorated with compatible tests on each side, $\{ 10 a_1 10
+%% \}$ in this case.  This is a unit set rather than a guarded string, because elements
+%% of the KAT algebra are sets. Worlds in the KAT algebra are defined by sequencing
+%% events using {\em Kst}. The operation enforces compatibility of states, so that
+%% $(a_1 + a_0)(b_1 + b_0)$ contains two worlds rather than four.  The program in
+%% Figure \ref{epikfigure} as interpreted in FST defines a countably infinite set of possible worlds by
+%% KAT Kleene closure as $\mbox{\em Kst}(a_1 + a_0 +b_1 + b_0)$.
+
+It remains to define an epistemic alternative relation on worlds for each agent.  The
+relevant information in Figure \ref{epikfigure} is a relation between bare events for
+each agent. This determines a relation between bare events decorated with compatible
+atoms. 
+In Fst, we use the closure of the concatenation
+product operation on relations to lift a relation on decorated events for an agent to
+the corresponding relation on worlds.  The concatenation product $R~S$ of two
+relations $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$, where
+$x_1 \mathrel R y_1$, and $x_2 \mathrel S y_2$.  In Fst, {\tt{R+}} is the closure of relation {\tt R} with
+respect to this operation. Figure \ref{relclosure} defines the corresponding
+operation on sets of guarded strings as encoded in Fst.\footnote{Relation concatenation in Fst
+  differs from relation composition ({\tt{.o.}}), and the closure under discussion here is
+  the closure of the former rather than the latter.}  The epistemic alternative
+relation on worlds for an agent is then defined as the KAT relational concatenation
+closure {\tt RelKst} of the decorated-event alternative relation for the agent.
+
+%(Note that in both the string algebra and the guarded string algebra, the operation
+%on relations is concatenation closure, not reflexive transitive closure.)
+
+
+\section{Bounded Lazy Interpretation}
+
+We also implement the semantics of Epik terms using lazy lists in
+Haskell, rather than the direct interpretation as sets. Using lists
+sidesteps checking the set invariant (elements are unique) for large
+sets, such as $\bullet^*$, and laziness allows us to delay computing
+these large sets until they are actually needed. To sidestep the
+infiteness of models, we parameterize the interpretation function on a
+positive integer $n$ and only produce guarded strings of length $n$ or
+less.
+
+%% We translate the Epik terms into a Haskell algebraic datatype that
+%% represents terms with the same signature as described in Section 2. We
+%% then paramaterize the interpretation function on an integer $n$ that
+%% describes the maximum length of a string we will produce.
+
+The bounded interpretation into lists of strings is very similar to
+the unboundeds interpretation into sets of strings, except for the
+bounds checking. The full details are shown in
+Figure~\ref{fig:bound-interp}. First note that when $n=0$, the
+denotation is empty, denoted $[]$. Terms of the form $0$, $1$, $e$,
+and $\psi$ have the same denotation as before, translated into a list
+(denoted $\lfloor S\rfloor$, for a set $S$). We compute atoms using
+BDDs, which concisely represent boolean functions~\cite{lee1959representation}.
+
+We lift the remaining operators (except Kleene star) to their list
+equivalents: union becomes list append (written $\texttt{+\!+}$);
+fusion product is lifted to lists instead of sets, negation is
+implemented using list difference ($\setminus$), and the modal
+operator lifts the alternative relation over lists of
+strings\footnote{Figure~7 depicts this using the
+  list comprehension notation, which is analogous to set builder
+  notation, except that it is written using square brackets. Element
+  order is evoked by the keyword \texttt{for}, rather than using the
+  unordered $\forall$.}. The only caveat to these direct
+interpretations is that we restrict the operators to have size $\leq
+n$, denoted as $l|_n$ for a list of guarded strings $l$.
+
+The denotation of $p^*$ uses the fact that $p^*$ and $1 + p;p^*$ are equivalent,
+and decrements the size threshold on the recursive denotation of $p^*$ by $i$,
+where $i$ is the length of the longest (nonzero) string in the denotation of
+$p$, making sure to filter out guarded strings that are too long.
+
+
+%% To convert from a list of guarded strings $l$ to a set of guarded
+%% strings, we simply write $\lceil l\rceil$. Note that for any $p$,
+%% $\varphi$, $\mathcal E$, and $n$, $\left\lceil\llparenthesis p
+%% \rrparenthesis^{\varphi,\mathcal E}_n\right\rceil = \{g \mid g \in
+%% \sem{ p }^{\varphi,\mathcal E}, |g| \leq n\}$.
+
+\newcommand{\semlst}[2]{\llparenthesis#1\rrparenthesis^{\mathsf B, \mathsf P, \phi, \zeta}_{#2}}
+\newcommand{\setToList}[1]{\lfloor#1\rfloor}
+
+\begin{figure}[!t]
+  \fbox{
+    \begin{minipage}{\columnwidth}
+      \hspace{-0.9em}\(\begin{array}{r >{\triangleq}c l}
+      \semlst p 0 && [] \\
+      \semlst 0 n && [] \\
+      \semlst 1 n && \setToList \AphiB \\
+      \semlst e n && [ \alpha e \beta \mid \alpha \mathrel{\zeta_e} \beta ] \\
+      \semlst b n && \setToList{ \mathcal A_{\mathsf B}^{b\psi}} \\
+      \semlst{p\! + \!q} n && \semlst p n \mathbin{\texttt{+\!+}} \semlst q n \\
+      \semlst{p;q} n &&
+      (\semlst p n \diamond \semlst q n)|_n\\
+      \semlst{p^*} n && [] + (\semlst p n \diamond \semlst{p^*} {n-i}) |_n \\
+      \multicolumn 3 r {\footnotesize \text{where}~
+        \begin{array}[t]{r >{\hspace{-.7em}}l}
+          i &= \max\{1,\min\{|g|\mid g \in \semlst p n \}\} \\
+      \end{array}}\\
+      \semlst{\neg p} n && \semlst {\bullet^*} n \setminus \semlst p n \\
+      \semlst{\Diamond_ap } n &&
+             [g' \mid g'\,\hat{R_a}\,g,\texttt{\footnotesize for}\,g\,\texttt{\footnotesize in}\,\semlst p n]
+      \end{array}
+      \)
+    \end{minipage}}
+  \caption{Bounded interpretation using lazy lists}
+  \label{fig:bound-interp}
+\end{figure}
+
+%% The lists we use here are \emph{lazy} (as opposed to \emph{strict}), which
+%% broadly means that computation is delayed until the value is needed. This allows
+%% us to avoid computing large, unnecessary iterations.
+
+\section{Syntax-semantics interface}
+
+English sentences are mapped to terms in the logical language via a
+semantically interpreted multi-modal categorial grammar, consisting of
+a lexicon of words, their categorial types, and interpretations in a
+logical lambda language.  The grammar covers basic statives ({\em it's
+  heads}), {\em that-} and {\em whether}-complements of {\em know}, predicate and
+sentence negation, and predicate and sentence conjunction.  Figure
+\ref{lexiconfigure} gives illustrative lexical
+entries.\footnote{Category symbols use Lambek/Bar-Hillel notation for
+  slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
+  with $d \backslash_D t$ on the right to give a value that combines
+  with $d$ on the left to give $t$. In the semantics, lambda abstractions with
+  multiple parameters are written $\lambda x~y.~e$ rather than $\lambda x.\lambda y.e$.
+$d$ is the category of {\em it}.}
+The grammar and semantics are
+optimized for a simple fragment of English concerned with clausal
+complementation.  The agent names {\em Amy} and {\em Bob} contribute
+the epistemic alternative relations for those agents, rather than
+individuals.  The root verb {\em know} contributes existential modal
+force.  The complementizers {\em that} and {\em whether} are the heads
+of their dominating clauses, and assemble an alternative relation,
+modal force, and proposition contributed by the complement.  These
+complementizers introduce the dual via two negations, in order to
+express universal modal force.
+
+\begin{figure}[!t]
+  \vspace{1em}
+  \centering
+  \footnotesize
+  \begin{tabular}[t]{lcc}
+    \toprule
+        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\
+        it & $d$ & $d$ \\
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+      \end{tabular}
+  \caption{Partial categorial grammar lexicon. The first column has a word form.
+    the second column a categorial type, and third column a semantic translation
+    in a logical language that extends the Epik term language with lambda. }
+  \label{lexiconfigure}
+\end{figure} 
+
+Multimodal categories such as $\backslash_D$ and $\backslash_M$ are
+used to control the derivation---phrases with these top-level slashes
+can only combine syntactically as arguments.
+%
+%For instance the category of {\em
+%  heads} is $d \backslash_D t$.  The dummy expletive subject {\em it}
+%has category $d$.  However the phrase {\em it heads} of category $t$
+%can not be formed, because $\backslash_D$ is not syntactically active
+%as a function.  Instead {\em it is heads} is formed with a predicator
+%{\em is} of category $(d \backslash t)\slash(d \backslash_D t)$.
+%Similarly {\em knows} has a category with the top-level slash
+%$\slash\!_M$, and combines to form a sentence as an argument of {\em
+%  that} or {\em whether}. These complementizers have a category that
+%looks for the category of {\em know} on the left, after combining with
+%a complement sentence on the right.
+The semantic translations in the third column of Figure \ref{lexiconfigure} use
+the logical language, incremented with lambda.  The body of $\lambda
+x.\bullet^*h$, which is the semantic lexical entry for {\em heads}, is a
+term denoting the set of all worlds where the coin is heads, expressed as the
+set of all guarded strings that end with a Boolean valuation where the primitive
+proposition $h$ (it's heads) is true.
+%There is $\lambda x$ at the
+%front because the grammar formalism enforces a strict correspondence
+%between syntactic and semantic types. However, the lambda does not
+%bind anything, because sentences such as {\em it isn't heads} have an
+%expletive subject.
+The body of $\lambda p.\lambda R. {\Diamond}_R p$, which is the semantic lexical
+entry of {\em knows}, is an term denoting the pre-image of the
+world-alternative relation contributed by the subject.  This is not the right
+semantics for {\em Amy knows that it's heads}, because it has an existential
+modality ${\Diamond_R}p$, rather than an universal modality ${\Box_R}p$.  This
+is corrected by the complementizer {\em that} or {\em whether}, which introduces
+the dual.
+
+Sentences are parsed with a chart parser for categorial grammar.  The semantics for
+complex phrases are obtained by application of semantic translations, accompanied by
+beta reductions that eliminate all lambdas logical forms for clauses.  In
+consequence, the semantic term translating a sentence is an Epik term.  Such a term
+designates a set of possible words (guarded strings).  By way of example,
+\exi{three}{a} is an English sentence with conjunction and several levels of clausal
+embedding.  Using the grammar and parser, the sentence is mapped to the term in
+\exi{three}{b}. \exi{three}{c} shows a simplified logical from constructed form
+\exi{three}{b} using logical equivalences. Either term is compiled in an
+implementation of the finite state calculus to a finite state machine with 10
+states and 23 edges, which accepts a countably infinite set of worlds.\footnote{
+Machine sizes need not be small, especially as the cardinality of $\sf{B}$
+increases.  A certain Epik model with fourteen primitive tests has the set of worlds
+representented by a finite state machine with 184794 states and 257881
+edges.}
+In this way the methodology ``directly'' represents the set of worlds
+denoted by \exi{three}{a}.
+
+\newcommand{\HEADS}{\bullet^*h}
+\newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
+\newcommand{\BKAKWH}{\neg(\neg(\AKWH) + \Diamond_{b}\neg(\AKWH))}
+\newcommand{\AKBKAKWH}{\neg(\neg(\BKAKWH) + \Diamond_{a}\neg(\BKAKWH))}
+
+\begin{examples} \label{three}
+\itema It's tails and Amy knows that Bob knows that Amy knows whether it's heads.
+% (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
+\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)
+\itemc \(\bullet^*t \wedge \K_{a}(\K_{b}(\K_{a} \bullet^* h + \K_{a} \neg \bullet ^* h))\)
+\itemd Amy knows that it's tails.
+\iteme \(
+\bullet ^*t \wedge \neg \Diamond_{a} \neg \bullet^*t~~~~~~(\equiv \K_a \bullet^* t)
+\)
+
+\end{examples}
+Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by the grammar.
+Logical relations between propositions are checked in the finite state calculus by
+checking set-theoretic relations between sets of worlds.
+For instance entailment $p \rightarrow q$ is decided by checking in an interpreter
+for the finite state calculus whether $p - q$ is non-empty.
+In the model defined by Figure 2, the
+propositions \exi{three}{b} and \exi{three}{e} are
+independent. They are equivalent in a version 
+without secret flipping.
+
+
+%% \begin{examples} \label{entail}
+%% \itema Amy knows that it's tails.
+%% \itemb \(
+%% \neg \Diamond_{a} \neg \bullet^*t
+%% \)
+%% % \itemc \(\displaystyle \Box_{a}\Box_{b}(\Box_{a} \neg \bullet^* h + \Box_{a}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{a}\neg\Box_{b}\Box_{a}\neg \bullet^* t\)
+%% \end{examples}
+
+\section{Discussion}
+The methodology presented here is designed for use in research in linguistic
+semantics, and for education at the level of a second graduate course in formal
+semantics, covering intensionality.  There are straightforward extensions to
+additional linguistic phenomena, such as tense and perfective aspect as in
+\exi{extension}{a}, and the combination of metaphysical modality and prospective
+aspect in \exi{extension}{b}.
+
+\begin{examples}   \label{extension}
+  \itema Amy has learned that Bob had learned that it's heads.
+  \itemb Amy might learn that it's heads.
+\end{examples}  
+
+The model framework is a constructive branching-time framework with metaphysical
+modality and epistemic modality, which will be applicable in linguistic semantic
+research on combinations of tense, metaphysical modality, and epistemic
+complementation \citep{thomason1984combinations, abusch1998generalizing,
+  condoravdi2002temporal}.  Connections with research on temporal constitution of
+events in a related formal setting remain to be explored
+\citep{fernando2004finite,fernando2007observing,carlson2009tense}.
+
+
+The development here is concerned with defining concrete computable possible
+worlds models, and applying them in natural language semantics.  
+Issues for further investigation are mathematical characterizations
+of epistemic KATs, e.g. sound and complete axioms, coalgebra, and decidability.
+
+We will release Epik's source code under an open source license prior
+to the conference.
+
+\bibliographystyle{acl_natbib}
+% \bibliographystyle{chicago}
+\bibliography{fs}
+
+\end{document}
+
+
+
+\section{Credits}
+
+This document has been adapted
+by Steven Bethard, Ryan Cotterrell and Rui Yan
+from the instructions for earlier ACL and NAACL proceedings, including those for 
+ACL 2019 by Douwe Kiela and Ivan Vuli\'{c},
+NAACL 2019 by Stephanie Lukin and Alla Roskovskaya, 
+ACL 2018 by Shay Cohen, Kevin Gimpel, and Wei Lu, 
+NAACL 2018 by Margaret Michell and Stephanie Lukin,
+2017/2018 (NA)ACL bibtex suggestions from Jason Eisner,
+ACL 2017 by Dan Gildea and Min-Yen Kan, 
+NAACL 2017 by Margaret Mitchell, 
+ACL 2012 by Maggie Li and Michael White, 
+ACL 2010 by Jing-Shing Chang and Philipp Koehn, 
+ACL 2008 by Johanna D. Moore, Simone Teufel, James Allan, and Sadaoki Furui, 
+ACL 2005 by Hwee Tou Ng and Kemal Oflazer, 
+ACL 2002 by Eugene Charniak and Dekang Lin, 
+and earlier ACL and EACL formats written by several people, including
+John Chen, Henry S. Thompson and Donald Walker.
+Additional elements were taken from the formatting instructions of the \emph{International Joint Conference on Artificial Intelligence} and the \emph{Conference on Computer Vision and Pattern Recognition}.
+
+\section{Introduction}
+
+The following instructions are directed to authors of papers submitted to ACL 2020 or accepted for publication in its proceedings.
+All authors are required to adhere to these specifications.
+Authors are required to provide a Portable Document Format (PDF) version of their papers.
+\textbf{The proceedings are designed for printing on A4 paper.}
+
+
+\section{Electronically-available resources}
+
+ACL provides this description and accompanying style files at
+\begin{quote}
+\url{http://acl2020.org/downloads/acl2020-templates.zip}
+\end{quote}
+We strongly recommend the use of these style files, which have been appropriately tailored for the ACL 2020 proceedings.
+
+\paragraph{\LaTeX-specific details:}
+The templates include the \LaTeX2e{} source (\texttt{\small acl2020.tex}),
+the \LaTeX2e{} style file used to format it (\texttt{\small acl2020.sty}),
+an ACL bibliography style (\texttt{\small acl\_natbib.bst}),
+an example bibliography (\texttt{\small acl2020.bib}),
+and the bibliography for the ACL Anthology (\texttt{\small anthology.bib}).
+
+
+\section{Length of Submission}
+\label{sec:length}
+
+The conference accepts submissions of long papers and short papers.
+Long papers may consist of up to eight (8) pages of content plus unlimited pages for references.
+Upon acceptance, final versions of long papers will be given one additional page -- up to nine (9) pages of content plus unlimited pages for references -- so that reviewers' comments can be taken into account.
+Short papers may consist of up to four (4) pages of content, plus unlimited pages for references.
+Upon acceptance, short papers will be given five (5) pages in the proceedings and unlimited pages for references. 
+For both long and short papers, all illustrations and tables that are part of the main text must be accommodated within these page limits, observing the formatting instructions given in the present document.
+Papers that do not conform to the specified length and formatting requirements are subject to be rejected without review.
+
+The conference encourages the submission of additional material that is relevant to the reviewers but not an integral part of the paper.
+There are two such types of material: appendices, which can be read, and non-readable supplementary materials, often data or code.
+Additional material must be submitted as separate files, and must adhere to the same anonymity guidelines as the main paper.
+The paper must be self-contained: it is optional for reviewers to look at the supplementary material.
+Papers should not refer, for further detail, to documents, code or data resources that are not available to the reviewers.
+Refer to Appendices~\ref{sec:appendix} and \ref{sec:supplemental} for further information. 
+
+Workshop chairs may have different rules for allowed length and whether supplemental material is welcome.
+As always, the respective call for papers is the authoritative source.
+
+
+\section{Anonymity}
+As reviewing will be double-blind, papers submitted for review should not include any author information (such as names or affiliations). Furthermore, self-references that reveal the author's identity, \emph{e.g.},
+\begin{quote}
+We previously showed \citep{Gusfield:97} \ldots
+\end{quote}
+should be avoided. Instead, use citations such as 
+\begin{quote}
+\citet{Gusfield:97} previously showed\ldots
+\end{quote}
+Please do not use anonymous citations and do not include acknowledgements.
+\textbf{Papers that do not conform to these requirements may be rejected without review.}
+
+Any preliminary non-archival versions of submitted papers should be listed in the submission form but not in the review version of the paper.
+Reviewers are generally aware that authors may present preliminary versions of their work in other venues, but will not be provided the list of previous presentations from the submission form.
+
+Once a paper has been accepted to the conference, the camera-ready version of the paper should include the author's names and affiliations, and is allowed to use self-references.
+
+\paragraph{\LaTeX-specific details:}
+For an anonymized submission, ensure that {\small\verb|\aclfinalcopy|} at the top of this document is commented out, and that you have filled in the paper ID number (assigned during the submission process on softconf) where {\small\verb|***|} appears in the {\small\verb|\def\aclpaperid{***}|} definition at the top of this document.
+For a camera-ready submission, ensure that {\small\verb|\aclfinalcopy|} at the top of this document is not commented out.
+
+
+\section{Multiple Submission Policy}
+Papers that have been or will be submitted to other meetings or publications must indicate this at submission time in the START submission form, and must be withdrawn from the other venues if accepted by ACL 2020. Authors of papers accepted for presentation at ACL 2020 must notify the program chairs by the camera-ready deadline as to whether the paper will be presented. We will not accept for publication or presentation the papers that overlap significantly in content or results with papers that will be (or have been) published elsewhere.
+
+Authors submitting more than one paper to ACL 2020 must ensure that submissions do not overlap significantly (>25\%) with each other in content or results.
+
+
+
+\section{Formatting Instructions}
+
+Manuscripts must be in two-column format.
+Exceptions to the two-column format include the title, authors' names and complete addresses, which must be centered at the top of the first page, and any full-width figures or tables (see the guidelines in Section~\ref{ssec:title-authors}).
+\textbf{Type single-spaced.}
+Start all pages directly under the top margin.
+The manuscript should be printed single-sided and its length should not exceed the maximum page limit described in Section~\ref{sec:length}.
+Pages should be numbered in the version submitted for review, but \textbf{pages should not be numbered in the camera-ready version}.
+
+\paragraph{\LaTeX-specific details:}
+The style files will generate page numbers when {\small\verb|\aclfinalcopy|} is commented out, and remove them otherwise.
+
+
+\subsection{File Format}
+\label{sect:pdf}
+
+For the production of the electronic manuscript you must use Adobe's Portable Document Format (PDF).
+Please make sure that your PDF file includes all the necessary fonts (especially tree diagrams, symbols, and fonts with Asian characters).
+When you print or create the PDF file, there is usually an option in your printer setup to include none, all or just non-standard fonts.
+Please make sure that you select the option of including ALL the fonts.
+\textbf{Before sending it, test your PDF by printing it from a computer different from the one where it was created.}
+Moreover, some word processors may generate very large PDF files, where each page is rendered as an image.
+Such images may reproduce poorly.
+In this case, try alternative ways to obtain the PDF.
+One way on some systems is to install a driver for a postscript printer, send your document to the printer specifying ``Output to a file'', then convert the file to PDF.
+
+It is of utmost importance to specify the \textbf{A4 format} (21 cm x 29.7 cm) when formatting the paper.
+Print-outs of the PDF file on A4 paper should be identical to the hardcopy version.
+If you cannot meet the above requirements about the production of your electronic submission, please contact the publication chairs as soon as possible.
+
+\paragraph{\LaTeX-specific details:}
+PDF files are usually produced from \LaTeX{} using the \texttt{\small pdflatex} command.
+If your version of \LaTeX{} produces Postscript files, \texttt{\small ps2pdf} or \texttt{\small dvipdf} can convert these to PDF.
+To ensure A4 format in \LaTeX, use the command {\small\verb|\special{papersize=210mm,297mm}|}
+in the \LaTeX{} preamble (below the {\small\verb|\usepackage|} commands) and use \texttt{\small dvipdf} and/or \texttt{\small pdflatex}; or specify \texttt{\small -t a4} when working with \texttt{\small dvips}.
+
+\subsection{Layout}
+\label{ssec:layout}
+
+Format manuscripts two columns to a page, in the manner these
+instructions are formatted.
+The exact dimensions for a page on A4 paper are:
+
+\begin{itemize}
+\item Left and right margins: 2.5 cm
+\item Top margin: 2.5 cm
+\item Bottom margin: 2.5 cm
+\item Column width: 7.7 cm
+\item Column height: 24.7 cm
+\item Gap between columns: 0.6 cm
+\end{itemize}
+
+\noindent Papers should not be submitted on any other paper size.
+If you cannot meet the above requirements about the production of your electronic submission, please contact the publication chairs above as soon as possible.
+
+\subsection{Fonts}
+
+For reasons of uniformity, Adobe's \textbf{Times Roman} font should be used.
+If Times Roman is unavailable, you may use Times New Roman or \textbf{Computer Modern Roman}.
+
+Table~\ref{font-table} specifies what font sizes and styles must be used for each type of text in the manuscript.
+
+\begin{table}
+\centering
+\begin{tabular}{lrl}
+\hline \textbf{Type of Text} & \textbf{Font Size} & \textbf{Style} \\ \hline
+paper title & 15 pt & bold \\
+author names & 12 pt & bold \\
+author affiliation & 12 pt & \\
+the word ``Abstract'' & 12 pt & bold \\
+section titles & 12 pt & bold \\
+subsection titles & 11 pt & bold \\
+document text & 11 pt  &\\
+captions & 10 pt & \\
+abstract text & 10 pt & \\
+bibliography & 10 pt & \\
+footnotes & 9 pt & \\
+\hline
+\end{tabular}
+\caption{\label{font-table} Font guide. }
+\end{table}
+
+\paragraph{\LaTeX-specific details:}
+To use Times Roman in \LaTeX2e{}, put the following in the preamble:
+\begin{quote}
+\small
+\begin{verbatim}
+\usepackage{times}
+\usepackage{latexsym}
+\end{verbatim}
+\end{quote}
+
+
+\subsection{Ruler}
+A printed ruler (line numbers in the left and right margins of the article) should be presented in the version submitted for review, so that reviewers may comment on particular lines in the paper without circumlocution.
+The presence or absence of the ruler should not change the appearance of any other content on the page.
+The camera ready copy should not contain a ruler.
+
+\paragraph{Reviewers:}
+note that the ruler measurements may not align well with lines in the paper -- this turns out to be very difficult to do well when the paper contains many figures and equations, and, when done, looks ugly.
+In most cases one would expect that the approximate location will be adequate, although you can also use fractional references (\emph{e.g.}, this line ends at mark $295.5$).
+
+\paragraph{\LaTeX-specific details:}
+The style files will generate the ruler when {\small\verb|\aclfinalcopy|} is commented out, and remove it otherwise.
+
+\subsection{Title and Authors}
+\label{ssec:title-authors}
+
+Center the title, author's name(s) and affiliation(s) across both columns.
+Do not use footnotes for affiliations.
+Place the title centered at the top of the first page, in a 15-point bold font.
+Long titles should be typed on two lines without a blank line intervening.
+Put the title 2.5 cm from the top of the page, followed by a blank line, then the author's names(s), and the affiliation on the following line.
+Do not use only initials for given names (middle initials are allowed).
+Do not format surnames in all capitals (\emph{e.g.}, use ``Mitchell'' not ``MITCHELL'').
+Do not format title and section headings in all capitals except for proper names (such as ``BLEU'') that are
+conventionally in all capitals.
+The affiliation should contain the author's complete address, and if possible, an electronic mail address.
+
+The title, author names and addresses should be completely identical to those entered to the electronical paper submission website in order to maintain the consistency of author information among all publications of the conference.
+If they are different, the publication chairs may resolve the difference without consulting with you; so it is in your own interest to double-check that the information is consistent.
+
+Start the body of the first page 7.5 cm from the top of the page.
+\textbf{Even in the anonymous version of the paper, you should maintain space for names and addresses so that they will fit in the final (accepted) version.}
+
+
+\subsection{Abstract}
+Use two-column format when you begin the abstract.
+Type the abstract at the beginning of the first column.
+The width of the abstract text should be smaller than the
+width of the columns for the text in the body of the paper by 0.6 cm on each side.
+Center the word \textbf{Abstract} in a 12 point bold font above the body of the abstract.
+The abstract should be a concise summary of the general thesis and conclusions of the paper.
+It should be no longer than 200 words.
+The abstract text should be in 10 point font.
+
+\subsection{Text}
+Begin typing the main body of the text immediately after the abstract, observing the two-column format as shown in the present document.
+
+Indent 0.4 cm when starting a new paragraph.
+
+\subsection{Sections}
+
+Format section and subsection headings in the style shown on the present document.
+Use numbered sections (Arabic numerals) to facilitate cross references.
+Number subsections with the section number and the subsection number separated by a dot, in Arabic numerals.
+
+\subsection{Footnotes}
+Put footnotes at the bottom of the page and use 9 point font.
+They may be numbered or referred to by asterisks or other symbols.\footnote{This is how a footnote should appear.}
+Footnotes should be separated from the text by a line.\footnote{Note the line separating the footnotes from the text.}
+
+\subsection{Graphics}
+
+Place figures, tables, and photographs in the paper near where they are first discussed, rather than at the end, if possible.
+Wide illustrations may run across both columns.
+Color is allowed, but adhere to Section~\ref{ssec:accessibility}'s guidelines on accessibility.
+
+\paragraph{Captions:}
+Provide a caption for every illustration; number each one sequentially in the form:
+``Figure 1. Caption of the Figure.''
+``Table 1. Caption of the Table.''
+Type the captions of the figures and tables below the body, using 10 point text.
+Captions should be placed below illustrations.
+Captions that are one line are centered (see Table~\ref{font-table}).
+Captions longer than one line are left-aligned (see Table~\ref{tab:accents}).
+
+\begin{table}
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Command} & \textbf{Output}\\
+\hline
+\verb|{\"a}| & {\"a} \\
+\verb|{\^e}| & {\^e} \\
+\verb|{\`i}| & {\`i} \\ 
+\verb|{\.I}| & {\.I} \\ 
+\verb|{\o}| & {\o} \\
+\verb|{\'u}| & {\'u}  \\ 
+\verb|{\aa}| & {\aa}  \\\hline
+\end{tabular}
+\begin{tabular}{lc}
+\hline
+\textbf{Command} & \textbf{Output}\\
+\hline
+\verb|{\c c}| & {\c c} \\ 
+\verb|{\u g}| & {\u g} \\ 
+\verb|{\l}| & {\l} \\ 
+\verb|{\~n}| & {\~n} \\ 
+\verb|{\H o}| & {\H o} \\ 
+\verb|{\v r}| & {\v r} \\ 
+\verb|{\ss}| & {\ss} \\
+\hline
+\end{tabular}
+\caption{Example commands for accented characters, to be used in, \emph{e.g.}, \BibTeX\ names.}\label{tab:accents}
+\end{table}
+
+\paragraph{\LaTeX-specific details:}
+The style files are compatible with the caption and subcaption packages; do not add optional arguments.
+\textbf{Do not override the default caption sizes.}
+
+
+\subsection{Hyperlinks}
+Within-document and external hyperlinks are indicated with Dark Blue text, Color Hex \#000099.
+
+\subsection{Citations}
+Citations within the text appear in parentheses as~\citep{Gusfield:97} or, if the author's name appears in the text itself, as \citet{Gusfield:97}.
+Append lowercase letters to the year in cases of ambiguities.  
+Treat double authors as in~\citep{Aho:72}, but write as in~\citep{Chandra:81} when more than two authors are involved. Collapse multiple citations as in~\citep{Gusfield:97,Aho:72}. 
+
+Refrain from using full citations as sentence constituents.
+Instead of
+\begin{quote}
+  ``\citep{Gusfield:97} showed that ...''
+\end{quote}
+write
+\begin{quote}
+``\citet{Gusfield:97} showed that ...''
+\end{quote}
+
+\begin{table*}
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Output} & \textbf{natbib command} & \textbf{Old ACL-style command}\\
+\hline
+\citep{Gusfield:97} & \small\verb|\citep| & \small\verb|\cite| \\
+\citealp{Gusfield:97} & \small\verb|\citealp| & no equivalent \\
+\citet{Gusfield:97} & \small\verb|\citet| & \small\verb|\newcite| \\
+\citeyearpar{Gusfield:97} & \small\verb|\citeyearpar| & \small\verb|\shortcite| \\
+\hline
+\end{tabular}
+\caption{\label{citation-guide}
+Citation commands supported by the style file.
+The style is based on the natbib package and supports all natbib citation commands.
+It also supports commands defined in previous ACL style files for compatibility.
+}
+\end{table*}
+
+\paragraph{\LaTeX-specific details:}
+Table~\ref{citation-guide} shows the syntax supported by the style files.
+We encourage you to use the natbib styles.
+You can use the command {\small\verb|\citet|} (cite in text) to get ``author (year)'' citations as in \citet{Gusfield:97}.
+You can use the command {\small\verb|\citep|} (cite in parentheses) to get ``(author, year)'' citations as in \citep{Gusfield:97}.
+You can use the command {\small\verb|\citealp|} (alternative cite without  parentheses) to get ``author year'' citations (which is useful for  using citations within parentheses, as in \citealp{Gusfield:97}).
+
+
+\subsection{References}
+Gather the full set of references together under the heading \textbf{References}; place the section before any Appendices. 
+Arrange the references alphabetically by first author, rather than by order of occurrence in the text.
+
+Provide as complete a citation as possible, using a consistent format, such as the one for \emph{Computational Linguistics\/} or the one in the  \emph{Publication Manual of the American 
+Psychological Association\/}~\citep{APA:83}.
+Use full names for authors, not just initials.
+
+Submissions should accurately reference prior and related work, including code and data.
+If a piece of prior work appeared in multiple venues, the version that appeared in a refereed, archival venue should be referenced.
+If multiple versions of a piece of prior work exist, the one used by the authors should be referenced.
+Authors should not rely on automated citation indices to provide accurate references for prior and related work.
+
+The following text cites various types of articles so that the references section of the present document will include them.
+\begin{itemize}
+\item Example article in journal: \citep{Ando2005}.
+\item Example article in proceedings, with location: \citep{borschinger-johnson-2011-particle}.
+\item Example article in proceedings, without location: \citep{andrew2007scalable}.
+\item Example arxiv paper: \citep{rasooli-tetrault-2015}. 
+\end{itemize}
+
+
+\paragraph{\LaTeX-specific details:}
+The \LaTeX{} and Bib\TeX{} style files provided roughly follow the American Psychological Association format.
+If your own bib file is named \texttt{\small acl2020.bib}, then placing the following before any appendices in your \LaTeX{}  file will generate the references section for you:
+\begin{quote}\small
+\verb|\bibliographystyle{acl_natbib}|\\
+\verb|\bibliography{acl2020}|
+\end{quote}
+
+You can obtain the complete ACL Anthology as a Bib\TeX\ file from \url{https://aclweb.org/anthology/anthology.bib.gz}.
+To include both the anthology and your own bib file, use the following instead of the above.
+\begin{quote}\small
+\verb|\bibliographystyle{acl_natbib}|\\
+\verb|\bibliography{anthology,acl2020}|
+\end{quote}
+
+
+\subsection{Digital Object Identifiers}
+As part of our work to make ACL materials more widely used and cited outside of our discipline, ACL has registered as a CrossRef member, as a registrant of Digital Object Identifiers (DOIs), the standard for registering permanent URNs for referencing scholarly materials.
+
+All camera-ready references are required to contain the appropriate DOIs (or as a second resort, the hyperlinked ACL Anthology Identifier) to all cited works.
+Appropriate records should be found for most materials in the current ACL Anthology at \url{http://aclanthology.info/}.
+As examples, we cite \citep{goodman-etal-2016-noise} to show you how papers with a DOI will appear in the bibliography.
+We cite \citep{harper-2014-learning} to show how papers without a DOI but with an ACL Anthology Identifier will appear in the bibliography.
+
+\paragraph{\LaTeX-specific details:}
+Please ensure that you use Bib\TeX\ records that contain DOI or URLs for any of the ACL materials that you reference.
+If the Bib\TeX{} file contains DOI fields, the paper title in the references section will appear as a hyperlink to the DOI, using the hyperref \LaTeX{} package.
+
+
+\subsection{Appendices}
+Appendices, if any, directly follow the text and the
+references (but only in the camera-ready; see Appendix~\ref{sec:appendix}).
+Letter them in sequence and provide an informative title:
+\textbf{Appendix A. Title of Appendix}.
+
+\section{Accessibility}
+\label{ssec:accessibility}
+
+In an effort to accommodate people who are color-blind (as well as those printing to paper), grayscale readability is strongly encouraged.
+Color is not forbidden, but authors should ensure that tables and figures do not rely solely on color to convey critical distinctions.
+A simple criterion:
+All curves and points in your figures should be clearly distinguishable without color.
+
+\section{Translation of non-English Terms}
+
+It is also advised to supplement non-English characters and terms with appropriate transliterations and/or translations since not all readers understand all such characters and terms.
+Inline transliteration or translation can be represented in the order of:
+\begin{center}
+\begin{tabular}{c}
+original-form \\
+transliteration \\
+``translation''
+\end{tabular}
+\end{center}
+
+\section{\LaTeX{} Compilation Issues}
+You may encounter the following error during compilation: 
+\begin{quote}
+{\small\verb|\pdfendlink|} ended up in different nesting level than {\small\verb|\pdfstartlink|}.
+\end{quote}
+This happens when \texttt{\small pdflatex} is used and a citation splits across a page boundary.
+To fix this, the style file contains a patch consisting of two lines:
+(1) {\small\verb|\RequirePackage{etoolbox}|} (line 455 in \texttt{\small acl2020.sty}), and
+(2) A long line below (line 456 in \texttt{\small acl2020.sty}).
+
+If you still encounter compilation issues even with the patch enabled, disable the patch by commenting the two lines, and then disable the \texttt{\small hyperref} package by loading the style file with the \texttt{\small nohyperref} option:
+
+\noindent
+{\small\verb|\usepackage[nohyperref]{acl2020}|}
+
+\noindent
+Then recompile, find the problematic citation, and rewrite the sentence containing the citation. (See, {\em e.g.}, \url{http://tug.org/errors.html})
+
+\section*{Acknowledgments}
+
+The acknowledgments should go immediately before the references. Do not number the acknowledgments section.
+Do not include this section when submitting your paper for review.
+
+\bibliography{anthology,acl2020}
+\bibliographystyle{acl_natbib}
+
+\appendix
+
+\section{Appendices}
+\label{sec:appendix}
+Appendices are material that can be read, and include lemmas, formulas, proofs, and tables that are not critical to the reading and understanding of the paper. 
+Appendices should be \textbf{uploaded as supplementary material} when submitting the paper for review.
+Upon acceptance, the appendices come after the references, as shown here.
+
+\paragraph{\LaTeX-specific details:}
+Use {\small\verb|\appendix|} before any appendix section to switch the section numbering over to letters.
+
+
+\section{Supplemental Material}
+\label{sec:supplemental}
+Submissions may include non-readable supplementary material used in the work and described in the paper.
+Any accompanying software and/or data should include licenses and documentation of research review as appropriate.
+Supplementary material may report preprocessing decisions, model parameters, and other details necessary for the replication of the experiments reported in the paper.
+Seemingly small preprocessing decisions can sometimes make a large difference in performance, so it is crucial to record such decisions to precisely characterize state-of-the-art methods. 
+
+Nonetheless, supplementary material should be supplementary (rather than central) to the paper.
+\textbf{Submissions that misuse the supplementary material may be rejected without review.}
+Supplementary material may include explanations or details of proofs or derivations that do not fit into the paper, lists of
+features or feature templates, sample inputs and outputs for a system, pseudo-code or source code, and data.
+(Source code and data should be separate uploads, rather than part of the paper).
+
+The paper should not rely on the supplementary material: while the paper may refer to and cite the supplementary material and the supplementary material will be available to the reviewers, they will not be asked to review the supplementary material.
+
+\end{document}
