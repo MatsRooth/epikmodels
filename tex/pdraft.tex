@@ -296,25 +296,24 @@ Epik is a specification language for possible worlds models that
 includes declarations of events and states, state formulas, effect
 formulas, and additional information.  Figure \ref{epikfigure} shows
 an Epik program that describes a possible worlds model for two agents
-with information about one coin, events of the agents
-semi-privately looking at the coin, and events of secretly turning the coin.
-The line beginning with {\tt
-  state} enumerates ${\sf{B}}$. The line beginning with {\tt restrict}
-gives the state formula.  The lines beginning with {\tt event} declare
-events and their effect formulas.  Finally the lines beginning with
-{\tt agent} define {\em event alternative} relations for agents.  Each
-clause with an arrow has a single event symbol on the left, and a
-disjunction of alternative events on the right of the arrow. The
-interpretation of Amy's alternatives for $b_1$ (Bob peeks at heads),
-is that when $b_1$ happens, for Amy either $b_1$ or $b_0$ (Bob peeks
-at tails) could be happening. Her alternatives for $a_{01}$ and
-$a_{10}$ (she turns the coin over) are $a_{10}$ and $a_{01}$,
+with information about one coin, events of the agents semi-privately
+looking at the coin, and events of secretly turning the coin.  The
+line beginning with {\tt state} enumerates ${\sf{B}}$. The line
+beginning with {\tt restrict} gives the state formula.  The lines
+beginning with {\tt event} declare events and their effect formulas.
+Finally the lines beginning with {\tt agent} define {\em event
+  alternative} relations for agents.  Each clause with an arrow has a
+single event symbol on the left, and a disjunction of alternative
+events on the right of the arrow. The interpretation of Amy's
+alternatives for $b_1$ (Bob peeks at heads), is that when $b_1$
+happens, for Amy either $b_1$ or $b_0$ (Bob peeks at tails) could be
+happening. Her alternatives for $a_{01}$ and $a_{10}$ (she turns the
+coin over in one state or the other) are $a_{10}$ and $a_{01}$,
 indicating that she doesn't know, \emph{a priori}, whether she's
-turning the coin from $H$ to $T$ or from $T$ to $H$. Similarly, Bob
-secretly turns the coin over, in $b_{10}$ or $b_{01}$, she doesn't
-know anything has happened, so her alternatives are the no-operation
-events $o_1$ and $o_0$ for heads-worlds and tails-worlds
-respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
+turning the coin from $H$ to $T$ or from $T$ to $H$. When Bob secretly
+turns the coin over, in event $b_{10}$ or $b_{01}$, she doesn't know
+anything has happened, so her alternative is the no-operation,
+no-information event event $o$. Bob's event relation is symmetric.
 
 \begin{figure}
   \begin{tcolorbox}
@@ -326,8 +325,7 @@ respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
             state h t \\
             restrict  h!t \\
             \phantom{restrict }+ t!h \\
-            event o1  h:h \\
-            event o0  t:t \\
+            event o  h:h + t:t\\
             event a1  h:h \\
             event a0  t:t \\
             event b1  h:h \\
@@ -344,8 +342,7 @@ respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
         {\tt
           \begin{tabular}{l}
             agent amy \\
-            \hspace{3mm} o1  -> o1 \\
-            \hspace{3mm} o0  -> o0 \\
+            \hspace{3mm} o  -> o \\
             \hspace{3mm} a1  -> a1 \\
             \hspace{3mm} a0  -> a0 \\
             \hspace{3mm} b1  -> b1 + b0\\
@@ -368,7 +365,8 @@ respectively. Bob's alternatives are the same, \emph{mutatis mutandi}.
   
 \caption{Epik program describing a possible-worlds event sequence
   model for two agents with information about one coin, and events of
-  the agents semi-privately looking at the coin. }
+  the agents semi-privately looking at the coin, and privately turning
+  the coin.}
 \label{fig:epik-example}
 \label{epikfigure}
 \end{figure}
@@ -1017,33 +1015,9 @@ modal force, and proposition contributed by the complement.  These
 complementizers introduce the dual via two negations, in order to
 express universal modal force.
 
-\begin{figure}[!t]
-  \vspace{1em}
-  \centering
-  \footnotesize
-  \begin{tabular}[t]{lcc}
-    \toprule
-        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
-        Amy & $e$ & $\hat{R}_a$\\
-        Bob & $e$ & $\hat{R}_b$\\
-        it & $d$ & $d$ \\
-        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
-        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
-        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
-        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
-        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
-        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
-      \end{tabular}
-  \caption{Partial categorial grammar lexicon. The first column has a word form.
-    the second column a categorial type, and third column a semantic translation
-    in a logical language that extends the Epik term language with lambda. }
-  \label{lexiconfigure}
-\end{figure} 
 
+
+  
 Multimodal categories such as $\backslash_D$ and $\backslash_M$ are
 used to control the derivation---phrases with these top-level slashes
 can only combine syntactically as arguments.
@@ -1078,6 +1052,34 @@ modality ${\Diamond_R}p$, rather than an universal modality ${\Box_R}p$.  This
 is corrected by the complementizer {\em that} or {\em whether}, which introduces
 the dual.
 
+\begin{figure}[!t]
+  \vspace{1em}
+  \centering
+  \footnotesize
+  \begin{tabular}[t]{lcc}
+    \toprule
+        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\
+        it & $d$ & $d$ \\
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+  \end{tabular}
+    \caption{Partial categorial grammar lexicon. The first column has a word form.
+    the second column a categorial type, and third column a semantic translation
+    in a language that extends the Epik logical language with lambda. The complete grammar
+    is in the appendix.}
+  \label{lexiconfigure}
+\end{figure} 
+  
 Sentences are parsed with a chart parser for categorial grammar.  The semantics for
 complex phrases are obtained by application of semantic translations, accompanied by
 beta reductions that eliminate all lambdas logical forms for clauses.  In
@@ -1112,15 +1114,17 @@ denoted by \exi{three}{a}.
 \)
 
 \end{examples}
-Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by the grammar.
-Logical relations between propositions are checked in the finite state calculus by
-checking set-theoretic relations between sets of worlds.
-For instance entailment $p \rightarrow q$ is decided by checking in an interpreter
-for the finite state calculus whether $p - q$ is non-empty.
-In the model defined by Figure 2, the
-propositions \exi{three}{b} and \exi{three}{e} are
-independent. They are equivalent in a version 
-without secret flipping.
+
+
+
+Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by
+the grammar.  Logical relations between propositions are checked in
+the finite state calculus by checking set-theoretic relations between
+sets of worlds.  For instance entailment $p \rightarrow q$ is decided
+by checking in an interpreter for the finite state calculus whether $p
+- q$ is non-empty.  In the model defined by Figure 2, the propositions
+\exi{three}{b} and \exi{three}{e} are independent. They are equivalent
+in a version without secret flipping.
 
 
 %% \begin{examples} \label{entail}
@@ -1133,7 +1137,9 @@ without secret flipping.
 
 \section{Discussion}
 The methodology presented here is designed for use in research in linguistic
-semantics, and for education at the level of a second graduate course in formal
+semantics, for research in computational syntax and semantics on model-theoretically
+grounded semantics, 
+and for education at the level of a second graduate course in formal
 semantics, covering intensionality.  There are straightforward extensions to
 additional linguistic phenomena, such as tense and perfective aspect as in
 \exi{extension}{a}, and the combination of metaphysical modality and prospective
@@ -1144,29 +1150,185 @@ aspect in \exi{extension}{b}.
   \itemb Amy might learn that it's heads.
 \end{examples}  
 
-The model framework is a constructive branching-time framework with metaphysical
-modality and epistemic modality, which will be applicable in linguistic semantic
-research on combinations of tense, metaphysical modality, and epistemic
-complementation \citep{thomason1984combinations, abusch1998generalizing,
-  condoravdi2002temporal}.  Connections with research on temporal constitution of
-events in a related formal setting remain to be explored
+The model framework is a constructive branching-time framework with
+metaphysical modality and epistemic modality, which will be applicable
+in linguistic semantic research on combinations of tense, metaphysical
+modality, and epistemic complementation
+\citep{thomason1984combinations, abusch1998generalizing,
+  condoravdi2002temporal}.  Connections with research on temporal
+constitution of events in a related formal setting remain to be
+explored
 \citep{fernando2004finite,fernando2007observing,carlson2009tense}.
 
+The syntactic part of the grammar formalism uses categorial grammar to
+map between strings (or trees or derivations) and logical
+translations.  This way of using a categorial grammar is standard
+\citep{steedman2000syntactic,bozsahin2012combinatory}, and there are
+computational implementations for it
+\citep{barker2005parser,bozsahin2021ccglab}.\footnote{Our grammar uses
+  basic categorial grammar, not additional features such as
+  combinators, type raising, continuations, or multimodal slashes that
+  interact with the grammar in non-trivial ways.  These features would
+  become relevant in more sophisticated grammars.  Multimodal
+  categories are used for phrases such as a tenseless verb phrase that
+  semantically are functional, but can combine in the grammar only as
+  arguments.}  While this way of proceeding is simple and attractive
+for the applications we are interested in, it would be possible to use
+our semantics with other frameworks that have a semantics that uses a
+lambda extension of a logical language.
+
+
+
+%\newcommand{\Prime}[1]{{\rm\bf{#1}}}
+
+The semantics presented here is exclusively concerned with events and
+worlds.  Semantic type systems for natural language usually include a
+type for individuals.  In the coin example, the individuals are hidden
+in the primitive event symbols such as $a_1$ and $b_1$. This situation
+would get worse in a more elaborate model with more agents and
+multiple coins.  The solution to this should be to base the world
+construction on grounded event terms such as
+$\Prime{look}(\Prime{a},\Prime{k},1)$, for ``agent $\Prime{a}$ see
+that coin $\Prime{k}$ is heads'', rather than atomic events.  This way
+of proceeding is found in research on situation calculus
+\citep{reiter2001knowledge}.  How to incorporate it in the scheme for
+Epik specifications and into the computational parts of the proposal
+is a topic for future research.  In this it is not immediately clear
+whether it is possible to introduce quantification over individuals,
+together with individual constants, while maintaining the finite state
+semantics. \citet{rooth2017finite} develops an approach to a positive
+answer, based on introducing markers for witnesses for discourse
+referents in the construction of worlds.
 
 The development here is concerned with defining concrete computable possible
 worlds models, and applying them in natural language semantics.  
 Issues for further investigation are mathematical characterizations
-of epistemic KATs, e.g. sound and complete axioms, coalgebra, and decidability.
+of epistemic KATs, e.g. sound and complete axioms and coalgebra.
 
-We will release Epik's source code under an open source license prior
-to the conference.
+Source code, examples, and instructions for Epik are distributed at
+\url{https://github.com/ericthewry/epik}.
+
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
+
+\clearpage 
 \bibliography{fs}
 
+\clearpage
+
+\onecolumn
+
+\section*{Appendix}
+Complete categorial grammar extending Figure \ref{lexiconfigure}.  The online supplement
+includes a version of this grammar that can be run using Barker and Shan's
+chart parser for categorial grammar \citep{barker2005parser}.
+
+
+  \begin{tabular}[t]{lcc}
+    \toprule
+    \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule
+    \multicolumn{3}{c}{{\bf Statives with expletive subject}} \\ 
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\ \hline
+    \multicolumn{3}{c}{{\bf Agents}} \\ 
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\ \hline
+    \multicolumn{3}{c}{{\bf Auxiliary verbs and expletive subjects}} \\        
+        it & $d$ & {\em{dummy}} \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
+        it's & $(t \slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
+        isn't & $t\slash(d \backslash_D t)$ & $\lambda Px.\neg P x$ \\  
+        doesn't & $(e \backslash t)\slash(d \backslash_V t)$ & $\lambda Px.\neg Px$ \\  \hline        
+    \multicolumn{3}{c}{{\bf Tensed attitude verbs}} \\        
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline
+    \multicolumn{3}{c}{{\bf Base form attitude verbs}} \\        
+        know & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
+        believe & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline       
+    \multicolumn{3}{c}{{\bf Complementizers}} \\        
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+    \multicolumn{3}{c}{{\bf Complementizers for base form verbs}} \\        
+        that  & $(((e \backslash_V t){\slash_M}t) \backslash (e \backslash_V t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash_V t){\slash_M} t) \backslash (e \backslash_V t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ % \bottomrule    
+      \end{tabular}
 \end{document}
 
+
+\begin{figure}[!t]
+  \vspace{1em}
+  \centering
+  \footnotesize
+  \begin{tabular}[t]{lcc}
+    \toprule
+    \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule
+    \multicolumn{3}{c}{{\bf Statives with expletive subject}} \\ 
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\ \hline
+    \multicolumn{3}{c}{{\bf Agents}} \\ 
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\ \hline
+    \multicolumn{3}{c}{{\bf Auxiliary verbs and expletive subjects}} \\        
+        it & $d$ & {\em{dummy}} \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
+        it's & $(t \slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
+        isn't & $t\slash(d \backslash_D t)$ & $\lambda Px.\neg P x$ \\  
+        doesn't & $(e \backslash t)\slash(d \backslash_V t)$ & $\lambda Px.\neg Px$ \\  \hline        
+    \multicolumn{3}{c}{{\bf Tensed attitude verbs}} \\        
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline
+    \multicolumn{3}{c}{{\bf Base form attitude verbs}} \\        
+        know & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
+        believe & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline       
+    \multicolumn{3}{c}{{\bf Complementizers}} \\        
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \hline
+    \multicolumn{3}{c}{{\bf Complementizers for base form verbs}} \\        
+        that  & $(((e \backslash_V t){\slash_M}t) \backslash (e \backslash_V t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash_V t){\slash_M} t) \backslash (e \backslash_V t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ % \bottomrule    
+      \end{tabular}
+    \caption{Categorial grammar lexicon. The first column has a word form.
+    the second column a categorial type, and third column a semantic translation
+    in a language that extends the Epik logical language with lambda.}
+  \label{lexiconfigure}
+\end{figure} 
+
+
+
+
+
+Old version of grammar figure.
+
+  \begin{tabular}[t]{lcc}
+    \toprule
+        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
+        Amy & $e$ & $\hat{R}_a$\\
+        Bob & $e$ & $\hat{R}_b$\\
+        it & $d$ & $d$ \\
+        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
+        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+      \end{tabular}
 
 
 \section{Credits}
