@@ -17,6 +17,7 @@
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{enumitem}
+\usepackage{mathtools}
 %\usepackage{caption}
 \renewcommand{\UrlFont}{\ttfamily\small}
 
@@ -1056,27 +1057,78 @@ the dual.
   \vspace{1em}
   \centering
   \footnotesize
-  \begin{tabular}[t]{lcc}
+  %% \begin{tabular}[t]{lcc}
+  %%   \toprule
+  %%       \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule
+  %%       Amy & $e$ & $\hat{R}_a$\\
+  %%       Bob & $e$ & $\hat{R}_b$\\
+  %%       it & $d$ & $d$ \\
+  %%       heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
+  %%       tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
+  %%       is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
+  %%       knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
+  %%       believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+  %%       that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
+  %%       & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+  %%       whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$
+  %%       & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
+  %%       && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
+  %% \end{tabular}
+
+  \newcommand{\hdrspc}{0.3em}
+    \begin{tabular}[t]{l>{\hspace{-.8em}}c >{\hspace{-.6em}}c}
     \toprule
-        \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule  
+    \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule
+    \multicolumn{3}{c}{{\bf Statives with expletive subject}} \\[\hdrspc]
+        heads & $d \backslash_D t$ & $\lambda x.\,\bullet^*h$ \\
+        tails & $d \backslash_D t$ & $\lambda x.\,\bullet^*t$ \\ \midrule
+    \multicolumn{3}{c}{{\bf Agents}} \\
         Amy & $e$ & $\hat{R}_a$\\
-        Bob & $e$ & $\hat{R}_b$\\
-        it & $d$ & $d$ \\
-        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
-        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\
-        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P~x.~P~x$ \\
-        knows & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~p\vee{\Diamond}_Rp$\\
-        believes & $(e \backslash t)\slash_M t$ &  $\lambda p~R.~{\Diamond}_Rp$\\
+        Bob & $e$ & $\hat{R}_b$\\ \midrule
+    \multicolumn{3}{c}{{\bf Auxiliary verbs and expletive subjects}} \\[\hdrspc]
+        it & $d$ & {\em{dummy}} \\
+        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda P\,x.\,P\,x$ \\
+        it's & $(t \slash(d \backslash_D t)$ & $\lambda P\,x.\,P\,x$ \\
+        isn't & $t\slash(d \backslash_D t)$ & $\lambda P\,x.\,\neg P\,x$ \\
+        doesn't & $(e \backslash t)\slash(d \backslash_V t)$ & $\lambda P\,x.\,\neg P\,x$ \\  \midrule
+    \multicolumn{3}{c}{{\bf Tensed attitude verbs}} \\[\hdrspc]
+        knows & $(e \backslash t)\slash_M t$ &  $\lambda p\,R.\,p + {\Diamond}_Rp$\\
+        believes & $(e \backslash t)\slash_M t$ &  $\lambda p\,R.\,{\Diamond}_Rp$\\ \midrule
+    \multicolumn{3}{c}{{\bf Base form attitude verbs}} \\[\hdrspc]
+        know & $(e \backslash_V t)\slash_M t$ &  $\lambda p\,R.\,p + {\Diamond}_Rp$\\
+        believe & $(e \backslash_V t)\slash_M t$ &  $\lambda p\,R.\,{\Diamond}_Rp$\\ \midrule
+    \multicolumn{3}{c}{{\bf Complementizers}} \\[\hdrspc]
         that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
-  \end{tabular}
-    \caption{Partial categorial grammar lexicon. The first column has a word form.
-    the second column a categorial type, and third column a semantic translation
-    in a language that extends the Epik logical language with lambda. The complete grammar
-    is in the appendix.}
+        & $\begin{pmatrix*}[l]
+          \lambda p\,m\,R.\\
+          \,\,{\neg}(m\,({\neg}p)\,R)
+        \end{pmatrix*}$ \\[1.1em]
+        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$
+        & $\begin{pmatrix*}[l]
+          \lambda p\,m\,R.\\
+                  \,\, {\neg}(m\,({\neg}p)\,R) \\
+          \,\,\,\, +\,{\neg}(m\,p\,R)
+        \end{pmatrix*}$\\ \midrule
+    \multicolumn{3}{c}{{\bf Complementizers for base form verbs}} \\[\hdrspc]
+        that  & $(((e \backslash_V t){\slash_M}t) \backslash (e \backslash_V t)) \slash t$
+        & $\begin{pmatrix*}[l]
+          \lambda p\,m\,R. \\
+          \,\, {\neg}(m\,({\neg}p)\,R)
+        \end{pmatrix*}$ \\[1.1em]
+        whether & $(((e \backslash_V t){\slash_M} t) \backslash (e \backslash_V t)) \slash t$
+        & $\begin{pmatrix*}[l]
+          \lambda p\,m\,R.\\
+                  \,\, {\neg}(m\,({\neg}p)\,R) \\
+          \,\,\,\, +\,{\neg}(m\,p\,R)
+        \end{pmatrix*}$ \\
+        \bottomrule
+      \end{tabular}%%
+    \caption{Categorial grammar lexicon. The first column has a word
+      form. the second column a categorial type, and third column a
+      semantic translation in a language that extends the Epik logical
+      language with lambda. The online supplement includes a version
+      of this grammar that can be run using Barker and Shan's chart
+      parser for categorial grammar \citep{barker2005parser}.}
   \label{lexiconfigure}
 \end{figure} 
   
@@ -1200,10 +1252,35 @@ semantics. \citet{rooth2017finite} develops an approach to a positive
 answer, based on introducing markers for witnesses for discourse
 referents in the construction of worlds.
 
-The development here is concerned with defining concrete computable possible
-worlds models, and applying them in natural language semantics.  
-Issues for further investigation are mathematical characterizations
-of epistemic KATs, e.g. sound and complete axioms and coalgebra.
+Epik is closely related to Kleene Algebra with Hypotheses\cite{},
+\textsc{Ka+H}, which permits user-specification of futher equations
+beyond the axioms of \textsc{Ka}. In practice, these hypotheses are
+used to express domain-specific properties of the axioms, such as the
+commutativity of certain uninterpreted actions in program
+verification, such as $x := 3; y := 5 \equiv y := 5; x := 3$). We can
+model both the state formulae and the event formulae as \textsc{KA+H}
+hypotheses. Specifically, the state formula $\varphi$ can be thought
+of as a hypothesis $\varphi \equiv 1$, and an event formula $\zeta_a$
+for event $a$, is simply the hypothesis $a \equiv
+\sum_{\varphi,\varphi' \in \llbracket \zeta_a \rrbracket}
+\varphi;a;\varphi'$. Notwithstanding some early results about
+\textsc{Kat} with hypotheses of the form $cp=c$~\cite{}, using basic
+\textsc{KA} implementations would rely on using the exponential
+encoding of \textsc{Kat} into \textsc{Ka}~\cite{}.
+
+The key facet that differentiates Epik from \textsc{Ka+H} is the
+modality. Each alternative relation represents a set of
+uni-directional rewrites that must be applied for that agent, rather
+than the universal, optional rewrites represented by the \textsc{Ka+H}
+hypotheses. It may be possible to encode Epik's alternative relations
+into \textsc{Ka+H} hypotheses, but the translation would be
+non-trivial, and we leave it as future work.
+
+The development here is concerned with defining concrete computable
+possible worlds models, and applying them in natural language
+semantics. Issues for further investigation are mathematical
+characterizations of epistemic KATs, e.g. sound and complete axioms
+and coalgebrae.
 
 Source code, examples, and instructions for Epik are distributed at
 \url{https://github.com/ericthewry/epik}.
@@ -1219,46 +1296,11 @@ Source code, examples, and instructions for Epik are distributed at
 
 \onecolumn
 
-\section*{Appendix}
-Complete categorial grammar extending Figure \ref{lexiconfigure}.  The online supplement
-includes a version of this grammar that can be run using Barker and Shan's
-chart parser for categorial grammar \citep{barker2005parser}.
+%% \section*{Appendix}
+%% Complete categorial grammar extending Figure \ref{lexiconfigure}.  The online supplement
+%% includes a version of this grammar that can be run using Barker and Shan's
+%% chart parser for categorial grammar \citep{barker2005parser}.
 
-
-  \begin{tabular}[t]{lcc}
-    \toprule
-    \textsc{Item} & \textsc{Type} & \textsc{Semantics}\\ \midrule
-    \multicolumn{3}{c}{{\bf Statives with expletive subject}} \\ 
-        heads & $d \backslash_D t$ & $\lambda x.\bullet^*h$ \\
-        tails & $d \backslash_D t$ & $\lambda x.\bullet^*t$ \\ \hline
-    \multicolumn{3}{c}{{\bf Agents}} \\ 
-        Amy & $e$ & $\hat{R}_a$\\
-        Bob & $e$ & $\hat{R}_b$\\ \hline
-    \multicolumn{3}{c}{{\bf Auxiliary verbs and expletive subjects}} \\        
-        it & $d$ & {\em{dummy}} \\
-        is & $(d \backslash t)\slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
-        it's & $(t \slash(d \backslash_D t)$ & $\lambda Px.Px$ \\
-        isn't & $t\slash(d \backslash_D t)$ & $\lambda Px.\neg P x$ \\  
-        doesn't & $(e \backslash t)\slash(d \backslash_V t)$ & $\lambda Px.\neg Px$ \\  \hline        
-    \multicolumn{3}{c}{{\bf Tensed attitude verbs}} \\        
-        knows & $(e \backslash t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
-        believes & $(e \backslash t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline
-    \multicolumn{3}{c}{{\bf Base form attitude verbs}} \\        
-        know & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.p\vee{\Diamond}_Rp$\\
-        believe & $(e \backslash_V t)\slash_M t$ &  $\lambda pR.{\Diamond}_Rp$\\ \hline       
-    \multicolumn{3}{c}{{\bf Complementizers}} \\        
-        that  & $(((e \backslash t){\slash_M}t) \backslash (e \backslash t)) \slash t$
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        whether  & $(((e \backslash t){\slash_M} t) \backslash (e \backslash t)) \slash t$ 
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ \bottomrule
-    \multicolumn{3}{c}{{\bf Complementizers for base form verbs}} \\        
-        that  & $(((e \backslash_V t){\slash_M}t) \backslash (e \backslash_V t)) \slash t$
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        whether  & $(((e \backslash_V t){\slash_M} t) \backslash (e \backslash_V t)) \slash t$ 
-        & $\lambda p\,m\,R.{\neg}(m\,({\neg}p)\,R)$ \\
-        && \multicolumn{1}{r}{$+ {\neg}(m\,p\,R)$} \\ % \bottomrule    
-      \end{tabular}
 \end{document}
 
 
