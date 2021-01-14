@@ -1252,21 +1252,22 @@ semantics. \citet{rooth2017finite} develops an approach to a positive
 answer, based on introducing markers for witnesses for discourse
 referents in the construction of worlds.
 
-Epik is closely related to Kleene Algebra with Hypotheses\cite{},
-\textsc{Ka+H}, which permits user-specification of futher equations
-beyond the axioms of \textsc{Ka}. In practice, these hypotheses are
-used to express domain-specific properties of the axioms, such as the
-commutativity of certain uninterpreted actions in program
-verification, such as $x := 3; y := 5 \equiv y := 5; x := 3$). We can
-model both the state formulae and the event formulae as \textsc{KA+H}
-hypotheses. Specifically, the state formula $\varphi$ can be thought
-of as a hypothesis $\varphi \equiv 1$, and an event formula $\zeta_a$
-for event $a$, is simply the hypothesis $a \equiv
-\sum_{\varphi,\varphi' \in \llbracket \zeta_a \rrbracket}
-\varphi;a;\varphi'$. Notwithstanding some early results about
-\textsc{Kat} with hypotheses of the form $cp=c$~\cite{}, using basic
-\textsc{KA} implementations would rely on using the exponential
-encoding of \textsc{Kat} into \textsc{Ka}~\cite{}.
+Epik is closely related to Kleene Algebra with Hypotheses
+\textsc{Ka+H}~\cite{cohen1994hypotheses}, which permits
+user-specification of futher equations beyond the axioms of
+\textsc{Ka}. In practice, these hypotheses are used to express
+domain-specific properties of the axioms, such as the commutativity of
+certain uninterpreted actions in program verification, such as $x :=
+3; y := 5 \equiv y := 5; x := 3$). We can model both the state
+formulae and the event formulae as \textsc{KA+H} hypotheses.
+Specifically, the state formula $\varphi$ can be thought of as a
+hypothesis $\varphi \equiv 1$, and an event formula $\zeta_a$ for
+event $a$, is simply the hypothesis $a \equiv \sum_{\varphi,\varphi'
+  \in \llbracket \zeta_a \rrbracket} \varphi;a;\varphi'$. In general,
+the Horn theory of \textsc{KA+H} is undecidable, however many special
+cases for \textsc{Ka} and for \textsc{Kat} are
+decidable~\cite{doumane2019kleene, hardin2002elimination,
+  kozen1997kleenecompleteness}.
 
 The key facet that differentiates Epik from \textsc{Ka+H} is the
 modality. Each alternative relation represents a set of
