@@ -54,7 +54,10 @@
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
 
-\title{Epistemic Semantics in Guarded String Models\thanks{Thanks guys.}}
+\title{Epistemic Semantics in Guarded String Models\thanks{Thanks to Tobias Kappe for insightful reactions to the paper.
+Thanks also to three SCiL reviewers for helpful comments.
+Earlier versions of the work were presented in the LUSH talk series at Utrecht in December 2019, and in the Workshop on formal/philosophical/computational approaches to natural language meaning at Rochester in December 2020.  Thanks to the audiences for their reactions.
+    .}}
 \renewcommand\footnotemark{}
 %%\renewcommand\footnoterule{}
 
@@ -1056,6 +1059,8 @@ relation contributed by the subject.  This is not the right semantics for {\em A
 rather than an universal modality ${\Box_R}p$.  This is corrected by the
 complementizer {\em that}, which introduces the dual.
 
+
+\newcommand{\ebackt}{(e \backslash t)}
 \begin{figure}[!t]
   \vspace{1em}
   \centering
@@ -1123,7 +1128,12 @@ complementizer {\em that}, which introduces the dual.
           \lambda p\,m\,R.\\
                   \,\, {\neg}(m\,({\neg}p)\,R) \\
           \,\,\,\, +\,{\neg}(m\,p\,R)
-        \end{pmatrix*}$ \\
+        \end{pmatrix*}$ \\ \midrule
+        \multicolumn{3}{c}{{\bf Conjunction}} \\[\hdrspc]
+        and & $(t \backslash t)\slash t$ &  $\lambda p\,q.\,p \wedge q$\\
+        or & $(t \backslash t)\slash t$ &  $\lambda p\,q.\,p + q$\\
+        and & $((\ebackt \backslash \ebackt)\slash \ebackt$ &  $\lambda p\,q\,x.\,p(x) \wedge q(x)$\\
+        or & $((\ebackt \backslash \ebackt)\slash \ebackt$ &  $\lambda p\,q\,x.\,p(x) + q(x)$\\        
         \bottomrule
       \end{tabular}%%
     \caption{Categorial grammar lexicon, showing word form (column 1), a
@@ -1277,6 +1287,7 @@ and coalgebrae.
 Source code, examples, and instructions for Epik are available at
 \url{https://github.com/ericthewry/epik}.
 
+\clearpage
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
