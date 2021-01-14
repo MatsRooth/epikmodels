@@ -54,7 +54,9 @@
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
 
-\title{Epistemic Semantics in Guarded String Models}
+\title{Epistemic Semantics in Guarded String Models\thanks{Thanks guys.}}
+\renewcommand\footnotemark{}
+%%\renewcommand\footnoterule{}
 
 \author{Eric Campbell \\
   Cornell University\\
@@ -171,7 +173,7 @@ falsity and $1$ for truth.
   \item[\atTH] Amy secretly turns the coin from $T$ to $H$.
     She knows she turned the coin over, but not which side was face up. Bob thinks nothing happened.
   \item[\atHT] Amy secretly turns the coin from $H$ to $T$.
-  \item[\atTH] Bob secretly turns the coin from $T$ to $H$.
+  \item[\btTH] Bob secretly turns the coin from $T$ to $H$.
   \item[\btHT] Bob secretly turns the coin from $H$ to $T$.
 \end{enumerate}
 \end{example}
@@ -205,11 +207,11 @@ of the coin being tails-up. Let $h$ be the Boolean proposition that
 the coin is heads up and $t$ be the Boolean proposition that the coin
 is tails-up.  Then pre- and post-conditions can be described by
 Boolean formulas, with $h$ being the pre-condition of $\atHT$ and
-$a_{01}$ being the post-condition. This is expressed using an operator
+$t$ being the post-condition. This is expressed using an operator
 ``$:$'' (read ``and next'') that pairs Boolean formulas. The formula
 $\ev h t$ describes $\atHT$ (Amy turning the coin from heads
 to tails) as happening only in an $h$ state, and concluding in a
-not-$h$ state.  Events don't have to change state: the event $\apT$
+$t$ state.  Events don't have to change state: the event $\apT$
 (Amy peeking at tails) can happen only in a $t$ state, and does
 not change the state ($\ev{t}{t}$).
 
@@ -220,7 +222,7 @@ However a coin cannot be showing both heads and tails! Currently the
 precondition $h$ of $\atHT$ only says that heads must be showing, and
 says nothing about the fact that tails must be face-down, indicated by
 the formula $\bar t$. We will further restrict the feasible conditions
-for our actions by restricting the space of valuations for our formulae.
+for our actions by restricting the space of valuations for our formulas.
 
 A sequence such as $\bar{h}{t}$ can be viewed both as a formula and as
 a valuation of primitive propositions, which we use to describe world
@@ -228,10 +230,12 @@ state. The primitives are listed in fixed order, and left unmarked
 (indicating true) or marked with the overbar (indicating false).
 Since a coin is heads or tails but not both, we want to allow the
 valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
-$\bar{h}\bar{t}$.  This is enforced by a {\em state formula}, which is
+$\bar{h}\bar{t}$.\footnote{Two Booleans constrained by a state formula, rather than one Boolean, are stipulated here to
+ illustrate state formulas.
+}  This is enforced by a {\em state formula}, which is
 a Boolean formula, in this case the one given on the second line of
-\ex{effect}.  Where {\sf{B}} is a set of atomic tests and $\phi$ is a
-state constraint over {\sf{B}},
+\ex{effect}.  Where {\sf{B}} is a set of state primitives and $\phi$ is a
+ constraint over {\sf{B}},
 ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\phi}$ is the set of valuations of
 {\sf{B}} that make formula $\phi$ true. Valuations are called atoms,
 because they correspond to the atoms of a Boolean algebra of tests
@@ -313,8 +317,8 @@ coin over in one state or the other) are $a_{10}$ and $a_{01}$,
 indicating that she doesn't know, \emph{a priori}, whether she's
 turning the coin from $H$ to $T$ or from $T$ to $H$. When Bob secretly
 turns the coin over, in event $b_{10}$ or $b_{01}$, she doesn't know
-anything has happened, so her alternative is the no-operation,
-no-information event event $o$. Bob's event relation is symmetric.
+anything has happened, so her alternative is the ``no-operation'' or
+``no-information'' event event $o$. Bob's event relation is symmetric.
 
 \begin{figure}
   \begin{tcolorbox}
@@ -373,35 +377,29 @@ no-information event event $o$. Bob's event relation is symmetric.
 \end{figure}
 
 
-This paper focuses on defining a concrete possible worlds model from
-an Epik specification.  The models are an extension of guarded-string
-models for Kleene Algebra with Tests (KAT). This is an algebraic
-theory that has model classes including guarded string models,
-relational models, finite models, and matrix models.  Our definitions
-and notation follow \cite{kozen2001automata}.  We add syntax and
+This paper focuses on defining a concrete possible worlds model from an Epik
+specification.  The models are an extension of guarded-string models for Kleene
+Algebra with Tests (KAT). This is an algebraic theory that has model classes
+including guarded string models, relational models, finite models, and matrix models.
+Our definitions and notation follow \cite{kozen2001automata}.  We add syntax and
 semantics to cover multi-agent epistemic semantics.
 
-Guarded strings over a finite alphabet ${\sf{P}}$
-are like ordinary strings, but with atoms over a set ${\sf{B}}$  
-alternating with the symbols
-from ${\sf{P}}$.  In the algebra described by Figure \ref{epikfigure}, 
-${\sf{P}}$ is the set of events $\{a_1,a_0,b_1,b_0,a_{10},a_{01},b_{10},b_{01}\}$, and
-${\sf{B}}$ is $\{h,t\}$.
+Guarded strings over a finite alphabet ${\sf{P}}$ are like ordinary strings, but with
+atoms over a set ${\sf{B}}$ alternating with the symbols from ${\sf{P}}$.  In the
+algebra described by Figure \ref{epikfigure}, ${\sf{P}}$ is the set of events
+$\{a_1,a_0,b_1,b_0,a_{10},a_{01},b_{10},b_{01},o\}$, and ${\sf{B}}$ is $\{h,t\}$.  As
+we already saw in \ex{effect}, $\mathcal{A}^\varphi_{\mathsf B}$ is
+$\{h\bar{t},\bar{h}t\}$, for which we use the shorthand $\{H,T\}$.  A guarded string
+over ${\sf{P}}$ and ${\sf{B}}$ is a string of events from ${\sf{P}}$, alternating
+with atoms over ${\sf{B}}$, and beginning and ending with atoms.  In this
+construction, $w_1=H$, $w_2=Ha_1H$, $w_3=Ha_1Hb_1H$, and
+$w_4=Ha_1Hb_1Ha_{10}Tb_{01}Hb_1H$.
 
-In the coin example, as we already saw in \ex{effect},
-$\mathcal{A}^\varphi_{\mathsf B}$ is $\{h\bar{t},\bar{h}t\}$, for
-which we use the shorthand $\{H,T\}$.  A guarded string over
-${\sf{P}}$ and ${\sf{B}}$ is a strings of events from ${\sf{P}}$,
-alternating with atoms over ${\sf{B}}$, and beginning and ending with
-atoms.  In this construction, $w_1=H$, $w_2=Ha_1H$, $w_3=Ha_1Hb_1H$,
-and $w_4=Ha_1Hb_1Ha_{10}Tb_{01}H$.
-
-The discussion of \ex{coin2} mentioned building worlds by incrementing
-worlds with events.  This is accomplished in guarded string models
-with fusion product $\diamond$, a partial operation that combines two
-guarded strings, subject to the condition that the atom at the end of
-the the first argument is identical to the atom at the start of the
-second one.  \ex{fusion1} gives some examples.
+The discussion of \ex{coin2} mentioned building worlds by incrementing worlds with
+events.  This is accomplished in guarded string models with fusion product
+$\diamond$, a partial operation that combines two guarded strings, subject to the
+condition that the atom at the end of the the first argument is identical to the atom
+at the start of the second one.  \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
@@ -446,7 +444,7 @@ $\alpha_0e_0 ... e_n\alpha_{n+1}$ is well-formed iff
 
 \hspace{2mm}(i) $\element{\alpha_i}{{\mathcal A}^{\varphi}_{\mathsf{B}}}$ ($0{\leq}i{\leq}n$), and 
 
-\hspace{2mm}(ii) $\element{\tuple{\alpha_i,\alpha_{i+1}}}{\sem{\zeta_{ei}}^{\varphi}}$, ($0{\leq} i {\le} n$).
+\hspace{2mm}(ii) $\element{\tuple{\alpha_i,\alpha_{i+1}}}{\sem{\zeta_{e_i}}^{\varphi}}$, ($0{\leq} i {\le} n$).
 \end{example}
 
 Well-formed guarded strings have the interpretation of worlds in the application
@@ -458,33 +456,36 @@ set of propositions is the power set of the set of worlds
 restrictive set of propositions corresponding to the regular sets of
 strings. This is deferred to the next section.  Certain sets of well-formed
 guarded strings have the addional interpretation of event types.  An event-type
-is something that can ``happen'' is different worlds. For example, $a_1$ has the
-event type $\{H\,a_1\,H\}$, and $a_0$ has the event type $\{T\,a_0\,T\}$.
+is something that can ``happen'' is different worlds. For example, $a_1$ corresponds to the 
+event type $\{H\,a_1\,H\}$, and $a_0$ corresponds to the event type $\{T\,a_0\,T\}$. Event
+types need not be singletons.
 
 The construction so far defines a set of worlds from an Epik specification.  Normally
 the set is countably infinite, though some choices of effect formulas can result in a
 finite set of worlds.  The next step is to define an alternative relation $R_a$ on
-worlds for each agent $a$. This will result in a Kripke frame $\tuple{W,R_1,...,R_n}$
-consisting of a set of worlds, and a world-alternative relation for each agent
-\citep{kripke1963semantical}.  An Epik specification defines an alternative relation
-on bare events for each agent $a$, which we notate as ${R}_{a}$.  This should be
-lifted to a relation $\hat{R}_a$ on worlds.  The basic idea is that when a world $w$
-is incremented with an event $e$, in the resulting world $w \diamond e$, epistemic
-alternatives for agent $a$ are of the form $w' \diamond e'$, where $w'$ is an
-alternative to for $a$ in $w$, and $e'$ is and event-alternative to $e$ for
-$a$.\footnote{In this it is important that the event-alternative relation for an
-  agent is constant across worlds. We anticipate that the definition given here
-  produces results equivalent to what is found in literature on event alternatives in
-  dynamic epistemic semantics, though we have not verified this.  That literature
-  primarily focuses on mapping an epistemic model for a single time and situation to
-  another, and uses general first-order models, rather than guarded string
-  models. See \citet{baltag1999logic}, \citet{van2007dynamic}, and articles in
-  \citet{ditmarsch2015handbook}.  Previous literature is motivated by epistemic logic
-  and AI planning, rather than computable possible worlds models in natural language
-  semantics.  } This needs to be implemented in a way that takes account of pre- and
-post-conditions for events. For this, our approach is to refer the definition of
-well-formed guarded strings.  \ex{raise1} defines a relation on worlds from a
-relation on bare events.
+worlds for each agent $a$. This will result in a general modal frame
+$\tuple{W,R_1,...,R_n,K}$ consisting of a set of worlds, a world-alternative relation
+for each agent, and a set $K$ of propositions, where each proposition is a subset of
+$W$ \citep{chagrov1997modal}.\footnote{As explained in the next section, $K$ will not
+  be the power set of $W$, rather it will consists of the regular subsets of $W$.}
+An Epik specification defines an alternative relation on bare events for each agent
+$a$, which we notate as ${R}_{a}$.  This should be lifted to a relation $\hat{R}_a$
+on worlds.  The basic idea is that when a world $w$ is incremented with an event $e$,
+in the resulting world $w \diamond e$, epistemic alternatives for agent $a$ are of
+the form $w' \diamond e'$, where $w'$ is an alternative to for $a$ in $w$, and $e'$
+is and event-alternative to $e$ for $a$.\footnote{In this it is important that the
+  event-alternative relation for an agent is constant across worlds. We anticipate
+  that the definition given here produces results equivalent to what is found in
+  literature on event alternatives in dynamic epistemic semantics, though we have not
+  verified this.  That literature primarily focuses on mapping an epistemic model for
+  a single time and situation to another, and uses general first-order models, rather
+  than guarded string models. See \citet{baltag1999logic}, \citet{van2007dynamic},
+  and articles in \citet{ditmarsch2015handbook}.  This literature is motivated by
+  epistemic logic and AI planning, rather than computable possible worlds models in
+  natural language semantics.  } This needs to be implemented in a way that takes
+account of pre- and post-conditions for events. For this, our approach is to refer
+the definition of well-formed guarded strings.  \ex{raise1} defines an epistemic
+alternative relation on worlds from an alternative relation on bare events.
 
 \begin{example}  \label{raise1}
   Let $W$ be a set of guarded strings over events P and primitive
@@ -493,14 +494,14 @@ relation on bare events.
 \(
 \alpha_0e_0 ... e_n\alpha_{n+1} 
 \)
-in $W$ and a guarded string  $q$ iff $q$ is an element of $W$ and is of the form
+in $W$ and a guarded string  $q$ in $W$ iff $q$ is of the form
 \(
 \alpha_0'e_0' ... e_n'\alpha_{n+1}', 
-\), where for $0 \leq n$, $\element{\tuple{e_i,e'_i}}{{R}}$.
+\), where for $0 \leq n$, $e_iRe'_i$.
 \end{example}  
 
 This requires that in an alternative world, each constituent event $e'_i$ is an
-alternative to the event $e_i$ in the base world.
+alternative to the corresponding event $e_i$ in the base world.
 Compatibilities between events in the alternative world are enforced by the
 requirement that the alternative world is an element of $W$, so that state and effect
 formulas are enforced.
@@ -552,8 +553,8 @@ addition, universal box modalities are defined as duals of existential diamond
 modalities.
 
 With modalities and propositional negation added, the signature of $n$-agent
-epistemic KAT is $\tuple{K,+,\cdot,*,\bar{},0,1,\neg,\Diamond_1
-  ... \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language.
+epistemic KAT is $\tuple{K,+,\cdot,*,\bar{},0,1,\neg,\Diamond_1,
+  ..., \Diamond_n}$. Figure \ref{termfigure} defines the syntax of the language.
 Juxtaposition is used for product.  Terms in this language
 are used to represent the proposositional semantic values of English sentences.
 \ex{interpretation1} gives some examples.  To explain the first one, $\bullet$ as
@@ -571,10 +572,10 @@ $\bullet^*h$ & It's heads. \\
 \end{tabular}
 \vspace{1mm}
 \hspace{-1.5em}\begin{tabular}[t]{l}
-  $\Box_b(\Box_a\bullet^*t + \Box_a\neg\bullet^*t)$\\
+  $\Box_b(\bullet^*t \wedge \Box_a\bullet^*t + \neg\bullet^*t \wedge \Box_a\neg\bullet^*t)$\\
  Bob believes Amy knows whether it's tails.  \\
 \end{tabular}
-\end{example}
+\end{example} 
 
 {\em Standard Epistemic Modalities}
 Using our existential modal primitive $\Diamond_a$, and the dual
@@ -661,22 +662,20 @@ under the world-alternative relation $\hat{R}_a$.
   \label{fig:interp2}
 \end{figure}
 
-Summing up, given an Epik specification $\epikspec$, term $p$ (as
-defined syntactically in Figure \ref{termfigure}) is interpreted as a
-set of guarded strings $\sem{p}^{\epikspec}$.  Let $K^{\epikspec}$ be
-the sets that are interpretations of terms.  Then
+Summing up, given an Epik specification $\epikspec$, term $p$ (as defined
+syntactically in Figure \ref{termfigure}) is interpreted as a set of guarded strings
+$\sem{p}^{\epikspec}$.  Let $K^{\epikspec}$ be the sets that are interpretations of
+terms.  Then
 $\tuple{K^{\epikspec},+,\cdot,*,\bar{},0,1,\neg,\Diamond_{a_1},...,\Diamond_{a_n}}$
-is a concrete guarded string interpretation for the signature of
-epistemic KAT, with operations as in Figure \ref{fig:interp2}
-(e.g. the binary operation $+$ is union, and the unary operation
-$\Diamond_a$ is pre-image relative to $\hat{R}_a$).  This provides a
-concrete $n$-agent Kripke frame $\tuple{\sem{\bullet^*}^{\epikspec},
-  \hat{R}_1,...,\hat{R}_n}$.\footnote{ The domain of the Kripke frame
-  differs from the domain of the guarded string model, because the
-  former is the set of worlds, while the latter is the set of
-  propositions.  } The frame consists of a set of worlds, and an
-epistemic-alternative relation for each agent.  It is used as a target
+is a concrete guarded string interpretation for the signature of epistemic KAT, with
+operations as in Figure \ref{fig:interp2} (e.g. the binary operation $+$ is union,
+and the unary operation $\Diamond_a$ is pre-image relative to $\hat{R}_a$).  This
+provides a concrete $n$-agent general modal frame
+$\tuple{\sem{\bullet^*}^{\epikspec}, \hat{R}_1,...,\hat{R}_n,K^{\epikspec}}$.  The
+frame consists of a set of worlds, an epistemic-alternative relation for each agent,
+and a set of propositions, each of which is a set of worlds.  It is used as a target
 for natural-language interpretation in Section 6.
+
 
 
 \label{sec:axioms}
@@ -714,9 +713,9 @@ regular relations between strings that was designed for use in
 computationonal phonology and morphographemics
 \citep{kaplan1994regular,beesley2003finite}.  Current implementations
 allow for the definition of functions on regular sets and relations
-\citep{hulden2009foma,karttunen2010update}.  Such definitions are used
+\citep{hulden2009foma,linden2009hfst,karttunen2010update}.  Such definitions are used
 here to construct of a model for epistemic KAT inside the finite state
-calculus. We describe our translation from Epik terms to Fst programs
+calculus. We describe our translation from Epik logical terms to Fst terms
 here.
 
 The space of worlds is a set of ordinary (as opposed to guarded) strings.  Bit
@@ -729,26 +728,26 @@ the string {\tt{10\hspace{2pt}a1\hspace{2pt}10\hspace{2pt}b1\hspace{2pt}10}}.
 \footnotesize
 \begin{hangingpar}
   {\tt St} \hspace{2mm} \\
-  Atomic Tests such as $0110$.% The length is the number of generators.
+  Atoms such as $0110$.% The length is the number of generators.
 \end{hangingpar}
   
 \begin{hangingpar}
   {\tt UnequalStPair} \hspace{2mm} \\
-  Sequence of two unequal tests such as $0110~0111$.
+  Sequence of two unequal atoms such as $0110~0111$.
 \end{hangingpar}
 
 \begin{hangingpar}
 \begin{verbatim}
 define Wf0 ~[$ UnequalStPair];
 \end{verbatim}
-String that doesn't contain a non-matching test pair.
+String that doesn't contain a non-matching pair of atoms.
 \end{hangingpar}
 
 \begin{hangingpar}
 \begin{verbatim}
 define Squash St -> 0 || St _;
 \end{verbatim}
-Rewrite relation deleting the second of two tests.
+Rewrite relation deleting the second of two atoms.
 \end{hangingpar}
 
 \begin{hangingpar}
@@ -798,11 +797,12 @@ relations to a regular set or relation.
 
 Translating the Epik terms $0$, $1$, $b$, and $e$ are
 straightforward: we simply convert the atoms as previously described,
-decorate the events $e$ with their compatible atoms. For example $a_1$ becomes
+and decorate the events $e$ with their compatible atoms. For example $a_1$ becomes
 an Fst term denoting
 $\{01a_101\}$. Fst has built-in operations of union (\texttt{|}),
-and intersection (\texttt{\&}), which define
-the sum and intersection operations in the guarded string algebra.
+and intersection (\texttt{\&}), which are
+the sum and intersection operations in the guarded string algebra as represented
+in Fst.
 Fst set difference (\texttt{-}) is used to define propositional complement as the
 difference between the set of worlds and the argument.
 
@@ -831,7 +831,7 @@ operators.
 %% an atom.
 
 KAT Kleene plus is defined in a similar way using Kleene plus in the string algebra,
-with checks for equality of atoms and deletion of atoms. See Figure \ref{fstfigure1}.
+with checks for equality of atoms and deletion of atoms. 
 KAT Kleene star is definied from KAT Kleene plus and the multiplicative identity,
 which is the set of well-formed atoms \texttt{St}.
 
@@ -859,9 +859,9 @@ $\!\underbrace{\texttt{Squash.i}\,\texttt{.o.}}_c
 \begin{tabular}{ll}
   $a$ & Relational Kleene plus in the string algebra \\
   $b$ & Constrain domain and co-domain to contain \\
-      & no unmatched tests. \\
-  $c$ & Reduce doubled tests to a single \\
-      & test in the domain and co-domain. \\
+      & no unmatched atoms. \\
+  $c$ & Reduce doubled atoms to a single \\
+      & atom in the domain and co-domain. \\
 \end{tabular}
 
 \begin{hangingpar}
@@ -877,30 +877,21 @@ operation {\tt{.x.}} is Cartesian product.  {\tt{R.i}} is the inverse of relatio
 \end{figure}
 
 
-%% An event symbol such as $a_1$ (Amy looks at heads) is in the KAT algebra a set of
-%% bare events decorated with compatible tests on each side, $\{ 10 a_1 10
-%% \}$ in this case.  This is a unit set rather than a guarded string, because elements
-%% of the KAT algebra are sets. Worlds in the KAT algebra are defined by sequencing
-%% events using {\em Kst}. The operation enforces compatibility of states, so that
-%% $(a_1 + a_0)(b_1 + b_0)$ contains two worlds rather than four.  The program in
-%% Figure \ref{epikfigure} as interpreted in FST defines a countably infinite set of possible worlds by
-%% KAT Kleene closure as $\mbox{\em Kst}(a_1 + a_0 +b_1 + b_0)$.
-
 It remains to define an epistemic alternative relation on worlds for each agent.  The
 relevant information in Figure \ref{epikfigure} is a relation between bare events for
 each agent. This determines a relation between bare events decorated with compatible
-atoms. 
-In Fst, we use the closure of the concatenation
-product operation on relations to lift a relation on decorated events for an agent to
-the corresponding relation on worlds.  The concatenation product $R~S$ of two
-relations $R$ and $S$ is the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$, where
-$x_1 \mathrel R y_1$, and $x_2 \mathrel S y_2$.  In Fst, {\tt{R+}} is the closure of relation {\tt R} with
+atoms.  In Fst, we use the closure of the concatenation product operation on
+relations to lift a relation on decorated events for an agent to the corresponding
+relation on worlds.  The concatenation product $R~S$ of two relations $R$ and $S$ is
+the set of pairs of the form $\pair{x_1x_2}{y_1y_2}$, where $x_1 \mathrel R y_1$, and
+$x_2 \mathrel S y_2$.  In Fst, {\tt{R+}} is the closure of relation {\tt R} with
 respect to this operation. Figure \ref{relclosure} defines the corresponding
-operation on sets of guarded strings as encoded in Fst.\footnote{Relation concatenation in Fst
-  differs from relation composition ({\tt{.o.}}), and the closure under discussion here is
-  the closure of the former rather than the latter.}  The epistemic alternative
-relation on worlds for an agent is then defined as the KAT relational concatenation
-closure {\tt RelKst} of the decorated-event alternative relation for the agent.
+operation on sets of guarded strings as encoded in Fst.\footnote{Relation
+  concatenation in Fst differs from relation composition ({\tt{.o.}}), and the
+  closure under discussion here is the closure of the former rather than the latter.}
+The epistemic alternative relation on worlds for an agent is then defined as the KAT
+relation concatenation closure {\tt RelKst} of the decorated-event alternative
+relation for the agent.
 
 %(Note that in both the string algebra and the guarded string algebra, the operation
 %on relations is concatenation closure, not reflexive transitive closure.)
@@ -992,29 +983,25 @@ $p$, making sure to filter out guarded strings that are too long.
 
 \section{Syntax-semantics interface}
 
-English sentences are mapped to terms in the logical language via a
-semantically interpreted multi-modal categorial grammar, consisting of
-a lexicon of words, their categorial types, and interpretations in a
-logical lambda language.  The grammar covers basic statives ({\em it's
-  heads}), {\em that-} and {\em whether}-complements of {\em know}, predicate and
-sentence negation, and predicate and sentence conjunction.  Figure
-\ref{lexiconfigure} gives illustrative lexical
-entries.\footnote{Category symbols use Lambek/Bar-Hillel notation for
-  slashes, so that $(d \backslash t)\slash(d \backslash_D t)$ combines
-  with $d \backslash_D t$ on the right to give a value that combines
-  with $d$ on the left to give $t$. In the semantics, lambda abstractions with
-  multiple parameters are written $\lambda x~y.~e$ rather than $\lambda x.\lambda y.e$.
-$d$ is the category of {\em it}.}
-The grammar and semantics are
-optimized for a simple fragment of English concerned with clausal
-complementation.  The agent names {\em Amy} and {\em Bob} contribute
-the epistemic alternative relations for those agents, rather than
-individuals.  The root verb {\em know} contributes existential modal
-force.  The complementizers {\em that} and {\em whether} are the heads
-of their dominating clauses, and assemble an alternative relation,
-modal force, and proposition contributed by the complement.  These
-complementizers introduce the dual via two negations, in order to
-express universal modal force.
+English sentences are mapped to terms in the logical language via a semantically
+interpreted multi-modal categorial grammar, consisting of a lexicon of words, their
+categorial types, and interpretations in a logical lambda language.  The grammar
+covers basic statives ({\em it's heads}), {\em that-} and {\em whether}-complements,
+negation, and predicate and sentence
+conjunction.\marginpar{Conjunction missing!}  Figure \ref{lexiconfigure} gives the
+lexicon.\footnote{Category symbols use Lambek/Bar-Hillel notation for slashes, so
+  that $(d \backslash t)\slash(d \backslash_D t)$ combines with $d \backslash_D t$ on
+  the right to give a value that combines with $d$ on the left to give $t$. In the
+  semantics, lambda abstractions with multiple parameters are written $\lambda
+  x~y.~e$ rather than $\lambda x.\lambda y.e$.  $d$ is the category of expletive {\em it}.}
+The grammar and semantics are optimized for a simple fragment of English concerned
+with clausal complementation.  The agent names {\em Amy} and {\em Bob} contribute the
+epistemic alternative relations for those agents, rather than individuals.  The root
+verb {\em believe} contributes existential modal force.  The complementizers {\em that}
+and {\em whether} are the heads of their dominating clauses, and assemble an
+alternative relation, modal force, and proposition contributed by the complement.
+These complementizers introduce the dual via two negations, in order to express
+universal modal force.
 
 
 
@@ -1046,12 +1033,11 @@ proposition $h$ (it's heads) is true.
 %bind anything, because sentences such as {\em it isn't heads} have an
 %expletive subject.
 The body of $\lambda p.\lambda R. {\Diamond}_R p$, which is the semantic lexical
-entry of {\em knows}, is an term denoting the pre-image of the
-world-alternative relation contributed by the subject.  This is not the right
-semantics for {\em Amy knows that it's heads}, because it has an existential
-modality ${\Diamond_R}p$, rather than an universal modality ${\Box_R}p$.  This
-is corrected by the complementizer {\em that} or {\em whether}, which introduces
-the dual.
+entry of {\em believes}, is an term denoting the pre-image of the world-alternative
+relation contributed by the subject.  This is not the right semantics for {\em Amy
+  believes that it's heads}, because it has an existential modality ${\Diamond_R}p$,
+rather than an universal modality ${\Box_R}p$.  This is corrected by the
+complementizer {\em that}, which introduces the dual.
 
 \begin{figure}[!t]
   \vspace{1em}
@@ -1134,21 +1120,20 @@ the dual.
   
 Sentences are parsed with a chart parser for categorial grammar.  The semantics for
 complex phrases are obtained by application of semantic translations, accompanied by
-beta reductions that eliminate all lambdas logical forms for clauses.  In
-consequence, the semantic term translating a sentence is an Epik term.  Such a term
-designates a set of possible words (guarded strings).  By way of example,
+beta reductions that eliminate all lambdas in logical forms for clauses.  In
+consequence, the semantic term translating a sentence is an Epik logical term.  Such
+a term designates a set of possible words (guarded strings).  By way of example,
 \exi{three}{a} is an English sentence with conjunction and several levels of clausal
 embedding.  Using the grammar and parser, the sentence is mapped to the term in
 \exi{three}{b}. \exi{three}{c} shows a simplified logical from constructed form
 \exi{three}{b} using logical equivalences. Either term is compiled in an
-implementation of the finite state calculus to a finite state machine with 10
-states and 23 edges, which accepts a countably infinite set of worlds.\footnote{
-Machine sizes need not be small, especially as the cardinality of $\sf{B}$
-increases.  A certain Epik model with fourteen primitive tests has the set of worlds
-representented by a finite state machine with 184794 states and 257881
-edges.}
-In this way the methodology ``directly'' represents the set of worlds
-denoted by \exi{three}{a}.
+implementation of the finite state calculus to a finite state machine with 10 states
+and 23 edges, which accepts a countably infinite set of worlds.\footnote{ Machine
+  sizes need not be small, especially as the cardinality of $\sf{B}$ increases.  A
+  certain Epik model with fourteen primitive Booleans has the set of worlds
+  representented by a finite state machine with 184,794 states and 257,881 edges.}  In
+this way the methodology ``directly'' represents the set of worlds denoted by
+\exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
 \newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
@@ -1189,7 +1174,7 @@ in a version without secret flipping.
 
 \section{Discussion}
 The methodology presented here is designed for use in research in linguistic
-semantics, for research in computational syntax and semantics on model-theoretically
+semantics, for research in computational linguistics on model-theoretically
 grounded semantics, 
 and for education at the level of a second graduate course in formal
 semantics, covering intensionality.  There are straightforward extensions to
@@ -1220,13 +1205,13 @@ computational implementations for it
 \citep{barker2005parser,bozsahin2021ccglab}.\footnote{Our grammar uses
   basic categorial grammar, not additional features such as
   combinators, type raising, continuations, or multimodal slashes that
-  interact with the grammar in non-trivial ways.  These features would
+  interact with the grammar in non-trivial ways.  These features 
   become relevant in more sophisticated grammars.  Multimodal
   categories are used for phrases such as a tenseless verb phrase that
-  semantically are functional, but can combine in the grammar only as
+  semantically are functional, but combine in the grammar only as
   arguments.}  While this way of proceeding is simple and attractive
 for the applications we are interested in, it would be possible to use
-our semantics with other frameworks that have a semantics that uses a
+our semantics with other frameworks that have a semantics with a
 lambda extension of a logical language.
 
 
@@ -1235,20 +1220,19 @@ lambda extension of a logical language.
 
 The semantics presented here is exclusively concerned with events and
 worlds.  Semantic type systems for natural language usually include a
-type for individuals.  In the coin example, the individuals are hidden
+type for individuals \citep{gallin1975intensional}.  In the coin example, the individuals are hidden
 in the primitive event symbols such as $a_1$ and $b_1$. This situation
 would get worse in a more elaborate model with more agents and
 multiple coins.  The solution to this should be to base the world
 construction on grounded event terms such as
-$\Prime{look}(\Prime{a},\Prime{k},1)$, for ``agent $\Prime{a}$ see
-that coin $\Prime{k}$ is heads'', rather than atomic events.  This way
+$\Prime{look}(\Prime{a},\!\Prime{k},\!\Prime{1})$, for ``agent $\Prime{a}$ see
+that coin $\Prime{k}$ is heads'', rather than atomic event symbols.  This way
 of proceeding is found in research on situation calculus
 \citep{reiter2001knowledge}.  How to incorporate it in the scheme for
 Epik specifications and into the computational parts of the proposal
-is a topic for future research.  In this it is not immediately clear
+is a topic for future research.  In this it is not clear
 whether it is possible to introduce quantification over individuals,
-together with individual constants, while maintaining the finite state
-semantics. \citet{rooth2017finite} develops an approach to a positive
+together with individual constants. \citet{rooth2017finite} develops an approach to a positive
 answer, based on introducing markers for witnesses for discourse
 referents in the construction of worlds.
 
@@ -1289,12 +1273,9 @@ Source code, examples, and instructions for Epik are distributed at
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
 
-\clearpage 
+
 \bibliography{fs}
 
-\clearpage
-
-\onecolumn
 
 %% \section*{Appendix}
 %% Complete categorial grammar extending Figure \ref{lexiconfigure}.  The online supplement
