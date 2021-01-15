@@ -89,15 +89,13 @@ Earlier versions of the work were presented in the LUSH talk series at Utrecht i
 \begin{document}
 \maketitle
 \begin{abstract}
-  Constructive and computable multi-agent epistemic possible worlds
-  models are defined, where possible worlds models are guarded string
-  models in an epistemic extension of Kleene Algebra with Tests.  The
-  account is framed as a formal language Epik (Epistemic \textsc{Kat}) for
-  defining such models.  The language is implemented by translation
-  into the finite state calculus, and alternatively by modeling
-  propositions as lazy lists in Haskell. The syntax-semantics
-  interface for a fragment of English is defined by a categorial
-  grammar.
+  Constructive and computable multi-agent epistemic possible worlds models are
+  as sets of guarded string models in an epistemic extension of Kleene Algebra
+  with Tests (\textsc{Kat}). The account is framed as a formal language Epik
+  (Epistemic \textsc{Kat}) for defining such models. The language is implemented
+  by translation into the finite state calculus, and alternatively by modeling
+  propositions as lazy lists in Haskell. The syntax-semantics interface for a
+  fragment of English is defined by a categorial grammar.
 \end{abstract}
 
 
@@ -106,24 +104,26 @@ Earlier versions of the work were presented in the LUSH talk series at Utrecht i
 
 \section{Introduction and Related Work}
 Linguistic semantics in the Montague tradition proceeds by assigning
-propositional {\em semantic values} to disambiguated sentences of a
-natural language.  A proposition is a set or class of {\em possible
-  worlds}.  These are often assumed to be things with the same nature
-and complexity as the world we occupy \citep{lewis1986plurality}.  But
-alternatively, one can work with small idealized models, in order to
-illustrate and test ideas.  The point of this paper is to scale up toy
-or idealized models to countable sets of worlds, and to constructive
-and computable modeling of epistemic alternatives for agents.  We
-describe a systematic way of defining such models, and
-illustrate how to apply them in natural language semantics.  The focus
-is on epistemic semantics and clausal embedding. The fundamental move
-is to identify possible worlds with strings of primitive events, so
-that propositions are sets of strings. An advantage in this is that it
-allows for a mathematical description of an algebra of propositions,
-coupled with a computational representation using either lazy lists of
-strings, or finite state machines that describe sets of strings.
+propositional {\em semantic values} to disambiguated sentences of a natural
+language. A proposition is a set or class of {\em possible worlds}, which are
+often assumed to have the same nature and complexity as the world we occupy
+\citep{lewis1986plurality}. But alternatively, one can work with small idealized
+models, to illustrate and test ideas. The point of this paper is to extend
+standard idealized models to countable sets of worlds, and to constructively and
+computably model alternatives for epistemic agents.
 
-The approach taken here synthesizes five antecedents.
+Enter Epik, which is a systematic way of defining such models, and can be
+applied to natural language semantics, specifically, epistemic semantics and
+clausal embedding. The fundamental insight is to identify possible worlds with
+strings of primitive events, so that propositions are sets of (guarded) strings,
+whose regular sets have a rich algebraic characterization~\cite{kozen1997kleene}
+and computational model~\cite{kozen1997kleenecompleteness,kozen2001automata}.
+Epik leverages these algebrae to define a mathematical model
+(Sections~\ref{sec:model} \&~\ref{sec:logic}) and computationally interpret
+using finite state machines (Section~\ref{sec:fst}) and lazy lists of strings
+(Section~\ref{sec:lazy})).
+
+{\em Related Work.} Epik synthesizes five antecedents.
 John McCarthy's {\em Situation Calculus} is the source of the idea of
 constructing possible worlds as event sequences
 \citep{mccarthy1963situations,reiter2001knowledge}.  The algebraic
@@ -145,11 +145,11 @@ compositional semantics is expressed in a finite state calculus
 \citep{rooth2017finite,collard2018finite}.
 
 
-A running example of an event-sequence model is {\em The Concealed Coin}. Amy
-and Bob are seated at a table. There is a coin on the table under a cup, heads
-up. The coin could be heads-up $H$ or tails-up $T$, and neither agent knows
-which it is. This initial situation is possible world $w_1$. We can construct
-additional worlds by sequencing events like those shown in \ex{coin1}.
+{\em Example.} Consider an example event-sequence model called {\em The
+  Concealed Coin}. Amy and Bob are seated at a table. There is a coin on the
+table under a cup, heads up. The coin could be heads-up $H$ or tails-up $T$, and
+neither agent knows which it is. Call this initial possible world $w_1$.
+Additional worlds can be constructed via the events in \ex{coin1}.
 
 \newcommand{\apH}{\ensuremath{a_1}}
 \newcommand{\apT}{\ensuremath{a_0}}
@@ -175,11 +175,11 @@ additional worlds by sequencing events like those shown in \ex{coin1}.
 \end{enumerate}
 \end{example}
 
-The worlds $w_1,\ldots,w_4$ in \ex{coin2} are examples constructed from the
-events in \ex{coin1}. Juxtaposition indicates the order and occurence of events,
-for example $w_3$ indicates that after the events of $w_2$, event $b_1$ occurs,
-fully, this indicates beginning in world $w_1$, Amy surreptitiously peeking at
-a heads-up coin, and then Bob doing the same.
+The worlds in \ex{coin2} are examples constructed from the events in \ex{coin1}.
+Juxtaposition indicates the order of events; for example, $w_3$ indicates that
+after the events of $w_2$, event $b_1$ occurs, which corresponds to, in the
+initial world, Amy surreptitiously peeking at a heads-up coin, and then Bob
+doing the same.
 
 \begin{example} \label{coin2}
   \(w_2 \triangleq w_1\apH \hfill
@@ -187,9 +187,10 @@ a heads-up coin, and then Bob doing the same.
   w_4 \triangleq w_3\atHT\btTH\bpH\)
 \end{example}
 
-The truth values for English sentences are observed at the end of the event
-sequences specified by $w_1,\ldots, w_4$, where $0$ stands for falsity and $1$
-for truth.
+Now, the truth ($1$) or falsity ($0$) of English sentences can be evaluated in
+each world $w_i$, i.e. \emph{after} the events have happened. See \ex{coin3} for
+examples, such as in $w_4$, where Bob knows it's heads (because he peeked after
+turning the coin), but Amy does not (because Bob secretly turned the coin over).
 
 \begin{example} \label{coin3}
 \hspace{-7mm} \begin{tabular}[t]{ccccl}
@@ -206,70 +207,74 @@ for truth.
 \newcommand{\ev}[2]{#1 \mathbin{:} #2}
 \newcommand{\evr}[2]{\ev{#2}{#1}}
 
-The events come with pre-conditions and post-conditions.  Amy can turn
-the coin from heads to tails only if the coin is heads-up, so $\atHT$
-has the pre-condition of the coin being heads up. Once she turns the
-coin over, tails must be face-up, so $a_{10}$ has the post-condition
-of the coin being tails-up. Let $h$ be the Boolean proposition that
-the coin is heads up and $t$ be the Boolean proposition that the coin
-is tails-up.  Then pre- and post-conditions can be described by
-Boolean formulas, with $h$ being the pre-condition of $\atHT$ and
-$t$ being the post-condition. This is expressed using an operator
-``$:$'' (read ``and next'') that pairs Boolean formulas. The formula
-$\ev h t$ describes $\atHT$ (Amy turning the coin from heads
-to tails) as happening only in an $h$ state, and concluding in a
-$t$ state.  Events don't have to change state: the event $\apT$
-(Amy peeking at tails) can happen only in a $t$ state, and does
-not change the state ($\ev{t}{t}$).
+To create realistic models, contradictory event sequences must be prohibited.
+For example, $\apH\atTH$ would require the coin to simultaneously heads-up and
+tails-up. To mechanize this, events in Epik come with Boolean pre-conditions and
+post-conditions. In the running example, the Boolean variables $h$ (the coin is
+heads-up) and $t$ (the coin is tails-up) represent the coin's state. Then, since
+Amy can only observe heads when the coin is heads-up, event $\apH$ has the
+invariant condition $h$. Similarly, Amy can only turn the coin from tails to
+heads if it shows tails, so $\atTH$ has the tails-up precondition $t$ and the
+heads-up postcondition $h$.
+
+Pre- and post- conditions are expressed using an operator ``$:$'' (read ``and
+next'') that pairs Boolean formulas into an \emph{effect formula}. Specifically,
+the effects for $\apH$ are written $\ev h h$, and for $\atTH$ are written $\ev t
+h$. Effect formulae are interpreted relations on boolean valuations, as defined
+in Figure~\ref{effectfigure}.
+
+However, a coin cannot simultanously show both heads and tails! Currently the
+precondition $h$ of $\atHT$ only says that heads must be showing, and says
+nothing about the fact that tails must be face-down, indicated by the formula
+$\bar t$. The effect valuations are restricted to only the feasible ones via a
+\emph{state formula}, shown in \ref{effect}, and demonstrated for $\apH$ in
+\ref{effect}. The state formula, also shown in \ref{effect}, says that the coin
+is either heads-up or tails-up, but not both\footnote{Two Booleans constrained
+  by a state formula, is a more illustrative example than using a single boolean
+  and modelling tails as $\bar h$.}. Here juxtaposition represents conjuction,
+$+$ is disjunction, and overbar is negation.
+
+With the state formula in hand, $\apH\atTH$ is evidently contradictory, the
+post-condition $h$ of $\apH$ is incompatible with the pre-condition $t$ of
+$\atTH$. See Figure~\ref{effectfigure} for more details.
 
 
 %\renewcommand{\arraystretch}{1.0}
 
-However a coin cannot be showing both heads and tails! Currently the
-precondition $h$ of $\atHT$ only says that heads must be showing, and
-says nothing about the fact that tails must be face-down, indicated by
-the formula $\bar t$. We will further restrict the feasible conditions
-for our actions by restricting the space of valuations for our formulas.
-
-A sequence such as $\bar{h}{t}$ can be viewed both as a formula and as
-a valuation of primitive propositions, which we use to describe world
-state. The primitives are listed in fixed order, and left unmarked
-(indicating true) or marked with the overbar (indicating false).
-Since a coin is heads or tails but not both, we want to allow the
-valuations $h\bar{t}$ and $\bar{h}t$, and disallow $ht$ and
-$\bar{h}\bar{t}$.\footnote{Two Booleans constrained by a state formula, rather than one Boolean, are stipulated here to
- illustrate state formulas.
-}  This is enforced by a {\em state formula}, which is
-a Boolean formula, in this case the one given on the second line of
-\ex{effect}.  Where {\sf{B}} is a set of state primitives and $\varphi$ is a
- constraint over {\sf{B}},
-${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\varphi}$ is the set of valuations of
-{\sf{B}} that make formula $\varphi$ true. Valuations are called atoms,
-because they correspond to the atoms of a Boolean algebra of tests
-\citep{kozen2001automata}.
-
-
-Formulas that describe pre- and
-post-conditions are {\em effect formulas}. They are interpreted as
-defining relations between atoms, as defined in Figure
-\ref{effectfigure}.  The atoms they relate are constrained by the
-state formula as well.  For the heads-tails example, let the state
-formula and the effect formula for $a_1$ (Amy peeking at heads) be as
-specified in \ex{effect}. Then ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\varphi}$
-and the relation on atoms for the event $a_1$ are as given at
-the bottom in \ex{effect}.
-
+Given a set {\sf{B}} of state primitives and $\varphi$ a state formula over
+{\sf{B}}, define ${\cal{A}}_{\mbox{\sf\tiny{B}}}^{\varphi}$ to be the set of
+valuations of {\sf{B}} that make formula $\varphi$ true. The valuations for the
+coin example are shown in \ref{effect}, using the sequence notation for
+valuations, e.g. $\bar{h}{t}$, wherein every state primitive is listed in fixed
+order, and left unmarked (indicating true) or marked with the overbar
+(indicating false). Valuations are called atoms, because they correspond to the
+atoms of a Boolean algebra of tests \citep{kozen2001automata}.
 
 \begin{example}   \label{effect}
 \(\begin{array}[t]{ll}
 {\sf{B}} & \{h,t\}\\
 \mbox{state formula $\varphi$} & h\bar{t} + \bar{h}t \\
-\mbox{effect formula $\zeta$ for $a_1$} &  h \mathbin{:} h \\
+\mbox{effect formula $\zeta_{a_1}$ for $a_1$} &  h \mathbin{:} h \\
  \mathcal{A}^\varphi_{\mathsf B} & \{h\bar{t},\bar{h}t\}   \\
-\sem{\zeta}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
+\sem{\zeta_{a_1}}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
 \end{array}\)
 \end{example}
 
+Thus far, the presentation is closely related to Kleene Algebra with Hypotheses
+(\textsc{Ka+H})~\cite{cohen1994hypotheses}, which permits user-specification of
+futher equations beyond the axioms of \textsc{Ka}. Specifically, the state
+formula $\varphi$ can be thought of as a hypothesis $\varphi \equiv 1$, and an
+event formula $\zeta_a$ for event $a$, is simply the hypothesis $a \equiv
+\sum_{\varphi,\varphi' \in \llbracket \zeta_a \rrbracket} \varphi;a;\varphi'$.
+Rather than rely on general techniques ~\cite{doumane2019kleene,
+  hardin2002elimination, kozen1997kleenecompleteness}, we relalize our specific
+hypotheses directly.
+
+The key facet that differentiates Epik from \textsc{Ka+H} is the epistemic
+modality, which cannot be naively represented using universal
+hypotheses\footnote{The existence of this encoding is an interesting future
+  topic}. Sections~\ref{sec:model} and~\ref{sec:logic} discuss the
+model-theoretic and logical development of the epistemic operators.
 
 
 \begin{figure}
@@ -302,6 +307,7 @@ the bottom in \ex{effect}.
 
 
 \section{Epistemic guarded string models}
+\label{sec:model}
 
 
 Epik is a specification language for possible worlds models that
@@ -552,6 +558,8 @@ c_1 H\}$, with two world-alternatives instead of four.
 
 
 \section{The logical language of Epistemic \textsc{Kat}}
+\label{sec:logic}
+
 The standard language for Kleene algebra with tests has the signature
 $\tuple{K,+,\cdot,*,\bar{},0,1}$ \citep{kozen2001automata}.  In a guarded string
 model for \textsc{Kat}, $K$ is a set of sets of guarded strings, $+$ is set union, the
@@ -722,6 +730,8 @@ theorem in relational terms. The conditions on the remaining standard
 modal axioms, \textbf{B} and \textbf{5}, are similar.
 
 \section{Translation into the finite state calculus}
+\label{sec:fst}
+
 The finite state calculus is an algebra of regular sets of strings and
 regular relations between strings that was designed for use in
 computationonal phonology and morphographemics
@@ -910,6 +920,7 @@ alternative relation for the agent.
 
 
 \section{Bounded Lazy Interpretation}
+\label{sec:lazy}
 
 We also implement the semantics of Epik terms using lazy lists in
 Haskell, rather than the direct interpretation as sets. Using lists
@@ -1248,25 +1259,6 @@ whether it is possible to introduce quantification over individuals,
 together with individual constants. \citet{rooth2017finite} develops an approach to a positive
 answer, based on introducing markers for witnesses for discourse
 referents in the construction of worlds.
-
-Epik is closely related to Kleene Algebra with Hypotheses
-\textsc{Ka+H}~\cite{cohen1994hypotheses}, which permits user-specification of
-futher equations beyond the axioms of \textsc{Ka}. In practice, these hypotheses
-are used to express domain-specific properties of the events, such as the
-commutativity. We can model both the state formulae and the event formulae as
-\textsc{KA+H} hypotheses. Specifically, the state formula $\varphi$ can be
-thought of as a hypothesis $\varphi \equiv 1$, and an event formula $\zeta_a$
-for event $a$, is simply the hypothesis $a \equiv \sum_{\varphi,\varphi' \in
-  \llbracket \zeta_a \rrbracket} \varphi;a;\varphi'$. In general, the Horn
-theory of \textsc{KA+H} is undecidable, however many special cases
-are~\cite{doumane2019kleene, hardin2002elimination,
-  kozen1997kleenecompleteness}.
-
-The key facet that differentiates Epik from \textsc{Ka+H} is the modality. Each
-alternative relation represents a set of uni-directional rewrites that must be
-applied for that agent, rather than the universal, optional rewrites represented
-by the \textsc{Ka+H} hypotheses. It may be possible to encode Epik's alternative
-relations into \textsc{Ka+H} hypotheses, but such an encoding is future work.
 
 The development here is concerned with defining concrete computable
 possible worlds models, and applying them in natural language
