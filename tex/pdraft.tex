@@ -1127,22 +1127,22 @@ relation contributed by the subject.  This is not the right semantics for {\em A
 rather than an universal modality ${\Box_R}p$.  This is corrected by the
 complementizer {\em that}, which introduces the dual.
 
-Sentences are parsed with a chart parser for categorial grammar.  The semantics for
-complex phrases are obtained by application of semantic translations, accompanied by
-beta reductions that eliminate all lambdas in logical forms for clauses.  In
-consequence, the semantic term translating a sentence is an Epi\textsc{Kat} logical term.  Such
-a term designates a set of possible words (guarded strings).  By way of example,
-\exi{three}{a} is an English sentence with conjunction and several levels of clausal
-embedding.  Using the grammar and parser, the sentence is mapped to the term in
-\exi{three}{b}. \exi{three}{c} shows a simplified logical form constructed from
-\exi{three}{b} using syntactic equivalences. Either term is compiled in an
-implementation of the finite state calculus to a finite state machine with 10 states
-and 23 edges, which accepts a countably infinite set of worlds.\footnote{ Machine
-  sizes need not be small, especially as the cardinality of $\sf{B}$ increases.  A
-  certain Epi\textsc{Kat} model with fourteen primitive Booleans has the set of worlds
-  representented by a finite state machine with 184,794 states and 257,881 edges.}  In
-this way the methodology ``directly'' represents the set of worlds denoted by
-\exi{three}{a}.
+Sentences are parsed with a chart parser for categorial grammar. The semantics
+for complex phrases are obtained by application of semantic translations,
+accompanied by beta reductions that eliminate all lambdas in logical forms for
+clauses. In consequence, the semantic term translating a sentence is an
+Epi\textsc{Kat} logical term. Such a term designates a set of possible words
+(guarded strings). By way of example, \exi{three}{a} is an English sentence with
+conjunction and several levels of clausal embedding. Using the grammar and
+parser, the sentence is mapped to the term in \exi{three}{b}. \exi{three}{c}
+shows a simplified logical form constructed from \exi{three}{b} using syntactic
+equivalences. Either term is compiled in an implementation of the finite state
+calculus to a finite state machine with 10 states and 23 edges, which accepts a
+countably infinite set of worlds.\footnote{ Machine sizes need not be small,
+  especially as the cardinality of $\sf{B}$ increases. A certain Epi\textsc{Kat}
+  model with fourteen primitive Booleans has the set of worlds representented by
+  a finite state machine with 184,794 states and 257,881 edges.} In this way the
+methodology ``directly'' represents the set of worlds denoted by \exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
 \newcommand{\TAILS}{\bullet^*t}
