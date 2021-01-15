@@ -1149,49 +1149,71 @@ this way the methodology ``directly'' represents the set of worlds denoted by
 \exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
-\newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
-\newcommand{\BKAKWH}{\neg(\neg(\AKWH) + \Diamond_{b}\neg(\AKWH))}
-\newcommand{\AKBKAKWH}{\neg(\neg(\BKAKWH) + \Diamond_{a}\neg(\BKAKWH))}
+\newcommand{\TAILS}{\bullet^*t}
 
 \begin{examples} \label{three}
-\itema It's tails and Amy knows that Bob knows that Amy knows whether it's heads.
-% (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
-\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)
-\itemc \(\bullet^*t \wedge \K_{a}(\K_{b}(\K_{a} \bullet^* h + \K_{a} \neg \bullet ^* h))\)
-\itemd Amy knows that it's tails.
-\iteme \(
-\bullet ^*t \wedge \neg \Diamond_{a} \neg \bullet^*t~~~~~~(\equiv \K_a \bullet^* t)
+  \itema Amy knows that it's tails and doesn't believe that it's heads and
+  believes that Bob believes that it's heads.
+\itemb \(
+\begin{array}[t]{ll}
+  \neg(\neg \TAILS + \Diamond_a \neg \TAILS) & \wedge \\
+  \neg \neg \Diamond_a \neg \HEADS & \wedge \\
+  \neg \Diamond_a \neg\neg\Diamond_b \neg \HEADS
+\end{array}  
 \)
-
+\itemc \(\K_{a}\!\TAILS \; \wedge \, \neg\B_{a}\!\HEADS \; \wedge \; \B_{a}\B_{b}\HEADS\)
+\itemd Bob believes that it's tails.
+\iteme \(\B_{b} \TAILS \)
 \end{examples}
 
 
+% This conversion was done by hand. It would be good to put it into the scheme program.
+% edge      : 695 Amy knows that its tails and doesnt believe that its heads and believes that Bob believes that its heads        (0 19)  t
+%semantics : (((Not ((Not tails) + (Diamond amy (Not tails)))) & (Not (Not (Diamond amy (Not heads))))) & (Not (Diamond amy (Not (Not (Diamond bob (Not heads)))))))
+% (((Not ((Not tails) + (Diamond amy (Not tails))))
+% & (Not (Not (Diamond amy (Not heads)))))
+% & (Not (Diamond amy (Not (Not (Diamond bob (Not heads)))))))
+%\[
+%\begin{array}{ll}
+%  \neg(\neg \TAILS + \Diamond_a \neg \TAILS) & \wedge \\
+%  \neg \neg \Diamond_a \neg \HEADS & \wedge \\
+%  \neg \Diamond_a \neg\neg\Diamond_b \neg \HEADS
+%\end{array}  
+%\]
 
-Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by
-the grammar.  Logical relations between propositions are checked in
+Sentence \exi{three}{d} is assigned a logical form that is syntactically
+equivalent to \exi{three}{e}. Logical relations between propositions are checked in
 the finite state calculus by checking set-theoretic relations between
-sets of worlds.  For instance entailment $p \rightarrow q$ is decided
+sets of worlds.  Propositional entailment from $p$ to $q$ is decided
 by checking in an interpreter for the finite state calculus whether $p
-- q$ is non-empty.  In the model defined by Figure 2, the propositions
-\exi{three}{b} and \exi{three}{e} are independent. They are equivalent
-in a version without secret flipping.
+- q$ is non-empty.  In the model defined by Figure 2, proposition
+\exi{three}{c} entails proposition \exi{three}{e}.
+
+Another way of using the Fst interpreter is to display worlds in a given proposition.
+\ex{p4worlds} shows the three words of length three in proposition \exi{three}{c}.
+In the first one, Bob looks at heads, then Amy looks at heads, then Amy secretly
+turns the coin, believing that she is turning it from heads to tails because she
+believed after two steps that the coin was heads. Intuitively sentence
+\exi{three}{a} is true in this scenario.
+
+\begin{example} \label{p4worlds}
+\(
+\begin{array}[t]{l}  
+1 0 \; bh \; 1 0 \; ah \; 1 0 \; aht \;  0 1 \\
+1 0 \; bh \; 1 0 \; aht \; 0 1 \; at \; 0 1 \\
+1 0 \; ah \; 1 0 \; bh \; 1 0 \; aht \; 0 1 \\
+\end{array}
+\)
+\end{example}  
 
 
-%% \begin{examples} \label{entail}
-%% \itema Amy knows that it's tails.
-%% \itemb \(
-%% \neg \Diamond_{a} \neg \bullet^*t
-%% \)
-%% % \itemc \(\displaystyle \Box_{a}\Box_{b}(\Box_{a} \neg \bullet^* h + \Box_{a}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{a}\neg\Box_{b}\Box_{a}\neg \bullet^* t\)
-%% \end{examples}
 
 \section{Discussion}
-Epi\textsc{Kat} is designed for use in linguistic semantics research, for
+Epi\textsc{Kat} is designed for research in linguistic semantics, for
 computational linguistics research on model-theoretically grounded semantics,
-and for students in graduate course modules on intensional formal semantics.
+and for course modules on intensional formal semantics.
 Currently, the grammar covers statives, {\em that-} and {\em
-  whether}-complements, negation, and predicate and sentence conjunction.
-
+  whether}-complements, negation, and conjunction.
 There are straightforward extensions to additional linguistic phenomena, such as
 tense and perfective aspect \exi{extension}{a}, and the combination of
 metaphysical modality and prospective aspect \exi{extension}{b}.
@@ -1251,7 +1273,7 @@ axioms, coalgebrae, and relations to other logics, warrant further investigation
 Source code, examples, and instructions for building and running Epi\textsc{Kat}
 are available under an open-source license at \url{https://github.com/ericthewry/epikat}.
 
-\clearpage
+%\clearpage
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
