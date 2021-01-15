@@ -90,10 +90,10 @@ Earlier versions of the work were presented in the LUSH talk series at Utrecht i
 \maketitle
 \begin{abstract}
   Constructive and computable multi-agent epistemic possible worlds models are
-  as sets of guarded string models in an epistemic extension of Kleene Algebra
-  with Tests (\textsc{Kat}). The account is framed as a formal language
-  Epi\textsc{Kat} (Epistemic \textsc{Kat}) for defining such models. The
-  language is implemented by translation into the finite state calculus, and
+  interpreted as sets of guarded string models in an epistemic extension of
+  Kleene Algebra with Tests (\textsc{Kat}). The account is framed as a formal
+  language Epi\textsc{Kat} (Epistemic \textsc{Kat}) for defining such models.
+  The language is implemented by translation into the finite state calculus, and
   alternatively by modeling propositions as lazy lists in Haskell. The
   syntax-semantics interface for a fragment of English is defined by a
   categorial grammar.
@@ -119,36 +119,34 @@ clausal embedding. The fundamental insight is to identify possible worlds with
 strings of primitive events, so that propositions are sets of (guarded) strings,
 whose regular sets have a rich algebraic characterization~\cite{kozen1997kleene}
 and computational model~\cite{kozen1997kleenecompleteness,kozen2001automata}.
-Epi\textsc{Kat} leverages these algebrae to define a mathematical model
+Epi\textsc{Kat} leverages these algebras to define a mathematical model
 (Sections~\ref{sec:model} \&~\ref{sec:logic}) and computationally interpret
 using finite state machines (Section~\ref{sec:fst}) and lazy lists of strings
 (Section~\ref{sec:lazy})).
 
-{\em Related Work.} Epi\textsc{Kat} synthesizes five antecedents.
-John McCarthy's {\em Situation Calculus} is the source of the idea of
-constructing possible worlds as event sequences
-\citep{mccarthy1963situations,reiter2001knowledge}.  The algebraic
-theory of {\em Kleene Algebra with Tests} characterizes algebras with
-elements corresponding to propositions and event types in our
-application \citep{kozen2001automata}.  {\em Action models} in dynamic
-epistemic semantics introduce the technique of constructing epistemic
-models from primitive alternative relations on events, in order to
-capture the epistemic consequences of perceptual and communicative
-events \citep{baltag1999logic}.  Literature on {\em finite state
-  methods in linguistic semantics} has used event strings and sets of
-event strings to theorize about tense and aspect in natural language
-semantics
-\citep{fernando2004finite,fernando2007observing,carlson2009tense} and
-to express intensions \cite{fernando2017intensions}.  Work on {\em
-  finite state intensional semantics} has investigated how to do the
-semantics of intensional complementation in a setting where
-compositional semantics is expressed in a finite state calculus
-\citep{rooth2017finite,collard2018finite}.
+{\em Related Work.} Epi\textsc{Kat} synthesizes five antecedents. John
+McCarthy's {\em Situation Calculus} is the source of the idea of constructing
+possible worlds as event sequences
+\citep{mccarthy1963situations,reiter2001knowledge}. The algebraic theory of {\em
+  Kleene Algebra with Tests} (\textsc{Kat}) characterizes algebras of regular
+sets of guarded strings \citep{kozen2001automata}, which form the basis for
+Epi\textsc{Kat}'s propositions and event types. {\em Action models} in dynamic
+epistemic semantics introduce the technique of constructing epistemic models
+from primitive alternative relations on events, in order to capture the
+epistemic consequences of perceptual and communicative events
+\citep{baltag1999logic}. Literature on {\em finite state methods in linguistic
+  semantics} has used event strings and sets of event strings to theorize about
+tense and aspect in natural language semantics
+\citep{fernando2004finite,fernando2007observing,carlson2009tense} and to express
+intensions \cite{fernando2017intensions}. Work on {\em finite state intensional
+  semantics} has investigated how to do the semantics of intensional
+complementation in a setting where compositional semantics is expressed in a
+finite state calculus \citep{rooth2017finite,collard2018finite}.
 
 
 {\em Example.} Consider an example event-sequence model called {\em The
   Concealed Coin}. Amy and Bob are seated at a table. There is a coin on the
-table under a cup, heads up. The coin could be heads-up $H$ or tails-up $T$, and
+table under a cup. The coin could be heads-up ($H$) or tails-up ($T$), and
 neither agent knows which it is. Call this initial possible world $w_1$.
 Additional worlds can be constructed via the events in \ex{coin1}.
 
@@ -182,11 +180,12 @@ Additional worlds can be constructed via the events in \ex{coin1}.
 
 The worlds in \ex{coin2} are examples constructed from the events in \ex{coin1}.
 Juxtaposition indicates the order of events; for example, $w_3$ indicates that
-after the events of $w_2$, event $b_1$ occurs, which corresponds to, in the
-initial world, Amy surreptitiously peeking at a heads-up coin, and then Bob
-doing the same.
+after the events of $w_2$, event $b_1$ occurs, which, starting in the initial
+world $w_1$ corresponds to Amy peeking at a heads-up coin, and then Bob doing
+the same.
 
 \begin{example} \label{coin2}
+  \hspace{-1.5em}
   \(w_2 \triangleq w_1\apH \hfill
   w_3 \triangleq w_2\bpH \hfill
   w_4 \triangleq w_3\atHT\btTH\bpH\)
@@ -194,7 +193,7 @@ doing the same.
 
 Now, the truth ($1$) or falsity ($0$) of English sentences can be evaluated in
 each world $w_i$, i.e. \emph{after} the events have happened. See \ex{coin3} for
-examples, such as in $w_4$, where Bob knows it's heads (because he peeked after
+examples such as in $w_4$, where Bob knows it's heads (because he peeked after
 turning the coin), but Amy does not (because Bob secretly turned the coin over).
 
 \begin{example} \label{coin3}
@@ -213,34 +212,34 @@ turning the coin), but Amy does not (because Bob secretly turned the coin over).
 \newcommand{\evr}[2]{\ev{#2}{#1}}
 
 To create realistic models, contradictory event sequences must be prohibited.
-For example, $\apH\atTH$ would require the coin to simultaneously heads-up and
-tails-up. To mechanize this, events in Epi\textsc{Kat} come with Boolean pre-conditions and
-post-conditions. In the running example, the Boolean variables $h$ (the coin is
-heads-up) and $t$ (the coin is tails-up) represent the coin's state. Then, since
-Amy can only observe heads when the coin is heads-up, event $\apH$ has the
-invariant condition $h$. Similarly, Amy can only turn the coin from tails to
-heads if it shows tails, so $\atTH$ has the tails-up precondition $t$ and the
-heads-up postcondition $h$.
+For example, $\apH\atTH$ would require the coin to simultaneously be heads-up
+and tails-up. To mechanize such reasoning, events in Epi\textsc{Kat} come with
+Boolean pre-conditions and post-conditions \emph{\`a la} Hoare
+Logic~\cite{hoare1969axiomatic}. In the running example, the Boolean variables
+$h$ (the coin is heads-up) and $t$ (the coin is tails-up) represent the coin's
+state. Then, since Amy can only observe heads when the coin is heads-up, event
+$\apH$ has the invariant condition $h$. Similarly, Amy can only turn the coin
+from tails to heads if it shows tails, so $\atTH$ has the tails-up precondition
+$t$ and the heads-up postcondition $h$.
 
 Pre- and post- conditions are expressed using an operator ``$:$'' (read ``and
 next'') that pairs Boolean formulas into an \emph{effect formula}. Specifically,
 the effects for $\apH$ are written $\ev h h$, and for $\atTH$ are written $\ev t
-h$. Effect formulae are interpreted relations on boolean valuations, as defined
+h$. Effect formulas are interpreted as relations on boolean valuations, as defined
 in Figure~\ref{effectfigure}.
 
-However, a coin cannot simultanously show both heads and tails! Currently the
+However, a coin cannot simultanously show both heads and tails! Currently, the
 precondition $h$ of $\atHT$ only says that heads must be showing, and says
 nothing about the fact that tails must be face-down, indicated by the formula
 $\bar t$. The effect valuations are restricted to only the feasible ones via a
-\emph{state formula}, shown in \ref{effect}, and demonstrated for $\apH$ in
-\ref{effect}. The state formula, also shown in \ref{effect}, says that the coin
-is either heads-up or tails-up, but not both\footnote{Two Booleans constrained
-  by a state formula, is a more illustrative example than using a single boolean
-  and modelling tails as $\bar h$.}. Here juxtaposition represents conjuction,
-$+$ is disjunction, and overbar is negation.
+\emph{state formula}, shown, and demonstrated for $\apH$ in \ref{effect}. The
+state formula says that the coin is either heads-up or tails-up, but not
+both\footnote{Two Booleans constrained by a state formula, is more illustrative
+  a single boolean $h$ where tails is just $\bar h$.}. Here juxtaposition
+represents conjuction, $+$ is disjunction, and overbar is negation.
 
-With the state formula in hand, $\apH\atTH$ is evidently contradictory, the
-post-condition $h$ of $\apH$ is incompatible with the pre-condition $t$ of
+With the state formula in hand, $\apH\atTH$ is evidently contradictory, since
+the post-condition $h$ of $\apH$ is incompatible with the pre-condition $t$ of
 $\atTH$. See Figure~\ref{effectfigure} for more details.
 
 
@@ -259,9 +258,9 @@ atoms of a Boolean algebra of tests \citep{kozen2001automata}.
 \(\begin{array}[t]{ll}
 {\sf{B}} & \{h,t\}\\
 \mbox{state formula $\varphi$} & h\bar{t} + \bar{h}t \\
-\mbox{effect formula $\zeta_{a_1}$ for $a_1$} &  h \mathbin{:} h \\
+\mbox{effect formula $\zeta_{\apH}$ for $\apH$} &  h \mathbin{:} h \\
  \mathcal{A}^\varphi_{\mathsf B} & \{h\bar{t},\bar{h}t\}   \\
-\sem{\zeta_{a_1}}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
+\sem{\zeta_{\apH}}^\varphi & \{\pair{h\bar{t}}{h\bar{t}}\}   \\
 \end{array}\)
 \end{example}
 
@@ -275,12 +274,11 @@ Rather than rely on general techniques ~\cite{doumane2019kleene,
   hardin2002elimination, kozen1997kleenecompleteness}, we realize our specific
 hypotheses directly.
 
-Epi\textsc{Kat} is first and foremost a multi-agent epistemic logic, with epistemic
-operators that cannot naively be represented as
-hypothesis\footnote{Characterizing this relationship precisely is a future
-  research question.}. Aside from formalizing the metaphysical modality seen so
-far, Sections~\ref{sec:model} and~\ref{sec:logic} develop the epistemic
-modality.
+Epi\textsc{Kat} is first and foremost a multi-agent epistemic logic, with
+epistemic operators that cannot naively be represented as
+hypotheses\footnote{Characterizing this relationship precisely is future work.}.
+Aside from formalizing the metaphysical modality seen so far,
+Sections~\ref{sec:model} and~\ref{sec:logic} develop the epistemic modality.
 
 
 \begin{figure}
@@ -317,7 +315,7 @@ modality.
 
 Epi\textsc{Kat} is a specification language for possible worlds models that
 includes declarations of events and states, state formulas, effect
-formulas, and additional information.  Figure \ref{epikfigure} shows
+formulas, and additional information.  Figure \ref{fig:epik-example} shows
 an Epi\textsc{Kat} program that describes a possible worlds model for two agents
 with information about one coin, events of the agents semi-privately
 looking at the coin, and events of secretly turning the coin.  The
@@ -332,13 +330,13 @@ right of the arrow. The interpretation of Amy's alternatives for $\bpH$ (Bob
 peeks at heads), is that when $\bpH$ happens, for Amy either $\bpH$ or $\bpT$ (Bob
 peeks at tails) could be happening, indicating that she doesn't know whether Bob saw heads or tails, only that he peeked at the coin.
 
-Similarly, Her alternatives for $\atTH$ (she turns the coin over from heads to
+Similarly, her alternatives for $\atTH$ (she turns the coin over from heads to
 tails) are $\atTH$ and $\atHT$, indicating that she doesn't know, \emph{a
   priori}, whether she's turning the coin from $H$ to $T$ or from $T$ to $H$.
-She has the same alternatives for the event $\atHT$. Conversely, When Bob
+She has the same alternatives for the event $\atHT$. Conversely, when Bob
 secretly turns the coin over, in event $\btTH$ or $\btHT$, she doesn't know
 anything has happened, so her alternative is the ``no-operation'' or
-``no-information'' event event $\nop$. Bob's event relation is symmetric.
+``no-information'' event $\nop$. Bob's event relation is symmetric.
 
 \begin{figure}
   \begin{tcolorbox}
@@ -414,12 +412,12 @@ alternating with atoms over ${\sf{B}}$, and beginning and ending with atoms. In
 this construction, $w_1=H$, $w_2=H \apH H$, $w_3=H \apH H \bpH H$, and
 $w_4=H \apH H \bpH H \atHT T \btTH H \bpH H$.
 
-The discussion of \ex{coin2} mentioned building worlds by incrementing worlds
-with events and maintaining the pre-and-post conditions. This is accomplished in
-guarded string models with the fusion product ($x \diamond y$), a partial
-operation that combines two guarded strings $x$ and $y$, subject to the
-condition that the atom at the end of the $x$ is identical to the atom at the
-start of $y$. \ex{fusion1} gives some examples.
+The discussion of \ex{coin2} mentioned building worlds by incrementing smaller
+worlds with events and maintaining the pre- and post- conditions. This is
+accomplished in guarded string models with the fusion product ($x \diamond y$),
+a partial operation that combines two guarded strings $x$ and $y$, subject to
+the condition that the atom at the end of the $x$ is identical to the atom at
+the start of $y$. \ex{fusion1} gives some examples.
 
 
 \begin{example} \label{fusion1}
@@ -438,7 +436,7 @@ have the interpretation of propositions, which are (regular) sets of possible
 worlds. In a free guarded string model for \textsc{Kat}, any event can be
 adjacent to any atom in a guarded string that is an element of the underlying
 set for the algebra. However, this subsumes the valid worlds defined by the
-state and effect formulae. \ex{wf1} defines the \emph{well-formed} guarded
+state and effect formulas. \ex{wf1} defines the \emph{well-formed} guarded
 strings (valid worlds) determined by an Epi\textsc{Kat} specification. Condition
 (i) says that each atom is consistent with the state constraint, and condition
 (ii) says that each constituent token event $\alpha_ie_i\alpha_{i+1}$ is
@@ -530,8 +528,8 @@ the coin is tails, and first Bob looks at tails, and them Cal looks at tails.
 The first event $\bpT$ has the alternatives $\bpT$ and $\bpH$ for Amy, and the
 second event $\bpT$ has the alternatives $\cpT$ and $\cpH$ for Amy. This results
 in four combinations $\bpT\cpT$, $\bpT\cpH$, $\bpH\cpT$, and $\bpH\cpH$, some of
-which, like $\bpT\cpH$, are bogus. These contradictions are filtered by post-
-and pre-conditions of events in the alternative world, so that the set of
+which, like $\bpT\cpH$, are bogus. These contradictions are filtered by pre-
+and post-conditions of events in the alternative world, so that the set of
 alternatives for Amy in $T\,\bpT\,T\,\cpT\,T$ is $\{T\,\bpT\,T\,\cpT\,T,
 H\,\bpH\,H\,\cpH\,H\}$, with two world-alternatives instead of four.
 
@@ -689,8 +687,8 @@ defined syntactically in Figure \ref{termfigure}) is interpreted as a set of
 guarded strings $\sem{p}^{\epikspec}$. Let $K^{\epikspec}$ be the sets that are
 interpretations of terms. Then
 $\tuple{K^{\epikspec},+,\cdot,*,\bar{},0,1,\neg,\Diamond_{a_1},...,\Diamond_{a_n}}$
-is a concrete guarded string interpretation for the signature of epistemic
-\textsc{Kat}, with operations as in Figure \ref{fig:interp2}. This provides a
+is a concrete guarded string interpretation for the signature of
+Epi\textsc{Kat}, with operations as in Figure \ref{fig:interp2}. This provides a
 concrete $n$-agent general modal frame $\tuple{\sem{\bullet^*}^{\epikspec},
   \hat{R}_1,...,\hat{R}_n,K^{\epikspec}}$. The frame consists of a set of
 worlds, an epistemic-alternative relation for each agent, and a set of
@@ -719,13 +717,11 @@ when the relation $R_a$ has a certain shape.
   \(\begin{array}[t]{lll}
   \textbf{T} & \Box_a p \to p & \text{if } g \mathrel{\hat{R}_a} g, \forall g \\
   \textbf{D} & \Box_a p \to \Diamond_a p & \text{if } \hat{R}_a \text{ is a function} \\
-  \textbf{4} & \Box_a p \to \Box_a\Box_a p & \text{if } \hat{R}_a \text{ is idempotent}
   \end{array}\)
 \end{example}
 
-The condition on \textbf{4} is essentially just a restatement of the
-theorem in relational terms. The conditions on the remaining standard
-modal axioms, \textbf{B} and \textbf{5}, are similar.
+The conditions on axioms \textbf{4}, \textbf{5} and \textbf{B} are just a
+restatements of the theorem in relational terms.
 
 \section{Translation into the finite state calculus}
 \label{sec:fst}
@@ -1138,8 +1134,8 @@ consequence, the semantic term translating a sentence is an Epi\textsc{Kat} logi
 a term designates a set of possible words (guarded strings).  By way of example,
 \exi{three}{a} is an English sentence with conjunction and several levels of clausal
 embedding.  Using the grammar and parser, the sentence is mapped to the term in
-\exi{three}{b}. \exi{three}{c} shows a simplified logical from constructed form
-\exi{three}{b} using logical equivalences. Either term is compiled in an
+\exi{three}{b}. \exi{three}{c} shows a simplified logical form constructed from
+\exi{three}{b} using syntactic equivalences. Either term is compiled in an
 implementation of the finite state calculus to a finite state machine with 10 states
 and 23 edges, which accepts a countably infinite set of worlds.\footnote{ Machine
   sizes need not be small, especially as the cardinality of $\sf{B}$ increases.  A
@@ -1149,49 +1145,71 @@ this way the methodology ``directly'' represents the set of worlds denoted by
 \exi{three}{a}.
 
 \newcommand{\HEADS}{\bullet^*h}
-\newcommand{\AKWH}{\neg (\neg \HEADS \vee \Diamond_{a} \neg\HEADS) + \neg(\HEADS \wedge \Diamond_{a}\HEADS)}
-\newcommand{\BKAKWH}{\neg(\neg(\AKWH) + \Diamond_{b}\neg(\AKWH))}
-\newcommand{\AKBKAKWH}{\neg(\neg(\BKAKWH) + \Diamond_{a}\neg(\BKAKWH))}
+\newcommand{\TAILS}{\bullet^*t}
 
 \begin{examples} \label{three}
-\itema It's tails and Amy knows that Bob knows that Amy knows whether it's heads.
-% (_*;t) & ~ <amy> ~ ~ <bob> ~((~ (<amy> ~ (_*;h))) + ~ (<amy> (_*;h)) )
-\itemb \( \displaystyle \bullet^*t \wedge \AKBKAKWH \)
-\itemc \(\bullet^*t \wedge \K_{a}(\K_{b}(\K_{a} \bullet^* h + \K_{a} \neg \bullet ^* h))\)
-\itemd Amy knows that it's tails.
-\iteme \(
-\bullet ^*t \wedge \neg \Diamond_{a} \neg \bullet^*t~~~~~~(\equiv \K_a \bullet^* t)
+  \itema Amy knows that it's tails and doesn't believe that it's heads and
+  believes that Bob believes that it's heads.
+\itemb \(
+\begin{array}[t]{ll}
+  \neg(\neg \TAILS + \Diamond_a \neg \TAILS) & \wedge \\
+  \neg \neg \Diamond_a \neg \HEADS & \wedge \\
+  \neg \Diamond_a \neg\neg\Diamond_b \neg \HEADS
+\end{array}  
 \)
-
+\itemc \(\K_{a}\!\TAILS \; \wedge \, \neg\B_{a}\!\HEADS \; \wedge \; \B_{a}\B_{b}\HEADS\)
+\itemd Bob believes that it's tails.
+\iteme \(\B_{b} \TAILS \)
 \end{examples}
 
 
+% This conversion was done by hand. It would be good to put it into the scheme program.
+% edge      : 695 Amy knows that its tails and doesnt believe that its heads and believes that Bob believes that its heads        (0 19)  t
+%semantics : (((Not ((Not tails) + (Diamond amy (Not tails)))) & (Not (Not (Diamond amy (Not heads))))) & (Not (Diamond amy (Not (Not (Diamond bob (Not heads)))))))
+% (((Not ((Not tails) + (Diamond amy (Not tails))))
+% & (Not (Not (Diamond amy (Not heads)))))
+% & (Not (Diamond amy (Not (Not (Diamond bob (Not heads)))))))
+%\[
+%\begin{array}{ll}
+%  \neg(\neg \TAILS + \Diamond_a \neg \TAILS) & \wedge \\
+%  \neg \neg \Diamond_a \neg \HEADS & \wedge \\
+%  \neg \Diamond_a \neg\neg\Diamond_b \neg \HEADS
+%\end{array}  
+%\]
 
-Sentence \exi{three}{d} is assigned the logical form \exi{three}{e} by
-the grammar.  Logical relations between propositions are checked in
+Sentence \exi{three}{d} is assigned a logical form that is syntactically
+equivalent to \exi{three}{e}. Logical relations between propositions are checked in
 the finite state calculus by checking set-theoretic relations between
-sets of worlds.  For instance entailment $p \rightarrow q$ is decided
+sets of worlds.  Propositional entailment from $p$ to $q$ is decided
 by checking in an interpreter for the finite state calculus whether $p
-- q$ is non-empty.  In the model defined by Figure 2, the propositions
-\exi{three}{b} and \exi{three}{e} are independent. They are equivalent
-in a version without secret flipping.
+- q$ is non-empty.  In the model defined by Figure 2, proposition
+\exi{three}{c} entails proposition \exi{three}{e}.
+
+Another way of using the Fst interpreter is to display worlds in a given proposition.
+\ex{p4worlds} shows the three words of length three in proposition \exi{three}{c}.
+In the first one, Bob looks at heads, then Amy looks at heads, then Amy secretly
+turns the coin, believing that she is turning it from heads to tails because she
+believed after two steps that the coin was heads. Intuitively sentence
+\exi{three}{a} is true in this scenario.
+
+\begin{example} \label{p4worlds}
+\(
+\begin{array}[t]{l}  
+1 0 \; \bpH \; 1 0 \; \apH \; 1 0 \; \atHT \;  0 1 \\
+1 0 \; \bpH \; 1 0 \; \atHT \; 0 1 \; \apT \; 0 1 \\
+1 0 \; \apH \; 1 0 \; \bpH \; 1 0 \; \atHT \; 0 1 \\
+\end{array}
+\)
+\end{example}  
 
 
-%% \begin{examples} \label{entail}
-%% \itema Amy knows that it's tails.
-%% \itemb \(
-%% \neg \Diamond_{a} \neg \bullet^*t
-%% \)
-%% % \itemc \(\displaystyle \Box_{a}\Box_{b}(\Box_{a} \neg \bullet^* h + \Box_{a}\neg \bullet^* t)\) \hfill \mbox{} \(~~\cdot~~\Box_{a}\neg\Box_{b}\Box_{a}\neg \bullet^* t\)
-%% \end{examples}
 
 \section{Discussion}
-Epi\textsc{Kat} is designed for use in linguistic semantics research, for
+Epi\textsc{Kat} is designed for research in linguistic semantics, for
 computational linguistics research on model-theoretically grounded semantics,
-and for students in graduate course modules on intensional formal semantics.
+and for course modules on intensional formal semantics.
 Currently, the grammar covers statives, {\em that-} and {\em
-  whether}-complements, negation, and predicate and sentence conjunction.
-
+  whether}-complements, negation, and conjunction.
 There are straightforward extensions to additional linguistic phenomena, such as
 tense and perfective aspect \exi{extension}{a}, and the combination of
 metaphysical modality and prospective aspect \exi{extension}{b}.
@@ -1246,12 +1264,12 @@ witnesses for discourse referents in the construction of worlds.
 The development here is concerned with defining concrete computable possible
 worlds models, and applying them in natural language semantics. Logical and
 computational characterizations of Epi\textsc{Kat}, such as sound and complete
-axioms, coalgebrae, and relations to other logics, warrant further investigation.
+axioms, coalgebras, and relations to other logics, warrant further investigation.
 
 Source code, examples, and instructions for building and running Epi\textsc{Kat}
 are available under an open-source license at \url{https://github.com/ericthewry/epikat}.
 
-\clearpage
+%\clearpage
 
 \bibliographystyle{acl_natbib}
 % \bibliographystyle{chicago}
