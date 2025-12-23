@@ -8,7 +8,7 @@ Extension of the two-coin model with three types of probabilities:
 
 Includes HFST export for visualization and manipulation.
 """
-
+from epistemic_guarded_strings import export_epistemic_guarded_string,visualize_epistemic_fst
 import math
 from dataclasses import dataclass, field
 from typing import Callable, Dict, FrozenSet, Set, Tuple, List, Optional
