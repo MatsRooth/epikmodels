@@ -25,8 +25,7 @@ def create_noisy_peek_with_obs_states(
         if len(s) == 2:
             coin1, coin2 = s
         else:
-            coin1, coin2 = s[:2]
-        
+            coin1, coin2 = s[:2]        
         base_state = (coin1, coin2)
         true_value = base_state[coin_index]
         
@@ -73,6 +72,17 @@ def demo():
         frozenset({(0, 0), (0, 1)})   # coin1=T
     ]
     
+    bob_equiv_classes = [
+        frozenset({(1, 0), (0, 0)}),  # coin2=H
+        frozenset({(0, 1), (1, 1)})   # coin2=T
+    ]
+    bob_initial = EpistemicBeliefState(
+        agent="Bob",
+        belief_distribution={
+            bob_equiv_classes[0]: 0.5,
+            bob_equiv_classes[1]: 0.5
+        }
+    )
     amy_initial = EpistemicBeliefState(
         agent="Amy",
         belief_distribution={
@@ -83,7 +93,7 @@ def demo():
     
     # Build model with AUGMENTED-STATE peek action
     model = build_complete_model(include_noisy_actions=False)  # Don't use old actions
-    
+    agents = model.agents
     # Add the new augmented-state peek action
     peek_Amy_coin1 = create_noisy_peek_with_obs_states(
         coin_index=0, 
@@ -133,7 +143,24 @@ def demo():
     visualize_epistemic_fst(T2, "epistemic_2_one_peek_CORRECTED", show_beliefs=True)
     print("   → Shows AUTOMATIC belief update after observation")
     print("   → Different paths show different belief updates")
+
+    print("\n2.2 After one peek (automatic belief update!)")
+    print("   Using augmented-state action: peek_Amy_coin1") 
+    T22 = export_epistemic_guarded_string(
+        initial_dist,
+        {"Bob": bob_initial},
+        ["peek_Amy_coin1"],  # Use the augmented-state action!
+        model,
+        {"Bob": bob_equiv_classes},
+        {"Amy": 0.9},
+        n_coins=2
+    )
     
+    print(f"   States: {T22.number_of_states()}, Arcs: {T22.number_of_arcs()}")
+    visualize_epistemic_fst(T22, "epistemic_2_Bob_one_peek_CORRECTED", show_beliefs=True)
+    print("   → Shows AUTOMATIC Bob's belief update after observation")
+    print("   → Different paths show different belief updates")
+
     # Example 3: Two observations
     print("\n3. After two peeks (compounding belief updates)")
     

@@ -75,13 +75,13 @@ def clean_label(label):
         # "peek_Amy_coin1_H_noisy" -> "peek_Amy_c1_H"
         agent = "Amy" if "Amy" in label else "Bob"
         coin_num = "1" if "coin1" in label else "2"
-        observed = "H" if "_H" in label else "T"
+        observed = "H" if "_H" in label else "T" if "_T" in label else ""
         is_noisy = "noisy" in label
         
         if is_noisy:
-            return f"peek_{agent}_c{coin_num}_{observed}"
+            return f"peek_{agent}_c{coin_num}{observed}"
         else:
-            return f"peek_{agent}_c{coin_num}_{observed}"
+            return f"peek_{agent}_c{coin_num}{observed}"
     
     # Handle generic peek labels (without H/T suffix)
     if label.startswith('peek_Amy_') or label.startswith('peek_Bob_'):
