@@ -19,7 +19,7 @@ Rooth, Mats. "Finite state intensional semantics." In Proceedings of the 12th In
 Building Epik models using the HFST Python API.  It replaces the Haskell code from Cambell & Rooth that 
 syntactically constructed FST programs.
 
-A probabilistic version of Epik, where informations states are probability distributions on sets of guarded
+A probabilistic version of Epik, where information states are probability distributions on sets of guarded
 strings, rather than mere propositions.
 
 
